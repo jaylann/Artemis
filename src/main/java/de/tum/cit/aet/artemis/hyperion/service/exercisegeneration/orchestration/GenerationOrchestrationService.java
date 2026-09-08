@@ -104,7 +104,7 @@ public class GenerationOrchestrationService {
         var claim = workers.claim(jobId, exercise.getId());
         boolean accountingComplete = false;
         try {
-            var assignment = new GenerationAssignment(claim.identity(), brief, parameters, seed.snapshot(), deadline, claim.imageDigest());
+            var assignment = new GenerationAssignment(claim.identity(), brief, parameters, seed.snapshot(), deadline, claim.imageDigest(), seed.gradingContext());
             client.send(new WorkerCommand(1, WorkerCommand.Type.START, claim.identity(), assignment));
             Instant renewAt = Instant.MIN;
             boolean stopped = false;
