@@ -1,6 +1,5 @@
 package de.tum.cit.aet.artemis.hyperion.protocol;
 
-
 import org.jspecify.annotations.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
