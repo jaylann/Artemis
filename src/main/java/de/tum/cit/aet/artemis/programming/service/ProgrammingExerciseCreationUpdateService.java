@@ -472,7 +472,6 @@ public class ProgrammingExerciseCreationUpdateService {
         return updateTimeline(timelineUpdateDTO, notificationText, originalBuildAndTestOffset, programmingExercise);
     }
 
-
     /**
      * Updates the timeline attributes of the given programming exercise with the values from the DTO.
      *
