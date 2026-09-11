@@ -29,9 +29,9 @@
                 }
             },
             "autoToast": {
-                "success": "Atlas ran automatically on {{count}} exercise(s).",
-                "partial": "Atlas ran on {{count}} exercise(s): {{success}} succeeded, {{failure}} failed.",
-                "failure": "Atlas ran automatically on {{count}} exercise(s), but all runs failed. Please try again later."
+                "success": "Atlas processed {{count}} changed learning object(s).",
+                "partial": "Atlas processed {{count}} changed learning object(s): {{success}} verified, {{failure}} failed, and {{skipped}} skipped.",
+                "failure": "Atlas processed {{count}} changed learning object(s): {{failure}} failed and {{skipped}} were skipped. Please inspect the run details."
             }
         }
     }

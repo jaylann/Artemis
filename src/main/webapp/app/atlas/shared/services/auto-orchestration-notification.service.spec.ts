@@ -4,6 +4,7 @@ import { vi } from 'vitest';
 import { AlertService } from 'app/foundation/service/alert.service';
 import { WebsocketService } from 'app/foundation/service/websocket.service';
 import { AutoOrchestrationNotificationService, AutoOrchestrationSummary } from 'app/atlas/shared/services/auto-orchestration-notification.service';
+import { CompetencyOrchestrationStatus } from 'app/atlas/shared/dto/competency-orchestration-dto';
 
 describe('AutoOrchestrationNotificationService', () => {
     let service: AutoOrchestrationNotificationService;
@@ -44,7 +45,7 @@ describe('AutoOrchestrationNotificationService', () => {
 
         websocketSubject.next(summary({ exerciseCount: 3, successCount: 3, failureCount: 0 }));
 
-        expect(alertSuccessSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.success', { count: 3, success: 3, failure: 0 });
+        expect(alertSuccessSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.success', { count: 3, success: 3, failure: 0, skipped: 0 });
         expect(alertWarningSpy).not.toHaveBeenCalled();
         expect(alertErrorSpy).not.toHaveBeenCalled();
     });
@@ -54,7 +55,16 @@ describe('AutoOrchestrationNotificationService', () => {
 
         websocketSubject.next(summary({ exerciseCount: 3, successCount: 2, failureCount: 1 }));
 
-        expect(alertWarningSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.partial', { count: 3, success: 2, failure: 1 });
+        expect(alertWarningSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.partial', { count: 3, success: 2, failure: 1, skipped: 0 });
+    });
+
+    it('emits a warning when a mixed batch contains a skipped object', () => {
+        service.subscribeToCourse(42);
+
+        websocketSubject.next(summary({ exerciseCount: 3, successCount: 2, failureCount: 0, skippedCount: 1 }));
+
+        expect(alertWarningSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.partial', { count: 3, success: 2, failure: 0, skipped: 1 });
+        expect(alertSuccessSpy).not.toHaveBeenCalled();
     });
 
     it('emits an error alert when every exercise failed', () => {
@@ -62,7 +72,7 @@ describe('AutoOrchestrationNotificationService', () => {
 
         websocketSubject.next(summary({ exerciseCount: 2, successCount: 0, failureCount: 2 }));
 
-        expect(alertErrorSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.failure', { count: 2, success: 0, failure: 2 });
+        expect(alertErrorSpy).toHaveBeenCalledWith('artemisApp.atlasOrchestrator.autoToast.failure', { count: 2, success: 0, failure: 2, skipped: 0 });
     });
 
     it('drops the subscription on unsubscribeFromCourse', () => {
@@ -82,9 +92,12 @@ describe('AutoOrchestrationNotificationService', () => {
         return {
             courseId: 42,
             runId: 'run-1',
+            status: CompetencyOrchestrationStatus.Success,
             exerciseCount: 0,
             successCount: 0,
             failureCount: 0,
+            skippedCount: 0,
+            objectOutcomes: [],
             completedAt: '2026-04-24T12:00:00Z',
             ...overrides,
         };

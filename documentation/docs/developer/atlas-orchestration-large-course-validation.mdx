@@ -1,0 +1,132 @@
+# Atlas large-course validation harness
+
+> **TODO(BA thesis validation): remove this page and the temporary Playwright spec after the
+> evidence is captured.**
+
+This is a disposable validation harness for the Atlas competency orchestrator. It creates one
+`testCourse` with 12 deterministic competencies and 60 deterministic text exercises spanning 12
+pedagogical topics, keeps course auto-orchestration disabled, and manually runs the orchestrator
+for three different exercises in sequence. Each run records timestamps, HTTP and orchestration
+status, applied-action count, and elapsed milliseconds. The harness writes its report to
+`build/atlas-validation/`.
+
+## Safety and prerequisites
+
+The test is skipped unless `ATLAS_LARGE_COURSE_VALIDATION=1` is present. Do not set that variable
+casually: the three manual runs call the configured Atlas LLM provider synchronously and may create
+real, paid model calls. Confirm the provider, budget, and consent to incur charges before opting in.
+
+Before running it, have the following ready:
+
+- Docker with the local PostgreSQL service, plus a running Artemis server and client.
+- Playwright dependencies and the seeded `artemis_admin` account.
+- Atlas enabled, the `AtlasAgent` feature active, and a working ChatClient/provider configuration.
+- A database account with read access to `llm_token_usage_trace` and `llm_token_usage_request` for
+  the follow-up queries below.
+
+## Exact opt-in command
+
+Run from the repository root. This is the only command in this runbook that executes the test body:
+
+```bash
+ATLAS_LARGE_COURSE_VALIDATION=1 pnpm -C src/test/playwright exec playwright test \
+  e2e/atlas/AtlasOrchestratorLargeCourseValidation.spec.ts \
+  --project=slow-tests --workers=1
+```
+
+The command prints the disposable course ID and the JSON report path. Keep the report's
+`validationStartedAt` and `validationCompletedAt` values for the SQL window. The three exercise
+requests are intentionally awaited one at a time, so the measured intervals are not overlapping.
+
+## Token and cost evidence
+
+The query below is a per-exercise/per-pipeline breakdown. It joins the trace and request tables,
+filters by the disposable `course_id` and the report timestamps, and sums provider-reported input
+and output tokens and their configured EUR costs.
+
+### PostgreSQL
+
+```sql
+SELECT
+    trace.course_id,
+    trace.exercise_id,
+    trace.service,
+    request.service_pipeline_id,
+    MIN(trace."time") AS first_trace_time,
+    MAX(trace."time") AS last_trace_time,
+    COUNT(DISTINCT trace.id) AS trace_count,
+    COUNT(request.id) AS request_count,
+    SUM(request.num_input_tokens) AS input_tokens,
+    SUM(request.num_output_tokens) AS output_tokens,
+    ROUND(SUM(
+        request.num_input_tokens * request.cost_per_million_input_tokens / 1000000.0
+        + request.num_output_tokens * request.cost_per_million_output_tokens / 1000000.0
+    )::numeric, 6) AS estimated_cost_eur
+FROM llm_token_usage_trace AS trace
+JOIN llm_token_usage_request AS request ON request.trace_id = trace.id
+WHERE trace.course_id = :course_id
+  AND trace."time" >= CAST(:run_started_at AS timestamptz)
+  AND trace."time" <= CAST(:run_completed_at AS timestamptz)
+  AND trace.service = 'ATLAS'
+  AND request.service_pipeline_id = 'ATLAS_ORCHESTRATION'
+GROUP BY trace.course_id, trace.exercise_id, trace.service, request.service_pipeline_id
+ORDER BY first_trace_time, trace.exercise_id;
+```
+
+### MySQL
+
+```sql
+SELECT
+    trace.course_id,
+    trace.exercise_id,
+    trace.`service`,
+    request.service_pipeline_id,
+    MIN(trace.`time`) AS first_trace_time,
+    MAX(trace.`time`) AS last_trace_time,
+    COUNT(DISTINCT trace.id) AS trace_count,
+    COUNT(request.id) AS request_count,
+    SUM(request.num_input_tokens) AS input_tokens,
+    SUM(request.num_output_tokens) AS output_tokens,
+    ROUND(SUM(
+        request.num_input_tokens * request.cost_per_million_input_tokens / 1000000.0
+        + request.num_output_tokens * request.cost_per_million_output_tokens / 1000000.0
+    ), 6) AS estimated_cost_eur
+FROM llm_token_usage_trace AS trace
+JOIN llm_token_usage_request AS request ON request.trace_id = trace.id
+WHERE trace.course_id = :course_id
+  AND trace.`time` >= CAST(REPLACE(REPLACE(:run_started_at, 'T', ' '), 'Z', '') AS DATETIME(6))
+  AND trace.`time` <= CAST(REPLACE(REPLACE(:run_completed_at, 'T', ' '), 'Z', '') AS DATETIME(6))
+  AND trace.`service` = 'ATLAS'
+  AND request.service_pipeline_id = 'ATLAS_ORCHESTRATION'
+GROUP BY trace.course_id, trace.exercise_id, trace.`service`, request.service_pipeline_id
+ORDER BY first_trace_time, trace.exercise_id;
+```
+
+Both the main orchestrator and the delegated worker calls currently persist
+`service_pipeline_id = 'ATLAS_ORCHESTRATION'`. There is no separate worker pipeline identifier to
+invent or filter on, so the exact pipeline predicate above deliberately aggregates both kinds of
+call. The `trace.service = 'ATLAS'` predicate excludes unrelated LLM services.
+
+The report's `elapsedMs` is wall-clock time around the HTTP request. It includes content
+preprocessing, including the flavor-strip provider call, the orchestrator/tool loop, persistence,
+and response serialization. Flavor-strip calls are not currently persisted through
+`LLMTokenUsageService`, so their tokens do not appear in `llm_token_usage_request`; do not interpret
+the database token total as the token usage of the complete wall-clock request.
+
+## Evidence handoff and cleanup
+
+After checking the JSON against the SQL result, copy the relevant evidence and interpretation to:
+
+`/Users/justin/Programming/University/BAThesis/thesis-template-typst/research/telemetry-and-evaluation.md`
+
+Record the disposable course ID, exact run window, three exercise IDs, statuses, action counts,
+elapsed times, token totals, and estimated cost. The harness intentionally retains the course until
+this query and evidence handoff are complete because deleting it sets the token traces' `course_id`
+foreign key to null. Afterwards, delete the disposable course through Artemis, remove the captured
+JSON under `build/atlas-validation/`, and remove both temporary files from the Artemis repository:
+
+- `src/test/playwright/e2e/atlas/AtlasOrchestratorLargeCourseValidation.spec.ts`
+- `documentation/docs/developer/atlas-orchestration-large-course-validation.mdx`
+
+Do not leave the opt-in harness or its course in a normal development checkout after the thesis
+evidence has been captured.

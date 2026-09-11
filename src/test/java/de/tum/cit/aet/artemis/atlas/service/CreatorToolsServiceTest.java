@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.model.ToolContext;
@@ -99,6 +100,24 @@ class CreatorToolsServiceTest {
         });
         // The successful create must mirror the new competency to AtlasML (production sends UPDATE for creation).
         verify(atlasMLNotificationService).notifyAtlasML(List.of(persisted), OperationTypeDTO.UPDATE, "orchestrator competency creation");
+    }
+
+    @Test
+    void createCompetency_marksTheCompetencyAsGeneratedByAi() {
+        Course course = new Course();
+        course.setId(COURSE_ID);
+        when(courseRepository.findById(COURSE_ID)).thenReturn(Optional.of(course));
+        Competency persisted = new Competency("Sorting Algorithms", "Understand sorting basics.", null, CourseCompetency.DEFAULT_MASTERY_THRESHOLD, CompetencyTaxonomy.UNDERSTAND,
+                false);
+        persisted.setId(101L);
+        when(competencyService.createCompetencies(any(), eq(course))).thenReturn(List.of(persisted));
+
+        service.createCompetency("Sorting Algorithms", "Understand sorting basics.", "UNDERSTAND", JUSTIFICATION, toolContext);
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Competency>> captor = ArgumentCaptor.forClass(List.class);
+        verify(competencyService).createCompetencies(captor.capture(), eq(course));
+        assertThat(captor.getValue()).singleElement().satisfies(competency -> assertThat(competency.isGeneratedByAi()).isTrue());
     }
 
     @Test

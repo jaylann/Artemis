@@ -2,6 +2,7 @@ import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'app/foundation/service/alert.service';
 import { WebsocketService } from 'app/foundation/service/websocket.service';
+import { CompetencyOrchestrationStatus, LearningObjectOutcomeDTO } from 'app/atlas/shared/dto/competency-orchestration-dto';
 
 /**
  * WebSocket payload broadcast by `ContentChangeScheduler` after an automatic
@@ -10,9 +11,12 @@ import { WebsocketService } from 'app/foundation/service/websocket.service';
 export interface AutoOrchestrationSummary {
     courseId: number;
     runId: string;
+    status: CompetencyOrchestrationStatus;
     exerciseCount: number;
     successCount: number;
     failureCount: number;
+    skippedCount: number;
+    objectOutcomes: LearningObjectOutcomeDTO[];
     completedAt: string;
 }
 
@@ -54,10 +58,10 @@ export class AutoOrchestrationNotificationService implements OnDestroy {
         if (!summary) {
             return;
         }
-        const params = { count: summary.exerciseCount, success: summary.successCount, failure: summary.failureCount };
-        if (summary.failureCount === 0) {
+        const params = { count: summary.exerciseCount, success: summary.successCount, failure: summary.failureCount, skipped: summary.skippedCount };
+        if (summary.failureCount === 0 && summary.skippedCount === 0) {
             this.alertService.success('artemisApp.atlasOrchestrator.autoToast.success', params);
-        } else if (summary.successCount === 0) {
+        } else if (summary.failureCount > 0 && summary.successCount === 0) {
             this.alertService.error('artemisApp.atlasOrchestrator.autoToast.failure', params);
         } else {
             this.alertService.warning('artemisApp.atlasOrchestrator.autoToast.partial', params);

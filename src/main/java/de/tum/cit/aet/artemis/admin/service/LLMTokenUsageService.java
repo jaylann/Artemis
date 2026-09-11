@@ -165,7 +165,8 @@ public class LLMTokenUsageService {
     /**
      * Convenience method to track token usage from a {@link ChatResponse}.
      * Extracts metadata (model, prompt/completion tokens) from the response, builds an {@link LLMRequest},
-     * and persists it. Catches all exceptions so that tracking failures never affect the main operation.
+     * and persists it. Missing response data and persistence failures are logged and suppressed so that
+     * tracking failures never affect the main operation.
      *
      * @param chatResponse    the chat response containing usage metadata, may be null
      * @param serviceType     the LLM service type (e.g. HYPERION, IRIS)
@@ -175,11 +176,20 @@ public class LLMTokenUsageService {
     public void trackChatResponseTokenUsage(@Nullable ChatResponse chatResponse, LLMServiceType serviceType, String pipelineId,
             Function<LLMTokenUsageBuilder, LLMTokenUsageBuilder> builderFunction) {
         try {
-            if (chatResponse == null || chatResponse.getMetadata() == null || chatResponse.getMetadata().getUsage() == null) {
+            if (chatResponse == null) {
+                log.warn("Failed to store token usage for pipeline [{}]: chat response is missing.", pipelineId);
                 return;
             }
             ChatResponseMetadata metadata = chatResponse.getMetadata();
+            if (metadata == null) {
+                log.warn("Failed to store token usage for pipeline [{}]: response metadata is missing.", pipelineId);
+                return;
+            }
             Usage usage = metadata.getUsage();
+            if (usage == null) {
+                log.warn("Failed to store token usage for pipeline [{}]: usage metadata is missing.", pipelineId);
+                return;
+            }
             String model = metadata.getModel() != null ? metadata.getModel() : "";
             LLMRequest llmRequest = buildLLMRequest(model, usage.getPromptTokens() != null ? usage.getPromptTokens() : DEFAULT_TOKEN_COUNT,
                     usage.getCompletionTokens() != null ? usage.getCompletionTokens() : DEFAULT_TOKEN_COUNT, pipelineId);

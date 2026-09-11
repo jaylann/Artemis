@@ -29,9 +29,9 @@
                 }
             },
             "autoToast": {
-                "success": "Atlas wurde automatisch für {{count}} Aufgabe(n) ausgeführt.",
-                "partial": "Atlas wurde für {{count}} Aufgabe(n) ausgeführt: {{success}} erfolgreich, {{failure}} fehlgeschlagen.",
-                "failure": "Atlas wurde automatisch für {{count}} Aufgabe(n) ausgeführt, aber alle Läufe sind fehlgeschlagen. Bitte versuche es später erneut."
+                "success": "Atlas hat {{count}} geänderte Lernobjekt(e) verarbeitet.",
+                "partial": "Atlas hat {{count}} geänderte Lernobjekt(e) verarbeitet: {{success}} verifiziert, {{failure}} fehlgeschlagen und {{skipped}} übersprungen.",
+                "failure": "Atlas hat {{count}} geänderte Lernobjekt(e) verarbeitet: {{failure}} fehlgeschlagen und {{skipped}} übersprungen. Bitte prüfe die Laufdetails."
             }
         }
     }

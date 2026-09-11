@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "currency": "EUR",
+  "verifiedAt": "2026-09-10",
+  "usdPerEur": "1.1652",
+  "exchangeRateDate": "2026-09-09",
+  "exchangeRateSource": "https://www.ecb.europa.eu/stats/shared/pdf/eurofxref.pdf",
+  "serviceTier": "default",
+  "pricingScope": "Standard text model tokens via Chat Completions or Responses, including Luna cache writes at 1.25x uncached input. No regional processing or paid built-in tools. Requests exceeding 272000 input tokens are not measurable with this table.",
+  "models": {
+    "gpt-5.6-luna": {
+      "inputUsdPerMillion": "0.20",
+      "cachedInputUsdPerMillion": "0.02",
+      "outputUsdPerMillion": "1.20",
+      "maxOutputTokens": 128000,
+      "contextWindowTokens": 1050000,
+      "maxSupportedInputTokens": 272000,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+      "inputEurPerMillion": "0.1716443529007895640233436320",
+      "cachedInputEurPerMillion": "0.01716443529007895640233436320",
+      "outputEurPerMillion": "1.029866117404737384140061792",
+      "cacheWriteInputUsdPerMillion": "0.25",
+      "cacheWriteInputEurPerMillion": "0.2145554411259869550291795400",
+      "cacheWriteSource": "https://developers.openai.com/api/docs/guides/prompt-caching"
+    },
+    "gpt-5.4-mini": {
+      "inputUsdPerMillion": "0.75",
+      "cachedInputUsdPerMillion": "0.075",
+      "outputUsdPerMillion": "4.50",
+      "maxOutputTokens": 128000,
+      "contextWindowTokens": 400000,
+      "maxSupportedInputTokens": 272000,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+      "inputEurPerMillion": "0.6436663233779608650875386200",
+      "cachedInputEurPerMillion": "0.06436663233779608650875386200",
+      "outputEurPerMillion": "3.861997940267765190525231720"
+    },
+    "gpt-5.4-mini-2026-03-17": {
+      "inputUsdPerMillion": "0.75",
+      "cachedInputUsdPerMillion": "0.075",
+      "outputUsdPerMillion": "4.50",
+      "maxOutputTokens": 128000,
+      "contextWindowTokens": 400000,
+      "maxSupportedInputTokens": 272000,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+      "inputEurPerMillion": "0.6436663233779608650875386200",
+      "cachedInputEurPerMillion": "0.06436663233779608650875386200",
+      "outputEurPerMillion": "3.861997940267765190525231720",
+      "aliasOf": "gpt-5.4-mini"
+    }
+  }
+}

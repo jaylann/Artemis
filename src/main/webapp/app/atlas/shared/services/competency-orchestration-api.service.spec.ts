@@ -23,4 +23,19 @@ describe('CompetencyOrchestrationApiService', () => {
         req.flush(expected);
         expect(await call).toEqual(expected);
     });
+
+    it('should POST run for lecture unit', async () => {
+        const expected: CompetencyOrchestrationResultDTO = { status: CompetencyOrchestrationStatus.NoOp, summary: 'already correct' };
+        const call = service.runForLectureUnit(9);
+        const req = httpMock.expectOne({ method: 'POST', url: 'api/atlas/orchestrator/lecture-units/9/run' });
+        req.flush(expected);
+        expect(await call).toEqual(expected);
+    });
+
+    it('should GET orchestrator defaults', async () => {
+        const call = service.getDefaults();
+        const req = httpMock.expectOne({ method: 'GET', url: 'api/atlas/orchestrator/defaults' });
+        req.flush({ debounceWindowSeconds: 1800, maxDailyOrchestrations: 10 });
+        expect(await call).toEqual({ debounceWindowSeconds: 1800, maxDailyOrchestrations: 10 });
+    });
 });

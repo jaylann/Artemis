@@ -2,6 +2,9 @@ package de.tum.cit.aet.artemis.admin.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
@@ -9,7 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.metadata.ChatResponseMetadata;
+import org.springframework.ai.chat.model.ChatResponse;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import de.tum.cit.aet.artemis.admin.domain.LLMRequest;
 import de.tum.cit.aet.artemis.core.config.LLMModelCostConfiguration;
 import de.tum.cit.aet.artemis.core.test_repository.LLMTokenUsageRequestTestRepository;
@@ -97,6 +107,35 @@ class LLMTokenUsageServiceTest {
 
         assertThatThrownBy(() -> new LLMTokenUsageService(llmTokenUsageTraceRepository, llmTokenUsageRequestRepository, configuration)).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("gpt-5-mini").hasMessageContaining("gpt5-mini").hasMessageContaining("gpt5mini");
+    }
+
+    @Test
+    void trackChatResponseTokenUsage_withMissingResponseData_logsFailuresWithoutPersistence() {
+        Logger logger = (Logger) LoggerFactory.getLogger(LLMTokenUsageService.class);
+        ListAppender<ILoggingEvent> logAppender = new ListAppender<>();
+        logAppender.start();
+        logger.addAppender(logAppender);
+        try {
+            llmTokenUsageService.trackChatResponseTokenUsage(null, null, "NULL_RESPONSE", builder -> builder);
+
+            ChatResponse responseWithoutMetadata = mock(ChatResponse.class);
+            llmTokenUsageService.trackChatResponseTokenUsage(responseWithoutMetadata, null, "NO_METADATA", builder -> builder);
+
+            ChatResponseMetadata metadataWithoutUsage = mock(ChatResponseMetadata.class);
+            ChatResponse responseWithoutUsage = mock(ChatResponse.class);
+            when(responseWithoutUsage.getMetadata()).thenReturn(metadataWithoutUsage);
+            llmTokenUsageService.trackChatResponseTokenUsage(responseWithoutUsage, null, "NO_USAGE", builder -> builder);
+
+            assertThat(logAppender.list).filteredOn(event -> event.getLevel() == Level.WARN).extracting(ILoggingEvent::getFormattedMessage).contains(
+                    "Failed to store token usage for pipeline [NULL_RESPONSE]: chat response is missing.",
+                    "Failed to store token usage for pipeline [NO_METADATA]: response metadata is missing.",
+                    "Failed to store token usage for pipeline [NO_USAGE]: usage metadata is missing.");
+            verifyNoInteractions(llmTokenUsageTraceRepository, llmTokenUsageRequestRepository);
+        }
+        finally {
+            logger.detachAppender(logAppender);
+            logAppender.stop();
+        }
     }
 
     private static LLMModelCostConfiguration createCostConfiguration() {

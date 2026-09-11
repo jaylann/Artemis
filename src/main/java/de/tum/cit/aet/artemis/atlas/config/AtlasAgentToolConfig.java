@@ -10,11 +10,14 @@ import org.springframework.context.annotation.Lazy;
 
 import de.tum.cit.aet.artemis.atlas.service.AssignerToolsService;
 import de.tum.cit.aet.artemis.atlas.service.AtlasAgentToolsService;
+import de.tum.cit.aet.artemis.atlas.service.AtlasOrchestratorTerminalToolService;
+import de.tum.cit.aet.artemis.atlas.service.AtlasWorkerTerminalToolService;
 import de.tum.cit.aet.artemis.atlas.service.CompetencyExpertToolsService;
 import de.tum.cit.aet.artemis.atlas.service.CompetencyMappingToolsService;
 import de.tum.cit.aet.artemis.atlas.service.CreatorToolsService;
 import de.tum.cit.aet.artemis.atlas.service.EditorToolsService;
 import de.tum.cit.aet.artemis.atlas.service.ExerciseMappingToolsService;
+import de.tum.cit.aet.artemis.atlas.service.OrchestratorDelegationToolsService;
 import de.tum.cit.aet.artemis.atlas.service.OrchestratorPlanningToolsService;
 import de.tum.cit.aet.artemis.atlas.service.OrchestratorReadToolsService;
 
@@ -127,6 +130,27 @@ public class AtlasAgentToolConfig {
     @Lazy
     @Qualifier("orchestratorPlanningToolCallbackProvider")
     public AtlasToolSurface orchestratorPlanningToolCallbackProvider(OrchestratorPlanningToolsService service) {
+        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
+    }
+
+    @Bean
+    @Lazy
+    @Qualifier("workerTerminalToolCallbackProvider")
+    public AtlasToolSurface workerTerminalToolCallbackProvider(AtlasWorkerTerminalToolService service) {
+        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
+    }
+
+    @Bean
+    @Lazy
+    @Qualifier("orchestratorTerminalToolCallbackProvider")
+    public AtlasToolSurface orchestratorTerminalToolCallbackProvider(AtlasOrchestratorTerminalToolService service) {
+        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
+    }
+
+    @Bean
+    @Lazy
+    @Qualifier("orchestratorDelegationToolCallbackProvider")
+    public AtlasToolSurface orchestratorDelegationToolCallbackProvider(OrchestratorDelegationToolsService service) {
         return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
     }
 

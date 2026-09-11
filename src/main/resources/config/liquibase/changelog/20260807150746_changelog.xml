@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Provenance for competency data written by the Atlas competency orchestrator. The orchestrator
+         persists competencies and exercise links automatically, without the per-change instructor
+         approval the chat-based Atlas Agent requires, so agent-authored data would otherwise be
+         indistinguishable from hand-authored data.
+         - competency.generated_by_ai: set by the orchestrator's createCompetency tool.
+         - competency_exercise.generated_by_ai: set by assignExerciseToCompetency.
+         - competency_lecture_unit.generated_by_ai: added for symmetry (both link tables inherit the
+           column from the shared CompetencyLearningObjectLink mapped superclass); no orchestrator
+           tool writes lecture-unit links yet.
+         Defaulting existing rows to false is correct: everything predating the orchestrator was
+         authored by an instructor. -->
+    <changeSet id="20260807150746-01-add-generated-by-ai-provenance" author="lanfermann">
+        <addColumn tableName="competency">
+            <column name="generated_by_ai" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="competency_exercise">
+            <column name="generated_by_ai" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="competency_lecture_unit">
+            <column name="generated_by_ai" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -138,6 +138,10 @@ public class CreatorToolsService {
         Course course = courseOpt.get();
         Competency competency = new Competency(title.trim(), description == null ? "" : description.trim(), null, CourseCompetency.DEFAULT_MASTERY_THRESHOLD, parsedTaxonomy,
                 false);
+        // The orchestrator invented this competency; mark it before persisting so the instructor can
+        // tell it apart from their own. Survives createCompetencies only because Competency's copy
+        // constructor carries the flag — that path persists a copy, not this instance.
+        competency.setGeneratedByAi(true);
         try {
             competencyValidator.checkForCreation(competency);
         }

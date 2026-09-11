@@ -1569,7 +1569,6 @@ describe('Course Management Update Component Create', () => {
         expect(component.course.courseInformationSharingMessagingCodeOfConduct).toEqual(codeOfConduct);
     });
 });
-
 describe('Course Management Update Component Atlas Auto-Orchestration', () => {
     const validTimeZone = 'Europe/Berlin';
     let comp: CourseUpdateComponent;

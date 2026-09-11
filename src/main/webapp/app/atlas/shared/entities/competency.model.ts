@@ -88,6 +88,8 @@ export abstract class CourseCompetency extends BaseCompetency {
     courseProgress?: CourseCompetencyProgress;
     course?: Course;
     linkedCourseCompetency?: CourseCompetency;
+    /** Set by the server when the competency orchestrator created this competency rather than an instructor. Read-only: the server ignores it on inbound payloads. */
+    generatedByAi?: boolean;
 
     public type?: CourseCompetencyType;
 
@@ -109,6 +111,8 @@ export class Competency extends CourseCompetency {
 export class CompetencyLearningObjectLink {
     competency?: CourseCompetency;
     weight: number;
+    /** Set by the server when the competency orchestrator created this link rather than an instructor. Read-only: the server ignores it on inbound payloads. */
+    generatedByAi?: boolean;
 
     constructor(competency: CourseCompetency | undefined, weight: number) {
         this.competency = competency;

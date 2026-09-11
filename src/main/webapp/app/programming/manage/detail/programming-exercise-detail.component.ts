@@ -121,7 +121,6 @@ export class ProgrammingExerciseDetailComponent implements OnInit, OnDestroy {
 
     protected deimosDateRangeModal = viewChild.required<DeimosDateRangeModalComponent>('deimosDateRangeModal');
     protected deimosSubmitting = signal(false);
-
     protected readonly dayjs = dayjs;
     protected readonly ActionType = ActionType;
     protected readonly FeatureToggle = FeatureToggle;
@@ -725,13 +724,14 @@ export class ProgrammingExerciseDetailComponent implements OnInit, OnDestroy {
                     title: 'artemisApp.programmingExercise.timeline.complaintOnAutomaticAssessment',
                     data: { boolean: exercise.allowComplaintsForAutomaticAssessments },
                 },
+                { type: DetailType.Boolean, title: 'artemisApp.programmingExercise.timeline.manualFeedbackRequests', data: { boolean: exercise.allowFeedbackRequests } },
                 { type: DetailType.Boolean, title: 'artemisApp.programmingExercise.showTestNamesToStudents', data: { boolean: exercise.showTestNamesToStudents } },
                 {
                     type: DetailType.Boolean,
                     title: 'artemisApp.programmingExercise.timeline.includeTestsIntoExampleSolution',
                     data: { boolean: exercise.releaseTestsWithExampleSolution },
                 },
-
+                { type: DetailType.Boolean, title: 'artemisApp.exercise.feedbackSuggestionsEnabled', data: { boolean: !!exercise.feedbackSuggestionModule } },
                 { type: DetailType.Markdown, title: 'artemisApp.exercise.assessmentInstructions', data: { innerHtml: this.formattedGradingInstructions } },
                 exercise.gradingCriteria && {
                     type: DetailType.GradingCriteria,

@@ -149,7 +149,6 @@ describe('AtlasOrchestrationTriggerComponent', () => {
         // The catch path uses onError(), which addAlerts the underlying error message.
         expect(addAlertSpy).toHaveBeenCalledWith({ type: AlertType.DANGER, message: 'boom', disableTranslation: true });
     });
-
     it('should not call the API when the exercise has no id', async () => {
         const runSpy = vi.spyOn(apiService, 'runForExercise');
         fixture.componentRef.setInput('exercise', {} as Exercise);
@@ -157,6 +156,23 @@ describe('AtlasOrchestrationTriggerComponent', () => {
         await comp.triggerAtlasOrchestrator();
 
         expect(runSpy).not.toHaveBeenCalled();
+    });
+
+    it('should trigger a lecture-unit run when configured with a lectureUnitId', async () => {
+        fixture.componentRef.setInput('exercise', undefined);
+        fixture.componentRef.setInput('lectureUnitId', 55);
+        const runSpy = vi.spyOn(apiService, 'runForLectureUnit').mockResolvedValue({ status: CompetencyOrchestrationStatus.NoOp, summary: 'Already correct.' });
+
+        await comp.triggerAtlasOrchestrator();
+
+        expect(runSpy).toHaveBeenCalledWith(55);
+    });
+
+    it('should hide the text label for compact lecture-unit actions', () => {
+        fixture.componentRef.setInput('showLabel', false);
+        fixture.detectChanges();
+
+        expect(fixture.debugElement.query(By.css('button span'))).toBeNull();
     });
 
     it('should apply the provided buttonClass to the trigger button', () => {

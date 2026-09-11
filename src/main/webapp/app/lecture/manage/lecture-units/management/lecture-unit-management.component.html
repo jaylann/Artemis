@@ -170,6 +170,14 @@
                                     />
                                 </div>
                             }
+                            @if (lecture()!.isAtLeastInstructor && isOrchestrationAvailable(lectureUnit)) {
+                                <jhi-atlas-orchestration-trigger
+                                    class="flex-fill"
+                                    [lectureUnitId]="lectureUnit.id!"
+                                    [showLabel]="false"
+                                    [buttonClass]="'btn btn-primary btn-sm w-100'"
+                                />
+                            }
                         </div>
                         <!-- Row 3: Edit + Delete -->
                         <div class="d-flex gap-1 w-100">

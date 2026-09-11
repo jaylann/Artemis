@@ -639,7 +639,6 @@ export class CourseUpdateComponent implements OnInit {
     }
 
     /**
-    /**
      * Enable or disable test course
      */
     changeTestCourseEnabled() {

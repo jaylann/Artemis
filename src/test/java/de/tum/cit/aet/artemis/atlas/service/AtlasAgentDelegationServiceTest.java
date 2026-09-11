@@ -121,7 +121,7 @@ class AtlasAgentDelegationServiceTest {
 
         assertThat(response).isSameAs(expected);
         // No course-id breadcrumb is appended for the orchestrator — the prompt is passed verbatim.
-        assertThat(systemTextOf(promptCaptor.getValue())).isEqualTo("ORCHESTRATOR PROMPT");
+        assertThat(systemTextOf(promptCaptor.getValue())).startsWith("ORCHESTRATOR PROMPT").contains("Shared run budget: 0/256");
         // Orchestrator runs with chat memory OFF regardless of whether a ChatMemory bean exists.
         verify(chatMemory, never()).get(anyString());
         verify(chatMemory, never()).add(anyString(), anyList());

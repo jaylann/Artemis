@@ -43,7 +43,7 @@ class ContentChangeAccumulatorServiceTest {
     @BeforeEach
     void setUp() {
         clock = new MutableClock(Instant.parse("2026-04-24T12:00:00Z"));
-        AtlasOrchestratorProperties properties = new AtlasOrchestratorProperties("gpt-test", 1.0, "", DEBOUNCE_WINDOW_SECONDS, DAILY_CAP, 30000L, 10);
+        AtlasOrchestratorProperties properties = new AtlasOrchestratorProperties("gpt-test", 1.0, "", "gpt-test-worker", "high", DEBOUNCE_WINDOW_SECONDS, DAILY_CAP, 30000L, 10);
         courseConfigurationRepository = mock(CourseConfigurationRepository.class);
         // Default: every course resolves to the global defaults (no per-course override).
         lenient().when(courseConfigurationRepository.findAutoOrchestrationConfigByCourseId(anyLong()))
@@ -237,6 +237,19 @@ class ContentChangeAccumulatorServiceTest {
         clock.advanceSeconds(DEBOUNCE_WINDOW_SECONDS + 1);
         assertThat(service.listDueCourseIds()).doesNotContain(courseId);
         assertThat(service.claimDueBatch(courseId)).as("a flushed course has nothing to claim").isEmpty();
+    }
+
+    @Test
+    void claimDueBatch_drainsExerciseAndLectureUnitChangesTogether() {
+        service.record(1L, 10L);
+        service.recordLectureUnit(1L, 30L);
+        clock.advanceSeconds(DEBOUNCE_WINDOW_SECONDS + 1);
+
+        BatchClaim claim = service.claimDueBatch(1L).orElseThrow();
+
+        assertThat(claim.exerciseIds()).containsExactly(10L);
+        assertThat(claim.lectureUnitIds()).containsExactly(30L);
+        assertThat(service.claimDueBatch(1L)).isEmpty();
     }
 
     /**

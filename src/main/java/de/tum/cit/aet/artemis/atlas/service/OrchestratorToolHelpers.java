@@ -4,6 +4,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.ai.chat.model.ToolContext;
@@ -16,6 +20,8 @@ import de.tum.cit.aet.artemis.atlas.domain.competency.CourseCompetency;
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
 import de.tum.cit.aet.artemis.course.domain.Course;
 import de.tum.cit.aet.artemis.exercise.domain.Exercise;
+import de.tum.cit.aet.artemis.lecture.domain.Lecture;
+import de.tum.cit.aet.artemis.lecture.domain.LectureUnit;
 
 /**
  * Static utilities shared by every orchestrator tool service ({@link OrchestratorReadToolsService},
@@ -78,8 +84,154 @@ public final class OrchestratorToolHelpers {
         if (toolContext == null || toolContext.getContext() == null) {
             return null;
         }
+        markWorkerActivity(toolContext);
         Object value = toolContext.getContext().get(OrchestratorToolContextKeys.COURSE_ID_KEY);
         return value instanceof Number number ? number.longValue() : null;
+    }
+
+    static void markWorkerRead(@Nullable ToolContext toolContext) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return;
+        }
+        Object value = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY);
+        if (value instanceof AtomicInteger count) {
+            count.incrementAndGet();
+        }
+    }
+
+    /**
+     * Advances worker activity state and invalidates an already accepted terminal result. The
+     * activity sequence is only present on nested worker contexts, so ordinary main-agent calls
+     * remain unaffected.
+     */
+    static void markWorkerActivity(@Nullable ToolContext toolContext) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return;
+        }
+        AtomicLong activitySequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY);
+        AtomicLong terminalSequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY);
+        if (activitySequence == null || terminalSequence == null) {
+            return;
+        }
+        synchronized (workerStateLock(toolContext)) {
+            long currentSequence = activitySequence.incrementAndGet();
+            if (terminalSequence.get() > 0 && currentSequence > terminalSequence.get()) {
+                invalidateWorkerCompletion(toolContext);
+            }
+        }
+    }
+
+    /**
+     * Records a worker terminal-tool invocation. A second terminal invocation after an accepted
+     * result is rejected, and any later activity leaves the completion holder empty so the parent
+     * returns a deterministic failed worker result.
+     *
+     * @return the activity sequence for the invocation, or {@code -1} when a prior terminal result
+     *         was already accepted or invalidated
+     */
+    static long markWorkerTerminalActivity(@Nullable ToolContext toolContext) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return -1;
+        }
+        AtomicLong activitySequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY);
+        AtomicLong terminalSequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY);
+        AtomicBoolean invalidated = atomicBoolean(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
+        if (activitySequence == null || terminalSequence == null || invalidated == null) {
+            return 0;
+        }
+        synchronized (workerStateLock(toolContext)) {
+            long currentSequence = activitySequence.incrementAndGet();
+            if (terminalSequence.get() > 0 || invalidated.get()) {
+                if (terminalSequence.get() > 0) {
+                    invalidateWorkerCompletion(toolContext);
+                }
+                return -1;
+            }
+            return currentSequence;
+        }
+    }
+
+    /** Accepts the terminal result at {@code sequence}; returns false if another result won a race. */
+    static boolean acceptWorkerCompletion(@Nullable ToolContext toolContext, long sequence) {
+        if (toolContext == null || toolContext.getContext() == null || sequence < 0) {
+            return false;
+        }
+        AtomicLong terminalSequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY);
+        AtomicBoolean invalidated = atomicBoolean(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
+        if (terminalSequence == null || invalidated == null || invalidated.get()) {
+            return sequence == 0;
+        }
+        AtomicLong activitySequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY);
+        synchronized (workerStateLock(toolContext)) {
+            if (activitySequence == null || activitySequence.get() != sequence || invalidated.get()) {
+                return false;
+            }
+            return terminalSequence.compareAndSet(0, sequence);
+        }
+    }
+
+    static boolean workerCompletionInvalidated(@Nullable Map<String, Object> context) {
+        if (context == null) {
+            return false;
+        }
+        Object value = context.get(OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
+        return value instanceof AtomicBoolean flag && flag.get();
+    }
+
+    private static void invalidateWorkerCompletion(ToolContext toolContext) {
+        AtomicBoolean invalidated = atomicBoolean(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
+        if (invalidated != null) {
+            invalidated.set(true);
+        }
+        Object value = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY);
+        if (value instanceof AtomicReference<?> reference) {
+            reference.set(null);
+        }
+    }
+
+    private static Object workerStateLock(ToolContext toolContext) {
+        Object lock = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_STATE_LOCK_KEY);
+        return lock == null ? toolContext.getContext() : lock;
+    }
+
+    static void markIndexRead(@Nullable ToolContext toolContext) {
+        AtomicLong sequence = atomicLong(toolContext, OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY);
+        AtomicLong lastRead = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_INDEX_READ_SEQUENCE_KEY);
+        if (sequence != null && lastRead != null) {
+            lastRead.set(sequence.incrementAndGet());
+        }
+    }
+
+    static void markDelegation(@Nullable ToolContext toolContext) {
+        AtomicLong sequence = atomicLong(toolContext, OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY);
+        AtomicLong lastDelegation = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_DELEGATION_SEQUENCE_KEY);
+        if (sequence != null && lastDelegation != null) {
+            lastDelegation.set(sequence.incrementAndGet());
+        }
+    }
+
+    static boolean hasFreshVerificationRead(@Nullable ToolContext toolContext) {
+        AtomicLong lastRead = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_INDEX_READ_SEQUENCE_KEY);
+        AtomicLong lastDelegation = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_DELEGATION_SEQUENCE_KEY);
+        return lastRead != null && lastDelegation != null && lastRead.get() > lastDelegation.get();
+    }
+
+    @Nullable
+    private static AtomicLong atomicLong(@Nullable ToolContext toolContext, String key) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return null;
+        }
+        Object value = toolContext.getContext().get(key);
+        return value instanceof AtomicLong holder ? holder : null;
+    }
+
+    @Nullable
+    private static AtomicBoolean atomicBoolean(@Nullable ToolContext toolContext, String key) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return null;
+        }
+        Object value = toolContext.getContext().get(key);
+        return value instanceof AtomicBoolean holder ? holder : null;
     }
 
     /**
@@ -151,6 +303,22 @@ public final class OrchestratorToolHelpers {
         }
         Course course = exercise.getCourseViaExerciseGroupOrCourseMember();
         return course != null && Objects.equals(courseId, course.getId());
+    }
+
+    /**
+     * Analogue of {@link #exerciseBelongsToCourse(Exercise, long)} for lecture units. A lecture unit
+     * is owned by a course through its lecture ({@code lectureUnit.lecture.course}); the check refuses
+     * a unit with no lecture or a lecture with no course so a tool call cannot walk a broken chain or
+     * cross course boundaries via a forged id. Callers must load the lecture (and its course) eagerly —
+     * the tool path runs with no open session.
+     *
+     * @param lectureUnit the lecture unit to check
+     * @param courseId    the expected course id
+     * @return {@code true} if the lecture unit belongs to the course
+     */
+    static boolean lectureUnitBelongsToCourse(LectureUnit lectureUnit, long courseId) {
+        Lecture lecture = lectureUnit.getLecture();
+        return lecture != null && lecture.getCourse() != null && Objects.equals(courseId, lecture.getCourse().getId());
     }
 
     /**

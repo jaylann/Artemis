@@ -1,0 +1,2 @@
+# Preserve the archived fixture-report template bytes across checkouts.
+formal-results.csv -text

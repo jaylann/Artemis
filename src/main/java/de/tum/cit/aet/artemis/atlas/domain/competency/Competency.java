@@ -19,6 +19,10 @@ public class Competency extends CourseCompetency {
     public Competency(CourseCompetency courseCompetency) {
         super(courseCompetency.getTitle(), courseCompetency.getDescription(), courseCompetency.getSoftDueDate(), courseCompetency.getMasteryThreshold(),
                 courseCompetency.getTaxonomy(), courseCompetency.isOptional());
+        // Provenance must survive the copy: CourseCompetencyService#createCourseCompetencies persists
+        // the result of this constructor rather than the instance it was handed, so dropping the flag
+        // here would silently discard the orchestrator's authorship on every created competency.
+        setGeneratedByAi(courseCompetency.isGeneratedByAi());
     }
 
     public Competency() {

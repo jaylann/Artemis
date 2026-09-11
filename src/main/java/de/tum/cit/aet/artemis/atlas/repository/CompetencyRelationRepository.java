@@ -23,6 +23,8 @@ import de.tum.cit.aet.artemis.core.repository.base.ArtemisJpaRepository;
 @Repository
 public interface CompetencyRelationRepository extends ArtemisJpaRepository<CompetencyRelation, Long> {
 
+    long countByHeadCompetencyIdOrTailCompetencyId(long headCompetencyId, long tailCompetencyId);
+
     @Transactional // ok because of delete
     @Modifying
     @Query("""

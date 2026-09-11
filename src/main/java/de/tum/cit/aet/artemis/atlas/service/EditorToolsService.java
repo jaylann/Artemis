@@ -37,6 +37,7 @@ import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyTaxonomy;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CourseCompetency;
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
 import de.tum.cit.aet.artemis.atlas.dto.atlasml.SaveCompetencyRequestDTO.OperationTypeDTO;
+import de.tum.cit.aet.artemis.atlas.repository.CompetencyRelationRepository;
 import de.tum.cit.aet.artemis.atlas.repository.CourseCompetencyRepository;
 import de.tum.cit.aet.artemis.atlas.service.competency.CompetencyAtlasMLNotificationService;
 import de.tum.cit.aet.artemis.atlas.service.competency.CompetencyValidationService;
@@ -71,6 +72,8 @@ public class EditorToolsService {
 
     private final CompetencyAtlasMLNotificationService atlasMLNotificationService;
 
+    private final CompetencyRelationRepository competencyRelationRepository;
+
     /**
      * Creates the editor tools service.
      *
@@ -81,12 +84,14 @@ public class EditorToolsService {
      * @param atlasMLNotificationService notifies the AtlasML service of competency changes
      */
     public EditorToolsService(ObjectMapper objectMapper, CourseCompetencyRepository courseCompetencyRepository, CourseCompetencyService courseCompetencyService,
-            CompetencyValidationService competencyValidator, CompetencyAtlasMLNotificationService atlasMLNotificationService) {
+            CompetencyValidationService competencyValidator, CompetencyAtlasMLNotificationService atlasMLNotificationService,
+            CompetencyRelationRepository competencyRelationRepository) {
         this.objectMapper = objectMapper;
         this.courseCompetencyRepository = courseCompetencyRepository;
         this.courseCompetencyService = courseCompetencyService;
         this.competencyValidator = competencyValidator;
         this.atlasMLNotificationService = atlasMLNotificationService;
+        this.competencyRelationRepository = competencyRelationRepository;
     }
 
     /**
@@ -230,6 +235,12 @@ public class EditorToolsService {
         CourseCompetency competency = competencyOpt.get();
         if (!belongsToCourse(competency, courseId)) {
             return errorJson(objectMapper, "Competency " + competencyId + " does not belong to the current course.");
+        }
+        if (!competency.getExerciseLinks().isEmpty() || !competency.getLectureUnitLinks().isEmpty()) {
+            return errorJson(objectMapper, "Competency " + competencyId + " still has linked learning objects. Reassign or remove every link before deletion.");
+        }
+        if (competencyRelationRepository.countByHeadCompetencyIdOrTailCompetencyId(competencyId, competencyId) > 0) {
+            return errorJson(objectMapper, "Competency " + competencyId + " still has competency relations. Remove them before deletion.");
         }
 
         String title = competency.getTitle();

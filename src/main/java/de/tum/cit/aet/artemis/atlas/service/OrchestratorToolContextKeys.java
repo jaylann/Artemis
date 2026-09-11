@@ -3,9 +3,14 @@ package de.tum.cit.aet.artemis.atlas.service;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
+import de.tum.cit.aet.artemis.atlas.dto.OrchestrationCompletionDTO;
+import de.tum.cit.aet.artemis.atlas.dto.WorkerCompletionDTO;
 
 /**
  * Keys under which the orchestrator tool services stash mutable state in the Spring AI
@@ -34,6 +39,37 @@ public final class OrchestratorToolContextKeys {
      */
     public static final String APPLIED_ACTIONS_KEY = "appliedActions";
 
+    /** Tool-context key carrying the main orchestration terminal state. */
+    public static final String ORCHESTRATION_COMPLETION_KEY = "orchestrationCompletion";
+
+    /** Tool-context key carrying the current worker terminal state. */
+    public static final String WORKER_COMPLETION_KEY = "workerCompletion";
+
+    /** Optional learning-object id used to attribute all nested model calls to one run. */
+    public static final String LEARNING_OBJECT_ID_KEY = "learningObjectId";
+
+    public static final String TOOL_SEQUENCE_KEY = "toolSequence";
+
+    public static final String LAST_INDEX_READ_SEQUENCE_KEY = "lastIndexReadSequence";
+
+    public static final String LAST_DELEGATION_SEQUENCE_KEY = "lastDelegationSequence";
+
+    public static final String WORKER_READ_COUNT_KEY = "workerReadCount";
+
+    public static final String WORKER_ACTION_START_KEY = "workerActionStart";
+
+    /** Monotonic sequence for every worker read, write, or terminal-tool invocation. */
+    public static final String WORKER_ACTIVITY_SEQUENCE_KEY = "workerActivitySequence";
+
+    /** Sequence at which the worker's terminal result was accepted. Zero means none was accepted. */
+    public static final String WORKER_TERMINAL_SEQUENCE_KEY = "workerTerminalSequence";
+
+    /** Set once a terminal result has been invalidated by any later worker activity. */
+    public static final String WORKER_TERMINAL_INVALIDATED_KEY = "workerTerminalInvalidated";
+
+    /** Shared lock coordinating worker activity and terminal acceptance under parallel tool calls. */
+    public static final String WORKER_STATE_LOCK_KEY = "workerStateLock";
+
     /**
      * Hard cap on the number of write tool calls per orchestrator run, shared across every write
      * tool ({@code createCompetency}, {@code editCompetency}, {@code assignExerciseToCompetency},
@@ -41,7 +77,7 @@ public final class OrchestratorToolContextKeys {
      * in the system prompt; enforced through {@link AppliedActionsBuffer#tryReserveSlot(int)} so a
      * hallucinating model cannot spend more than this many writes regardless of what the prompt says.
      */
-    public static final int MAX_WRITE_CALLS = 16;
+    public static final int MAX_WRITE_CALLS = AtlasToolCallBudget.LIMIT;
 
     private OrchestratorToolContextKeys() {
     }
@@ -92,5 +128,21 @@ public final class OrchestratorToolContextKeys {
                 }
             }
         }
+    }
+
+    public static AtomicReference<WorkerCompletionDTO> newWorkerCompletionHolder() {
+        return new AtomicReference<>();
+    }
+
+    public static AtomicReference<OrchestrationCompletionDTO> newOrchestrationCompletionHolder() {
+        return new AtomicReference<>();
+    }
+
+    public static AtomicLong newSequenceHolder() {
+        return new AtomicLong();
+    }
+
+    public static AtomicBoolean newWorkerTerminalInvalidatedHolder() {
+        return new AtomicBoolean();
     }
 }

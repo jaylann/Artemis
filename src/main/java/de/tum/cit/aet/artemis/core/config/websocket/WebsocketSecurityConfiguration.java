@@ -21,11 +21,17 @@ import de.tum.cit.aet.artemis.core.security.Role;
 public class WebsocketSecurityConfiguration {
 
     @Bean
-    AuthorizationManager<Message<?>> authorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
+    AuthorizationManager<Message<?>> authorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages,
+            CourseInstructorTopicAuthorizationManager courseInstructorTopicAuthorizationManager) {
         // @formatter:off
         messages
             .nullDestMatcher().authenticated()
             .simpDestMatchers("/topic").hasAuthority(Role.ADMIN.getAuthority())
+            // Automatic-orchestration summaries belong to course instructors. The exact matcher
+            // exposes courseId to the authorization manager; the following catch-all prevents
+            // malformed or extended paths from reaching the broader authenticated-topic rule.
+            .simpSubscribeDestMatchers("/topic/atlas/orchestrator/{courseId}").access(courseInstructorTopicAuthorizationManager)
+            .simpSubscribeDestMatchers("/topic/atlas/orchestrator", "/topic/atlas/orchestrator/**").denyAll()
             // matches any destination that starts with /topic/
             // (i.e. cannot send messages directly to /topic/)
             // (i.e. cannot subscribe to /topic/messages/* to get messages sent to

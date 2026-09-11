@@ -179,7 +179,6 @@ public class CourseUpdateResource {
         boolean oldAutoOrchestratorEnabled = existingCourse.getAutoOrchestratorEnabled();
         String oldCodeOfConduct = existingCourse.getCourseInformationSharingMessagingCodeOfConduct();
         boolean oldGradingFeedbackEnabled = existingCourse.getAthenaConfig() != null && existingCourse.getAthenaConfig().isGradingFeedbackEnabled();
-
         // Apply DTO values to the existing course entity - this preserves all relationships
         courseUpdateDTO.applyTo(existingCourse);
         existingCourse.setId(courseId); // Ensure the ID is correct

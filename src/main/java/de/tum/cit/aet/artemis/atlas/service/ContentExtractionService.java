@@ -29,6 +29,11 @@ import de.tum.cit.aet.artemis.atlas.dto.FlavorStripEditsDTO;
 import de.tum.cit.aet.artemis.atlas.dto.FlavorStripEditsDTO.EditDTO;
 import de.tum.cit.aet.artemis.exercise.domain.Exercise;
 import de.tum.cit.aet.artemis.fileupload.domain.FileUploadExercise;
+import de.tum.cit.aet.artemis.lecture.domain.AttachmentVideoUnit;
+import de.tum.cit.aet.artemis.lecture.domain.ExerciseUnit;
+import de.tum.cit.aet.artemis.lecture.domain.LectureUnit;
+import de.tum.cit.aet.artemis.lecture.domain.OnlineUnit;
+import de.tum.cit.aet.artemis.lecture.domain.TextUnit;
 import de.tum.cit.aet.artemis.modeling.domain.ModelingExercise;
 import de.tum.cit.aet.artemis.programming.domain.ProgrammingExercise;
 import de.tum.cit.aet.artemis.quiz.domain.AnswerOption;
@@ -48,7 +53,9 @@ import de.tum.cit.aet.artemis.text.domain.TextExercise;
 /**
  * Extracts learning-relevant content from {@link LearningObject}s (exercises and lecture units)
  * into {@link ExtractedContentDTO}s for downstream LLM consumption. Supports all exercise types
- * (programming, text, modeling, file upload, quiz); lecture unit types are not yet supported.
+ * (programming, text, modeling, file upload, quiz) and the orchestratable lecture-unit types
+ * ({@link TextUnit}, {@link OnlineUnit}, {@link AttachmentVideoUnit}); {@link ExerciseUnit} is
+ * rejected because it is never orchestrated on its own — its exercise is orchestrated directly.
  * <p>
  * Text, modeling and file-upload exercises carry a prose problem statement (flavor-stripped) plus
  * their example/sample solution; quizzes have no problem statement, so their content is assembled
@@ -129,6 +136,12 @@ public class ContentExtractionService {
             case ModelingExercise modelingExercise -> extractFromModelingExercise(modelingExercise, stripFlavorText);
             case FileUploadExercise fileUploadExercise -> extractFromFileUploadExercise(fileUploadExercise, stripFlavorText);
             case QuizExercise quizExercise -> extractFromQuizExercise(quizExercise);
+            case TextUnit textUnit -> extractFromTextUnit(textUnit, stripFlavorText);
+            case OnlineUnit onlineUnit -> extractFromOnlineUnit(onlineUnit);
+            case AttachmentVideoUnit attachmentVideoUnit -> extractFromAttachmentVideoUnit(attachmentVideoUnit);
+            // An ExerciseUnit is a thin pointer to an exercise that is orchestrated directly; it carries no
+            // learning text of its own and CourseCompetency.prePersistOrUpdate silently strips any link to it.
+            case ExerciseUnit _ -> throw new IllegalArgumentException("ExerciseUnit is never orchestrated");
             default -> throw new IllegalArgumentException("Unsupported learning object type: " + learningObject.getClass().getSimpleName());
         };
     }
@@ -167,7 +180,11 @@ public class ContentExtractionService {
             String edited = applyEdits(rawText, parsedEdits.edits());
             // If no edit span actually matched, the text is unchanged: return it byte-identical rather than
             // running whitespace normalization over content the model never targeted.
-            return edited.equals(rawText) ? rawText : normalizeWhitespace(edited);
+            if (edited.equals(rawText)) {
+                return rawText;
+            }
+            String normalized = normalizeWhitespace(edited);
+            return normalized.isBlank() ? rawText : normalized;
         }
         catch (Exception e) {
             log.warn("Flavor-text stripping failed; falling back to raw text", e);
@@ -192,11 +209,10 @@ public class ContentExtractionService {
     }
 
     /**
-     * Apply the given SEARCH/REPLACE edits to {@code rawText} in order. For each edit, the first
-     * occurrence of {@code edit.search()} is replaced with {@code edit.replace()} via
-     * {@link #findSpan(String, String)} (exact match, then a whitespace-tolerant fallback). Edits
-     * whose {@code search} cannot be located are skipped (logged at DEBUG) so a single off-target
-     * span does not poison the whole strip.
+     * Apply the given SEARCH/REPLACE edits to {@code rawText} in order. Each edit must identify
+     * exactly one span via {@link #findUniqueSpan(String, String)} (exact match, then a
+     * whitespace-tolerant fallback). Missing or ambiguous spans are skipped so generated text can
+     * never choose arbitrarily between repeated passages.
      * <p>
      * The prompt contract only permits {@code replace} to be empty (pure deletion) or a single
      * grammatical joiner character. To enforce the byte-identical guarantee server-side, edits
@@ -214,9 +230,9 @@ public class ContentExtractionService {
                 log.debug("Skipping flavor-strip edit; replacement exceeds the allowed minimal value: {}", replacement);
                 continue;
             }
-            int[] span = findSpan(working, edit.search());
+            int[] span = findUniqueSpan(working, edit.search());
             if (span == null) {
-                log.debug("Skipping flavor-strip edit; search span not found in working text: {}", edit.search());
+                log.debug("Skipping flavor-strip edit; search span is missing or ambiguous in working text: {}", edit.search());
                 continue;
             }
             working = working.substring(0, span[0]) + replacement + working.substring(span[1]);
@@ -225,21 +241,17 @@ public class ContentExtractionService {
     }
 
     /**
-     * Locate the {@code search} span in {@code working}. First tries an exact literal match; if that
-     * fails, falls back to a whitespace-tolerant match that ignores leading/trailing whitespace and
+     * Locate the {@code search} span in {@code working}. An exact literal match is preferred for its
+     * byte-accurate offsets, but the method also counts whitespace-equivalent occurrences before
+     * accepting it. Otherwise, a whitespace-tolerant match ignores leading/trailing whitespace and
      * treats any internal whitespace run as equivalent, while still requiring every non-whitespace
      * character to match exactly. This lets weaker models — whose search spans often differ from the
      * source only in whitespace (extra indentation, single vs. double spaces) — still land their
-     * deletions, without ever matching a span whose visible content differs (e.g. a paraphrased word),
-     * so kept content stays byte-identical.
+     * deletions without choosing arbitrarily between visually equivalent occurrences.
      *
      * @return the {@code [start, end)} offsets of the matched span, or {@code null} if not found
      */
-    private static int[] findSpan(String working, String search) {
-        int exact = working.indexOf(search);
-        if (exact >= 0) {
-            return new int[] { exact, exact + search.length() };
-        }
+    private static int[] findUniqueSpan(String working, String search) {
         String trimmed = search.strip();
         if (trimmed.isEmpty()) {
             return null;
@@ -256,7 +268,19 @@ public class ContentExtractionService {
             regex.append(Pattern.quote(tokens[i]));
         }
         Matcher matcher = Pattern.compile(regex.toString()).matcher(working);
-        return matcher.find() ? new int[] { matcher.start(), matcher.end() } : null;
+        if (!matcher.find()) {
+            return null;
+        }
+        int start = matcher.start();
+        int end = matcher.end();
+        if (matcher.find()) {
+            return null;
+        }
+        int exact = working.indexOf(search);
+        if (exact >= 0) {
+            return working.indexOf(search, exact + 1) < 0 ? new int[] { exact, exact + search.length() } : null;
+        }
+        return new int[] { start, end };
     }
 
     /**
@@ -327,6 +351,57 @@ public class ContentExtractionService {
         Map<String, String> metadata = baseMetadata(source);
         metadata.put("questionCount", Integer.toString(questions.size()));
         return new ExtractedContentDTO(title, renderQuizQuestions(questions), metadata);
+    }
+
+    /**
+     * Extracts a {@link TextUnit}: the unit name is the title and its prose {@code content} is the learning
+     * text, flavor-stripped like a programming problem statement (it is narrative markdown, the one lecture-unit
+     * body the strip pass targets). A null/blank content collapses to an empty learning text.
+     */
+    private ExtractedContentDTO extractFromTextUnit(TextUnit unit, boolean applyFlavorStrip) {
+        String title = Objects.requireNonNullElse(unit.getName(), "");
+        String raw = Objects.requireNonNullElse(unit.getContent(), "");
+        String learningText = applyFlavorStrip ? stripFlavorText(raw) : raw;
+        return new ExtractedContentDTO(title, learningText, lectureUnitMetadata(unit));
+    }
+
+    /**
+     * Extracts an {@link OnlineUnit}: the unit name is the title and its {@code description} is the learning
+     * text. The description is a short instructor blurb, not narrative prose, so it is NOT flavor-stripped
+     * (that would spend an LLM round for no benefit). The external {@code source} URL is recorded in metadata
+     * so the orchestrator can see what the unit links to.
+     */
+    private ExtractedContentDTO extractFromOnlineUnit(OnlineUnit unit) {
+        String title = Objects.requireNonNullElse(unit.getName(), "");
+        String learningText = Objects.requireNonNullElse(unit.getDescription(), "");
+        Map<String, String> metadata = lectureUnitMetadata(unit);
+        if (unit.getSource() != null && !unit.getSource().isBlank()) {
+            metadata.put("source", unit.getSource().strip());
+        }
+        return new ExtractedContentDTO(title, learningText, metadata);
+    }
+
+    /**
+     * Extracts an {@link AttachmentVideoUnit}: the unit name is the title and its {@code description} is the
+     * learning text (not flavor-stripped — it is a short blurb, and the real content lives in the attached
+     * file/video which is not text-extractable here). A blank description yields an empty learning text; the
+     * orchestrator treats such a file-only unit as having no learning text and skips it.
+     */
+    private ExtractedContentDTO extractFromAttachmentVideoUnit(AttachmentVideoUnit unit) {
+        String title = Objects.requireNonNullElse(unit.getName(), "");
+        String learningText = Objects.requireNonNullElse(unit.getDescription(), "");
+        return new ExtractedContentDTO(title, learningText, lectureUnitMetadata(unit));
+    }
+
+    /**
+     * Base metadata every lecture unit carries: the stable {@code lectureUnitType} discriminator (from
+     * {@link LectureUnit#getType()}) so downstream consumers can distinguish unit kinds without leaking Java
+     * class names. A {@link LinkedHashMap} preserves insertion order for deterministic JSON serialization.
+     */
+    private static Map<String, String> lectureUnitMetadata(LectureUnit unit) {
+        Map<String, String> metadata = new LinkedHashMap<>();
+        metadata.put("lectureUnitType", unit.getType());
+        return metadata;
     }
 
     /**

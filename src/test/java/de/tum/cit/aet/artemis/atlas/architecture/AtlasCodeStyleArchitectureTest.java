@@ -11,6 +11,7 @@ class AtlasCodeStyleArchitectureTest extends AbstractModuleCodeStyleTest {
 
     @Override
     protected int dtoNameEndingThreshold() {
-        return 6;
+        // Includes LearningObjectOutcomeDTO.ObjectType and Status, which are enums rather than transport records.
+        return 8;
     }
 }

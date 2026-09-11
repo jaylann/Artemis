@@ -124,6 +124,45 @@ class ContentExtractionServiceFlavorStripTest {
     }
 
     @Test
+    void stripFlavorText_ambiguousExactSpan_returnsRaw() {
+        stubLlm(new FlavorStripEditsDTO(List.of(new FlavorStripEditsDTO.EditDTO("ambiguous", "Repeated flavor.", ""))));
+        String raw = "Repeated flavor. Keep the constraint. Repeated flavor.";
+
+        assertThat(service.stripFlavorText(raw)).isEqualTo(raw);
+    }
+
+    @Test
+    void stripFlavorText_ambiguousWhitespaceTolerantSpan_returnsRaw() {
+        stubLlm(new FlavorStripEditsDTO(List.of(new FlavorStripEditsDTO.EditDTO("ambiguous", "Repeated  flavor.", ""))));
+        String raw = "Repeated flavor. Keep the constraint. Repeated\nflavor.";
+
+        assertThat(service.stripFlavorText(raw)).isEqualTo(raw);
+    }
+
+    @Test
+    void stripFlavorText_oneExactAndOneWhitespaceEquivalentSpan_returnsRaw() {
+        stubLlm(new FlavorStripEditsDTO(List.of(new FlavorStripEditsDTO.EditDTO("ambiguous", "Repeated flavor.", ""))));
+        String raw = "Repeated flavor. Keep the constraint. Repeated\nflavor.";
+
+        assertThat(service.stripFlavorText(raw)).isEqualTo(raw);
+    }
+
+    @Test
+    void stripFlavorText_wholeContentDeletion_returnsRaw() {
+        stubLlm(new FlavorStripEditsDTO(List.of(new FlavorStripEditsDTO.EditDTO("unsafe deletion", "Required task statement.", ""))));
+
+        assertThat(service.stripFlavorText("Required task statement.")).isEqualTo("Required task statement.");
+    }
+
+    @Test
+    void stripFlavorText_deletionLeavingOnlyWhitespace_returnsRaw() {
+        stubLlm(new FlavorStripEditsDTO(List.of(new FlavorStripEditsDTO.EditDTO("unsafe deletion", "Required task statement.", ""))));
+        String raw = " \nRequired task statement.\n ";
+
+        assertThat(service.stripFlavorText(raw)).isEqualTo(raw);
+    }
+
+    @Test
     void stripFlavorText_normalizesWhitespaceAfterActualEdit() {
         stubLlm(new FlavorStripEditsDTO(List.of(new FlavorStripEditsDTO.EditDTO("remove Alice", "Alice.", ""))));
 
