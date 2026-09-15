@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-15",
+  "heterogeneousAuditChecks": 384,
+  "baselineAuditChecks": 344,
+  "analysisTests": 9,
+  "harnessTests": 46,
+  "javaTests": 26,
+  "compiledDtoExtractionCases": 144,
+  "freshCompilation": "passed",
+  "cleanOfflineOutputsByteIdentical": 10,
+  "networkDeniedDuringReproduction": true,
+  "paidInvocationsDispatched": 0,
+  "remoteArchivePublication": "Explicitly authorized on 2026-09-15; remote verification recorded in thesis archive"
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "pausedAt": "2026-09-14T19:18:48.933773+00:00",
+    "resumeRequestedAt": "2026-09-14T20:56:10.086333+00:00",
+    "afterObservation": "r08-bootstrap-s1",
+    "beforeObservation": "r08-bootstrap-s2",
+    "completedAtPause": 67,
+    "remainingAtResume": 23,
+    "method": "SIGCONT of the same suspended processes",
+    "pids": {
+      "driver": 43334,
+      "parent": 39196,
+      "coordinator": 36271
+    },
+    "sourceRuntimeEvidenceAndDatabaseVerified": true,
+    "noReplay": true,
+    "limitation": "Repetition-8 bootstrap spans this user-requested pause; provider cache expiry may affect subsequent measured costs.",
+    "resumedAt": "2026-09-14T20:56:10.090373+00:00",
+    "pauseDurationSeconds": 5841.1566
+  }
+]

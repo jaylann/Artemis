@@ -1,0 +1,23 @@
+{
+  "campaignId": "atlas-logos-formal-20260911-cap256-v1",
+  "publishedAt": "2026-09-11T20:08:42.066721+00:00",
+  "repository": "https://github.com/jaylann/Artemis",
+  "branch": "feat/atlas-benchmark-cap256-20260911",
+  "commit": "68f8023db3126c3ea9c9e8b3bf75231118525e15",
+  "commitUrl": "https://github.com/jaylann/Artemis/commit/68f8023db3126c3ea9c9e8b3bf75231118525e15",
+  "remoteCommitVerified": true,
+  "archivedAfterExecution": true,
+  "originalExecutionBaseCommit": "3422402470fe63e055f7f7246ad6b8547a99fb9e",
+  "campaignCodeSha256": "134ed13aca8ac75c01df47aaf0ff51c562b50e94dadd8b4b6abc4432bf5508c9",
+  "all135PreparedSourceHashesMatchCommit": true,
+  "originalEvidenceHashesUnchanged": true,
+  "sourceWorktreeClean": true,
+  "applicationTestsRerun": false,
+  "paidCallsMade": false,
+  "publicationAdditions": [
+    "docker/atlas-logos-benchmark/ARCHIVE.md",
+    "docker/atlas-logos-benchmark/.gitattributes"
+  ],
+  "otherWorktrees": "Original checkout tracked diff and staged index hashes matched pre-publication values. PR worktree tracked diff changed during publication; this task issued no commands mutating that worktree.",
+  "evidencePublication": "Only checksums published in ARCHIVE.md; raw empirical evidence retained locally."
+}

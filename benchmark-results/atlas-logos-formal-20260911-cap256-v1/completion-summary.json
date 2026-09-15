@@ -1,0 +1,31 @@
+{
+  "campaignId": "atlas-logos-formal-20260911-cap256-v1",
+  "completed": 80,
+  "primary": 60,
+  "continuations": 20,
+  "failed": 0,
+  "partial": 0,
+  "interrupted": 0,
+  "unmeasured": 0,
+  "providerAttempts": 2884,
+  "costEur": "0.9784419584620665980089255063",
+  "maximumInvocationCostEur": "0.02444529694473051836594576040",
+  "criterionEur": "0.50",
+  "criterion": "pass",
+  "unknownCurrentCampaignUsage": 0,
+  "unresolvedCurrentCampaignReservationsEur": "0",
+  "priorCampaignUnknownHoldsEur": "0.77804883281840037",
+  "remainingFormalDispatchAllowanceEur": "16.56004558003793340199107449",
+  "maximumToolCallbacks": 105,
+  "sharedToolCap": 256,
+  "wrapUpAt": 224,
+  "integrityIssues": [],
+  "bootstrapWorkflowMedianEur": "0.04920259182972880192241675251",
+  "bootstrapWorkflowRangeEur": [
+    "0.04627942842430484037075180227",
+    "0.05950969790593889461036731892"
+  ],
+  "reportSha256": "08ee82f88b1a06719f3da5fd9118e5d5f61de147c5a3c9d77f626d21e441d3ec",
+  "isolationAtCompletion": "Database query confirmed zero enabled course automations.",
+  "cleanup": "Runner/server launchd jobs unloaded; Artemis listener closed; Docker data and all evidence retained; heartbeat paused."
+}

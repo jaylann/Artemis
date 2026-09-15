@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "currency": "EUR",
+  "verifiedAt": "2026-09-14",
+  "usdPerEur": "1.1551",
+  "exchangeRateDate": "2026-09-14",
+  "exchangeRateSource": "https://www.ecb.europa.eu/stats/shared/pdf/eurofxref.pdf",
+  "serviceTier": "default",
+  "pricingScope": "Verified Luna text pricing for full 1050000-token context. Above 272000 actual input tokens, all input rates double and output rate is multiplied by 1.5. Cache writes use 1.25 times the applicable uncached input rate. No regional processing or paid built-in tools.",
+  "models": {
+    "gpt-5.6-luna": {
+      "inputUsdPerMillion": "0.20",
+      "cachedInputUsdPerMillion": "0.02",
+      "outputUsdPerMillion": "1.20",
+      "maxOutputTokens": 128000,
+      "contextWindowTokens": 1050000,
+      "maxSupportedInputTokens": 1050000,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+      "inputEurPerMillion": "0.1731451822353043026577785473",
+      "cachedInputEurPerMillion": "0.01731451822353043026577785473",
+      "outputEurPerMillion": "1.038871093411825815946671284",
+      "cacheWriteInputUsdPerMillion": "0.25",
+      "cacheWriteInputEurPerMillion": "0.2164314777941303783222231841",
+      "cacheWriteSource": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "longContext": {
+        "thresholdTokens": 272000,
+        "inputMultiplier": 2,
+        "outputMultiplier": "1.5"
+      }
+    }
+  }
+}

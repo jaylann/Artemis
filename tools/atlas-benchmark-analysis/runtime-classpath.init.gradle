@@ -1,0 +1,20 @@
+// Emit a portable classpath after compiling the checked-out Artemis sources.
+// This task starts neither the server nor a provider invocation.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    project.tasks.register('writeAtlasBenchmarkClasspath') {
+        dependsOn project.tasks.named('classes')
+        doLast {
+            def output = project.findProperty('benchmarkClasspathOutput')
+            if (!output) {
+                throw new GradleException('Set -PbenchmarkClasspathOutput=/absolute/path/classpath.txt')
+            }
+            def target = new File(output.toString())
+            if (!target.isAbsolute()) {
+                throw new GradleException('benchmarkClasspathOutput must be an absolute path')
+            }
+            target.parentFile.mkdirs()
+            target.text = project.sourceSets.main.runtimeClasspath.asPath + '\n'
+        }
+    }
+}

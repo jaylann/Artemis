@@ -92,6 +92,61 @@ class AtlasLogosBenchmarkTest {
         assertThat(AtlasLogosBenchmark.Usage.parse(response, "id", "gpt-5.4-mini").available()).isTrue();
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = { 300_000, 2_000_000 })
+    void largeSerializedRequestReservesVerifiedTierButSettlesActualShortInput(long requestBytes) throws Exception {
+        ObjectMapper mapper = mapper();
+        writeEvidence(mapper, 1.0, MODEL);
+        enableLongContext(mapper);
+        try (AtlasLogosBenchmark.Ledger ledger = open(mapper)) {
+            AtlasLogosBenchmark.Telemetry telemetry = new AtlasLogosBenchmark.Telemetry(ledger, clock());
+            try (AtlasLogosBenchmark.Telemetry.Scope scope = telemetry.begin(7L, "run")) {
+                var reservation = telemetry.reserve(ENDPOINT, MODEL, requestBytes, "large-request");
+                assertThat(reservation.inputBound()).isEqualTo(Math.min(requestBytes + 256, 1_050_000));
+                assertThat(reservation.reservedCostEur()).isGreaterThan(0.3);
+                telemetry.complete(reservation, request(), response(200, false), new AtlasLogosBenchmark.Usage(36_724L, 0L, 0L, 100L, 0L, "response", MODEL, 0), NOW);
+                scope.complete("completed", false);
+            }
+        }
+        var event = mapper.readTree(Files.readAllLines(evidence.resolve("provider-events.jsonl")).getFirst());
+        assertThat(event.path("costEur").asDouble()).isCloseTo(0.00634608, org.assertj.core.data.Offset.offset(1e-12));
+        assertThat(Files.exists(evidence.resolve("STOP"))).isFalse();
+    }
+
+    @Test
+    void longContextUpliftAppliesToWholeRequestOnlyAboveThreshold() {
+        var price = new AtlasLogosBenchmark.ModelPrice(1, 0.1, 1.25, 2, 128000, 1050000, null, new AtlasLogosBenchmark.LongContextPrice(272000, 2, 1.5));
+        assertThat(price.cost(272000, 200, 300, 100)).isCloseTo(0.272095, org.assertj.core.data.Offset.offset(1e-12));
+        assertThat(price.cost(272001, 200, 300, 100)).isCloseTo(0.544092, org.assertj.core.data.Offset.offset(1e-12));
+        assertThat(price.upperBound(272001)).isEqualTo(price.cost(272001, 0, 272001, 128000));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void largeRequestStillRequiresSufficientAllowanceAndVerifiedTier(boolean verified) throws Exception {
+        ObjectMapper mapper = mapper();
+        writeEvidence(mapper, 0.2, MODEL);
+        if (verified) {
+            enableLongContext(mapper);
+        }
+        try (var ledger = open(mapper)) {
+            var telemetry = new AtlasLogosBenchmark.Telemetry(ledger, clock());
+            try (var scope = telemetry.begin(7L, "run")) {
+                assertThatThrownBy(() -> telemetry.reserve(ENDPOINT, MODEL, 300000, "request")).hasMessageContaining(verified ? "budget exhausted" : "pricing bounds");
+            }
+        }
+    }
+
+    private void enableLongContext(ObjectMapper mapper) throws Exception {
+        var pricing = mapper.readTree(evidence.resolve("pricing.json").toFile());
+        var model = (ObjectNode) pricing.path("models").path(MODEL);
+        model.put("maxSupportedInputTokens", 1050000).putObject("longContext").put("thresholdTokens", 272000).put("inputMultiplier", 2).put("outputMultiplier", 1.5);
+        mapper.writeValue(evidence.resolve("pricing.json").toFile(), pricing);
+        var active = (ObjectNode) mapper.readTree(evidence.resolve("active-run.json").toFile());
+        active.put("pricingSha256", AtlasLogosBenchmark.sha256(Files.readAllBytes(evidence.resolve("pricing.json"))));
+        mapper.writeValue(evidence.resolve("active-run.json").toFile(), active);
+    }
+
     @Test
     void rejectsInvalidOrUnsupportedCacheWriteUsage() throws Exception {
         ObjectMapper mapper = mapper();

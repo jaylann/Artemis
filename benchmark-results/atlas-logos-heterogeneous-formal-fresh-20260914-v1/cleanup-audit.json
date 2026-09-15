@@ -1,0 +1,245 @@
+{
+  "courses": [
+    {
+      "automationEnabled": false,
+      "courseId": 4
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 5
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 6
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 8
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 7
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 9
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 10
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 15
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 14
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 13
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 12
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 11
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 19
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 20
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 18
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 17
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 21
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 16
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 22
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 26
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 23
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 24
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 27
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 25
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 28
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 31
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 29
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 33
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 32
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 30
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 39
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 38
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 37
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 34
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 36
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 35
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 40
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 45
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 41
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 42
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 43
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 44
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 47
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 49
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 46
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 50
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 48
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 51
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 57
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 53
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 54
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 56
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 52
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 55
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 58
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 61
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 60
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 59
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 63
+    },
+    {
+      "automationEnabled": false,
+      "courseId": 62
+    }
+  ],
+  "verifiedAt": "2026-09-14T21:51:11.027Z"
+}

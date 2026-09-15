@@ -1,0 +1,66 @@
+{
+  "smoke": {
+    "allowanceEur": "1",
+    "measuredEur": "0.19166218674905595968",
+    "heldUnknownEur": "0.26900583590799870",
+    "remainingBudgetEur": "0.5393319772",
+    "sources": [
+      {
+        "campaignId": "atlas-logos-smoke-20260910",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-20260910-all-luna-v2",
+        "sha256": "1b539a13e44638f979c68b8b97d1e36f675a9d314aec0acd511027d6b37bad16"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-20260910-v2",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-20260910-v3",
+        "sha256": "69c07a458e36ecec9f3d3dd7e785bfecb256670327a0955b61d120a8b19b0bd6"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-responses-20260910-v2",
+        "sha256": "9c63ac26c8146c6c052b39c8306399b43027aa9dcdf39f20123bf6f9544acbf4"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-responses-20260910-v3",
+        "sha256": "cf46b54ab3e4b9760d28fb69b04c7bdcc9fa33cce33e16d3458aa037f5f4b61c"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-20260911-tool-budget-v1",
+        "sha256": "cf3e1fe68523a868d9b65ba66b1aa70df5b75342b598292e3acbb1e104692d13"
+      },
+      {
+        "campaignId": "atlas-logos-smoke-20260911-graceful-v2",
+        "sha256": "e2126dab9266c3b113075179b9916e1dcd7e6dd97345139854ff65c610a2a4d3"
+      }
+    ]
+  },
+  "formal": {
+    "allowanceEur": "20",
+    "measuredEur": "1.68346362856162035231",
+    "heldUnknownEur": "0.77804883281840037",
+    "remainingBudgetEur": "17.5384875385",
+    "sources": [
+      {
+        "campaignId": "atlas-logos-formal-20260910-final-20eur",
+        "sha256": "ea177e6cbfb78d5f9f9e0f454a5b6d69d3bc95e532dd8f764fbb29149499a1b5"
+      },
+      {
+        "campaignId": "atlas-logos-formal-20260910-recovery-v2",
+        "sha256": "bb9263a7eda4cf7df90b9e033034041ae8bbf2df1da3b395fcfd5f3193f26e0f"
+      },
+      {
+        "campaignId": "atlas-logos-formal-20260911-tool-budget-v1",
+        "sha256": "5a8edc8a245704e1fc64268ee5d25ff4235c08acc191a6f9662ca1f698d939c8"
+      },
+      {
+        "campaignId": "atlas-logos-formal-20260911-graceful-v2",
+        "sha256": "88fc4a8cac3ec3df30ffc1c7721dd49f031fa37123559b75ccfdcdd8f7211d8c"
+      }
+    ]
+  }
+}

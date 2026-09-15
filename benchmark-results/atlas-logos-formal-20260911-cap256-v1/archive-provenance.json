@@ -1,0 +1,53 @@
+{
+  "baseArchiveCommit": "68f8023db3126c3ea9c9e8b3bf75231118525e15",
+  "bytePreservedFiles": [
+    "manifest.json",
+    "pricing.json",
+    "fixture-definition.json",
+    "schedule.json",
+    "fixtures.json",
+    "provider-events.jsonl",
+    "invocation-events.jsonl",
+    "dispatch-journal.jsonl",
+    "observations.jsonl",
+    "report.json",
+    "observations.csv",
+    "runtime-sha256.json",
+    "completion-summary.json",
+    "allowance-carry-forward.json",
+    "PUBLICATION.json"
+  ],
+  "campaignId": "atlas-logos-formal-20260911-cap256-v1",
+  "derivedFiles": {
+    "logos.jsonl": {
+      "method": "Select original complete lines whose requestId is referenced by campaign provider-events. No retained row is edited.",
+      "originalRows": 8393,
+      "retainedRows": 2884
+    }
+  },
+  "excluded": "Checkpoint copies, operational environment files, credentials, databases, storage, and runtime binaries. Original evidence and private backups remain untouched.",
+  "executionGitHead": "3422402470fe63e055f7f7246ad6b8547a99fb9e",
+  "originalEvidenceRelativePath": "build/atlas-logos-benchmark/evidence/atlas-logos-formal-20260911-cap256-v1",
+  "originalFileSha256": {
+    "PUBLICATION.json": "a052b8b2c6f85492d8d75c647191b99ef1293a1442d0d5048601d3ac2031e7b9",
+    "allowance-carry-forward.json": "75ce0c4e6eafcebe3c94f356a257e9fe5d70d852de724bb7c107a2da93bbc16f",
+    "completion-summary.json": "19968b9803c61e3764fe5afa3a63f659a08f6d15a648a776bd310ac999d89dcf",
+    "dispatch-journal.jsonl": "86ce9f7ffd5c34ccfa85f3423efaaa69d90a33d2d32b3b507b4a635af45198d2",
+    "fixture-definition.json": "f1c6d1836fb5d434f223105b24206976dde66e58444f0c9cac8a9bc24036d66f",
+    "fixtures.json": "3cb38c86f00a247f32ad42ae2aa5f2b550bde845fadc617fc2d0c46a4fd5950b",
+    "invocation-events.jsonl": "8ced063b1e3baf161f3826dd32d3fa23012d4325b2122f604a186ecb5008874f",
+    "logos.jsonl": "9c705ee3de7b460cd933a91aee3fd2823b3b8de248bbf6d52c247748080540de",
+    "manifest.json": "1406256fd8092b7cff1136d36c010d898854339386f4bce6680c858909b5aa04",
+    "observations.csv": "aae53e27f2254b378c05b4e375eb5b516c59721b9bdc18d3579dd8f7771dd71f",
+    "observations.jsonl": "b99eb07dfcae81e7690a171e4e65e8e86d3a540d095b81c244947f02bb5e53cd",
+    "pricing.json": "34f32cb4751213de65f41b078a81a74cdecec5ed17af46687ea9458f872b7af8",
+    "provider-events.jsonl": "1e87aaa8f681dfd8ef0808a4c5e6ccd5189e470db0ec44f9892b393d9bef7ce4",
+    "report.json": "08ee82f88b1a06719f3da5fd9118e5d5f61de147c5a3c9d77f626d21e441d3ec",
+    "runtime-sha256.json": "f76707ed72ec61d30aee650dba074f9c42a86ab40136cf6ef3641fb4532c52a7",
+    "schedule.json": "60dc241d97cd0a6eef5c3c55ee8168accac3070d3a1da8bb7f332a2997ba79cd"
+  },
+  "runtimeNote": "runtime-sha256.json identifies the measured binary snapshot; rebuilding source is a protocol reproduction, not a claim of byte-identical binaries.",
+  "schemaVersion": 1,
+  "sourceFileCount": 238,
+  "sourceSnapshot": "source/"
+}

@@ -1,0 +1,440 @@
+{
+  "courseDefaults": {
+    "accuracyOfScores": 2,
+    "courseInformationSharingConfiguration": "DISABLED",
+    "defaultProgrammingLanguage": "JAVA",
+    "description": "Bounded Atlas Logos fixture.",
+    "enrollmentEnabled": false,
+    "gradeRelevant": true,
+    "language": "ENGLISH",
+    "learningPathsEnabled": false,
+    "maxComplaintResponseTextLimit": 500,
+    "maxComplaintTextLimit": 500,
+    "maxComplaintTimeDays": 7,
+    "maxDailyOrchestrationOverride": 100,
+    "maxPoints": 100,
+    "maxRequestMoreFeedbackTimeDays": 7,
+    "onlineCourse": false,
+    "presentationScore": 0,
+    "semester": "WINTER",
+    "testCourse": true,
+    "unenrollmentEnabled": true
+  },
+  "exerciseDefaults": {
+    "allowComplaintsForAutomaticAssessments": false,
+    "bonusPoints": 0,
+    "categories": [],
+    "difficulty": "EASY",
+    "exerciseGroupId": null,
+    "gradingCriteria": [],
+    "gradingInstructions": "Award points for correctness and a relevant example.",
+    "includedInOverallScore": "INCLUDED_COMPLETELY",
+    "maxPoints": 10,
+    "mode": "INDIVIDUAL",
+    "plagiarismDetectionConfig": null,
+    "presentationScoreEnabled": false,
+    "secondCorrectionEnabled": false,
+    "teamAssignmentConfig": null
+  },
+  "exerciseRevision": {
+    "exampleSolution": "Use a FIFO queue, mark each vertex when enqueued, and set its distance to the parent distance plus one. BFS visits distance layers in order. DFS can first discover a longer path. Time is O(V+E); auxiliary space is O(V).",
+    "problemStatement": "Given an unweighted graph and a source vertex, implement breadth-first search to compute shortest path distances. Explain why a depth-first traversal cannot guarantee shortest distances and analyze the time and space complexity.",
+    "title": "Shortest paths in unweighted graphs"
+  },
+  "fixtureVersion": "atlas-logos-fixture-v1",
+  "lecture": {
+    "description": "A stable lecture used for text-unit maintenance.",
+    "textUnit": {
+      "content": "Variables have lexical scopes and store program state. Conditional statements select branches using Boolean predicates. Loops repeat updates until a condition becomes false; an invariant describes the state that remains true after every iteration. Trace a running-sum loop and explain initialization, preservation, and termination.",
+      "name": "Algorithms maintenance"
+    },
+    "title": "Algorithms maintenance lecture"
+  },
+  "lectureRevision": "Graphs model networks using vertices and edges. Breadth-first search computes shortest distances in an unweighted graph by visiting distance layers in FIFO order. Dijkstra uses a priority queue to handle nonnegative weighted edges. Compare their invariants, complexity, and applicability; explain why negative edges invalidate the usual Dijkstra proof.",
+  "topics": [
+    {
+      "description": "Use state, branching, and loops to express deterministic programs.",
+      "exercises": [
+        [
+          "Scope of a variable",
+          "Explain the difference between a local and a global variable.",
+          "A local binding is visible only within its defining scope; a global binding is visible according to the module or program scope."
+        ],
+        [
+          "Guard clauses",
+          "Rewrite nested conditionals as guard clauses and explain the benefit.",
+          "Return early for invalid or exceptional cases so the main path remains shallow and readable."
+        ],
+        [
+          "Loop invariant",
+          "State an invariant for a loop that sums the first n positive integers.",
+          "After each iteration, the accumulator equals the sum of all processed integers."
+        ],
+        [
+          "Boolean short circuit",
+          "Explain why short circuit evaluation can prevent a null dereference.",
+          "The second operand is evaluated only when the first operand allows it, so a null check can guard a member access."
+        ],
+        [
+          "Boundary conditions",
+          "Identify the boundary cases for a loop over an empty and a one element collection.",
+          "The empty collection performs zero iterations and the one element collection performs exactly one."
+        ]
+      ],
+      "taxonomy": "REMEMBER",
+      "title": "Variables and control flow"
+    },
+    {
+      "description": "Design functions with clear contracts, parameters, and return values.",
+      "exercises": [
+        [
+          "Function contract",
+          "Write the precondition and postcondition for a function that divides two numbers.",
+          "The divisor must be nonzero; the result multiplied by the divisor equals the dividend within the numeric model."
+        ],
+        [
+          "Pure function",
+          "Distinguish a pure function from one that mutates shared state.",
+          "A pure function has no observable side effects and returns the same result for the same inputs."
+        ],
+        [
+          "Parameter choice",
+          "Choose pass by value or a mutable reference when a function must update a caller-owned list.",
+          "Use a mutable reference when the contract requires updating the caller-owned list, and document that effect."
+        ],
+        [
+          "Cohesion",
+          "Explain why a function that validates input, writes a file, and sends email has low cohesion.",
+          "It combines unrelated responsibilities, making its contract and tests harder to isolate."
+        ],
+        [
+          "Error result",
+          "Compare returning an error result with throwing an exception for expected invalid input.",
+          "A result makes expected failure explicit at the call site; exceptions are better reserved for exceptional control flow."
+        ]
+      ],
+      "taxonomy": "UNDERSTAND",
+      "title": "Functions and modularity"
+    },
+    {
+      "description": "Reason about base cases, recursive progress, and recursive cost.",
+      "exercises": [
+        [
+          "Base case",
+          "Give a base case and progress argument for recursive factorial.",
+          "Factorial of zero is one, and each positive call reduces n by one until zero."
+        ],
+        [
+          "Tree traversal",
+          "Describe a recursive preorder traversal of a binary tree.",
+          "Visit the node, recursively traverse the left subtree, then recursively traverse the right subtree."
+        ],
+        [
+          "Recursive stack",
+          "Explain what happens to stack frames during a depth first recursive traversal.",
+          "Each descent adds a frame and each completed child returns to its caller before the next sibling is visited."
+        ],
+        [
+          "Memoization",
+          "Explain why memoization changes naive recursive Fibonacci from exponential to linear work.",
+          "Previously computed values are stored and reused, so each argument is evaluated once."
+        ],
+        [
+          "Termination",
+          "Show why a recursive search that does not shrink its input can fail to terminate.",
+          "Without a strictly smaller input or another decreasing measure, the base case may never be reached."
+        ]
+      ],
+      "taxonomy": "APPLY",
+      "title": "Recursion"
+    },
+    {
+      "description": "Select sequence representations and reason about their operations.",
+      "exercises": [
+        [
+          "Array lookup",
+          "Explain why indexed lookup in a fixed width array is constant time.",
+          "The address is computed from a base address and an index offset."
+        ],
+        [
+          "Linked insertion",
+          "Compare inserting at the head of a linked list with inserting at the middle of an array.",
+          "Head insertion changes a pointer in constant time; middle array insertion shifts later elements."
+        ],
+        [
+          "Amortized append",
+          "Explain why dynamic-array append is amortized constant time despite resizing.",
+          "Most appends are constant time and occasional linear copies are spread over the many successful appends."
+        ],
+        [
+          "Two pointers",
+          "Design a two-pointer scan to remove duplicates from a sorted array in place.",
+          "Advance a read pointer through values and write each new value at the next write position."
+        ],
+        [
+          "Representation choice",
+          "Choose an array or linked list for frequent random access and justify it.",
+          "An array provides direct indexed access, while a linked list requires traversal."
+        ]
+      ],
+      "taxonomy": "APPLY",
+      "title": "Arrays and lists"
+    },
+    {
+      "description": "Represent hierarchical data and maintain tree invariants.",
+      "exercises": [
+        [
+          "Binary search invariant",
+          "State the ordering invariant of a binary search tree.",
+          "Every key in the left subtree is smaller and every key in the right subtree is larger than the node key, subject to duplicate policy."
+        ],
+        [
+          "Insertion shape",
+          "Insert 8, 3, and 10 into an empty binary search tree.",
+          "8 is the root, 3 its left child, and 10 its right child."
+        ],
+        [
+          "Balanced height",
+          "Explain why balancing a search tree improves lookup in the worst case.",
+          "Balancing keeps height logarithmic instead of allowing sorted input to create a linear chain."
+        ],
+        [
+          "Heap property",
+          "Describe the max heap property and one operation that preserves it.",
+          "Each parent is at least as large as its children; sift up or down restores the property after an update."
+        ],
+        [
+          "Traversal order",
+          "Choose inorder, preorder, or postorder for deleting a tree safely.",
+          "Postorder visits children before their parent, so subtrees can be released before the node."
+        ]
+      ],
+      "taxonomy": "ANALYZE",
+      "title": "Trees"
+    },
+    {
+      "description": "Use hashing, collision strategies, and key equality correctly.",
+      "exercises": [
+        [
+          "Collision resolution",
+          "Explain separate chaining for a hash table collision.",
+          "Colliding entries are stored in a bucket-associated collection and searched within that bucket."
+        ],
+        [
+          "Load factor",
+          "Explain why a high hash table load factor can slow lookup.",
+          "More keys per bucket increase collision chains or probing distance."
+        ],
+        [
+          "Key equality",
+          "State the relationship required between equality and hash codes.",
+          "Equal keys must produce equal hash codes so they are placed in compatible buckets."
+        ],
+        [
+          "Open addressing",
+          "Compare linear probing with chaining after a collision.",
+          "Linear probing searches subsequent slots in the table; chaining stores multiple entries outside the slot."
+        ],
+        [
+          "Mutable key",
+          "Explain why mutating a key after insertion can make a map entry unreachable.",
+          "Its new hash may point to a different bucket, so lookup using the mutated key no longer finds the stored slot."
+        ]
+      ],
+      "taxonomy": "UNDERSTAND",
+      "title": "Hash maps"
+    },
+    {
+      "description": "Choose algorithms and derive their time and space costs.",
+      "exercises": [
+        [
+          "Binary search invariant",
+          "Explain the invariant maintained by binary search on a sorted array.",
+          "If the target exists, it remains inside the current search interval."
+        ],
+        [
+          "Merge sort complexity",
+          "Derive the asymptotic runtime of merge sort.",
+          "There are logarithmically many levels and linear merge work per level, giving O(n log n)."
+        ],
+        [
+          "Stable sorting",
+          "Define sorting stability and describe when it matters.",
+          "Equal-key records retain input order, which matters when applying successive sort keys."
+        ],
+        [
+          "Greedy counterexample",
+          "Give a coin system where taking the largest coin first is not optimal.",
+          "For coins 1, 3, and 4 with amount 6, greedy uses 4+1+1 while 3+3 is optimal."
+        ],
+        [
+          "Search selection",
+          "Choose linear or binary search for an unsorted collection and justify it.",
+          "Linear search works without preprocessing; binary search requires sorted data and offers logarithmic lookup."
+        ]
+      ],
+      "taxonomy": "EVALUATE",
+      "title": "Sorting and searching"
+    },
+    {
+      "description": "Model relationships and traverse directed and undirected graphs.",
+      "exercises": [
+        [
+          "Sparse representation",
+          "Choose an adjacency list or matrix for a sparse graph.",
+          "An adjacency list stores only present edges and uses less space for a sparse graph."
+        ],
+        [
+          "Breadth first search",
+          "Explain why BFS finds shortest paths by edge count in an unweighted graph.",
+          "It explores all vertices at distance d before any vertex at distance d+1."
+        ],
+        [
+          "Depth first search",
+          "Name one task for which DFS is a natural graph traversal.",
+          "DFS supports reachability, cycle detection, and topological ordering through finish times."
+        ],
+        [
+          "Cycle detection",
+          "Describe how a directed DFS detects a back edge.",
+          "An edge to a vertex currently on the recursion stack indicates a directed cycle."
+        ],
+        [
+          "Dijkstra condition",
+          "State the edge-weight condition required by Dijkstra's algorithm.",
+          "All edge weights must be nonnegative so finalized shortest distances cannot later decrease."
+        ]
+      ],
+      "taxonomy": "ANALYZE",
+      "title": "Graphs"
+    },
+    {
+      "description": "Analyze asymptotic behavior and choose practical algorithmic trade-offs.",
+      "exercises": [
+        [
+          "Big O meaning",
+          "Explain what O(n log n) says about an algorithm as input grows.",
+          "It gives an asymptotic upper growth bound up to constant factors for sufficiently large n."
+        ],
+        [
+          "Space trade-off",
+          "Give a case where using extra memory is a good algorithmic trade-off.",
+          "Caching repeated computations can reduce runtime when the memory budget permits it."
+        ],
+        [
+          "Lower bound",
+          "Explain why reading every input value imposes a linear lower bound.",
+          "An algorithm cannot determine a property dependent on an unread value."
+        ],
+        [
+          "Worst versus average",
+          "Distinguish worst-case from average-case complexity.",
+          "Worst-case bounds the most expensive input; average-case depends on a stated input distribution."
+        ],
+        [
+          "Algorithm selection",
+          "Select an algorithm when latency matters more than memory use.",
+          "Prefer the faster asymptotic or measured method when its extra memory remains within the available budget."
+        ]
+      ],
+      "taxonomy": "EVALUATE",
+      "title": "Complexity and design"
+    },
+    {
+      "description": "Use executable examples, properties, and review to establish behavior.",
+      "exercises": [
+        [
+          "Unit boundary",
+          "Design a unit test for a function that rejects negative quantities.",
+          "Call it with a negative value and assert the documented error without external dependencies."
+        ],
+        [
+          "Property test",
+          "Give a property that every list reversal implementation should satisfy.",
+          "Reversing twice yields the original list and preserves its length and elements."
+        ],
+        [
+          "Integration boundary",
+          "Explain what an integration test should cover for a repository adapter.",
+          "Exercise the adapter against a real or controlled persistence boundary and verify mapping and error behavior."
+        ],
+        [
+          "Regression test",
+          "Describe a regression test for an off-by-one loop bug.",
+          "Capture the smallest failing boundary input and assert the corrected result."
+        ],
+        [
+          "Test isolation",
+          "Explain why tests that share mutable global state become order dependent.",
+          "One test can alter what another observes, so failures vary with execution order."
+        ]
+      ],
+      "taxonomy": "CREATE",
+      "title": "Testing and correctness"
+    },
+    {
+      "description": "Apply modular design, compatibility, and delivery practices.",
+      "exercises": [
+        [
+          "Interface segregation",
+          "Explain how a broad interface can force clients to depend on unused operations.",
+          "Splitting role-specific interfaces lets each client depend only on operations it needs."
+        ],
+        [
+          "Merge conflict",
+          "Describe a safe workflow for resolving a conflicting change.",
+          "Understand both intents, edit the combined result, run relevant checks, and review the resolved diff."
+        ],
+        [
+          "Continuous delivery",
+          "Distinguish continuous delivery from continuous deployment.",
+          "Delivery keeps every change releasable; deployment automatically releases every passing change."
+        ],
+        [
+          "API compatibility",
+          "Evaluate whether removing a required response field is breaking.",
+          "Existing consumers may depend on the field, so removal changes the response contract."
+        ],
+        [
+          "Dependency direction",
+          "Explain why domain code should avoid depending directly on infrastructure details.",
+          "Keeping the dependency inward makes policy testable and infrastructure replaceable."
+        ]
+      ],
+      "taxonomy": "CREATE",
+      "title": "Software design"
+    },
+    {
+      "description": "Reason about reliable networked services and their failure modes.",
+      "exercises": [
+        [
+          "HTTP method choice",
+          "Choose an HTTP method for replacing a known resource.",
+          "PUT expresses replacement at a known URI and is idempotent."
+        ],
+        [
+          "Idempotent retry",
+          "Design an idempotency-key strategy for a retried request.",
+          "Persist the key with the first result and return that result for duplicate requests."
+        ],
+        [
+          "Eventual consistency",
+          "Give a user-visible consequence of eventual consistency.",
+          "Two replicas may temporarily return different values after a write."
+        ],
+        [
+          "TCP reliability",
+          "Name two mechanisms TCP uses for reliable ordered delivery.",
+          "Sequence numbers order bytes; acknowledgements and retransmission recover loss."
+        ],
+        [
+          "Timeout handling",
+          "Explain why a client timeout does not prove a server operation was not applied.",
+          "The response can be delayed or lost after the server commits, so retries need idempotent semantics."
+        ]
+      ],
+      "taxonomy": "APPLY",
+      "title": "Web and distributed systems"
+    }
+  ]
+}

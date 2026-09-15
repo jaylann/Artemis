@@ -1,0 +1,36 @@
+{
+  "coverage": {
+    "initialObjects": 72,
+    "semanticRevisions": 72,
+    "topics": 12
+  },
+  "fixtureSha256": "07e8687be084dbb10cef66aee0e3eae152f9eec4759229bf7358022aededdd9f",
+  "fixtureVersion": "atlas-logos-fixture-v2-heterogeneous",
+  "followUpReview": {
+    "liveCourseId": 327,
+    "liveReadbackVerified": true,
+    "markdownFieldsParsed": 224,
+    "plainTextLectureDescriptionsPreserved": true,
+    "repositoryCodeChanged": false,
+    "reviewer": "primary agent",
+    "scope": "Artemis Markdown formatting, API-contract and instruction consistency; initial coursework and semantic revisions",
+    "taskTestMappings": "Empty test lists; no fabricated mapping to stock repository tests"
+  },
+  "limits": [
+    "Original synthetic coursework; no expert mapping-quality validation",
+    "Programming repository contents are not extracted and remain unchanged",
+    "No paid execution, media extraction, or campaign observations"
+  ],
+  "offlineValidation": {
+    "artemisDtoExtractionCasesPassed": 144,
+    "pythonTestsPassed": 35
+  },
+  "previousReview": {
+    "fixtureSha256": "20f493eaaa473b0eda41fff0087f34944607659c4afd4df6f4c1b2981b38e931",
+    "reasoningEffort": "xhigh",
+    "reviewerModel": "gpt-5.6-luna"
+  },
+  "reviewReport": "content-review.md",
+  "reviewReportSha256": "d677a3a057fcafc32fcadaf2c24b9c25438fd250556fa0914b1af7ed83405262",
+  "status": "reviewed"
+}

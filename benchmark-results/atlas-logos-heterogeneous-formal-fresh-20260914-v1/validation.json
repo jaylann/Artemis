@@ -1,0 +1,29 @@
+{
+  "python": {
+    "command": "python3 -m unittest discover -s scripts/atlas-logos-benchmark -p 'test_*.py'",
+    "observedTestCount": 46,
+    "result": "passed; captured in this task tool output after network-container change"
+  },
+  "java": {
+    "testClass": "AtlasLogosBenchmarkTest",
+    "passed": 26,
+    "log": "build/atlas-logos-benchmark/heterogeneous-fresh-20260914-v1/validation/java-checks.log"
+  },
+  "dtoExtraction": {
+    "cases": 144,
+    "status": "offline-dto-extraction-passed",
+    "fixtureSha256": "07e8687be084dbb10cef66aee0e3eae152f9eec4759229bf7358022aededdd9f"
+  },
+  "runtime": {
+    "checkedFiles": 5671,
+    "mismatches": []
+  },
+  "gitDiffCheck": "passed",
+  "liveSmoke": {
+    "observations": 3,
+    "providerAttempts": 47,
+    "smokeReady": true,
+    "trajectoryPassed": true,
+    "unresolvedUsage": 0
+  }
+}

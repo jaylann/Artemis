@@ -1,0 +1,27 @@
+{
+  "bootstrapStages": 4,
+  "budgetEur": 20.0,
+  "campaignId": "atlas-logos-heterogeneous-formal-fresh-20260914-v1",
+  "campaignVersion": "atlas-logos-benchmark-v5-heterogeneous",
+  "codeSha256": "59c315a4ea3f9954055aa5a54b01631f1096dc5ac8ac992c2cb0cbdba4024e1b",
+  "createdAt": "2026-09-14T16:37:01.415Z",
+  "fixtureSha256": "07e8687be084dbb10cef66aee0e3eae152f9eec4759229bf7358022aededdd9f",
+  "fixtureVersion": "atlas-logos-fixture-v2-heterogeneous",
+  "fullRehearsal": false,
+  "gitHead": "68f8023db3126c3ea9c9e8b3bf75231118525e15",
+  "logosHost": "http://127.0.0.1:18091/v1",
+  "logosRevision": "0d4a6683171cd956e1cf46a19d49e99181a52ac4",
+  "mode": "formal",
+  "observationCount": 90,
+  "pricingSha256": "55b97f3ab6df89b5a31fd30d1941f39b1e500ce4472dd5e40b09a9c7fddc42d6",
+  "repetitions": 10,
+  "retryPolicy": "native SDK retries; retain uncertain reservations; continue independent observations",
+  "scheduleSha256": "6e068ed2f39c792c328ba3ee79289eeb0c3ae1aa49478f3105c532565d689d31",
+  "schemaVersion": 1,
+  "seed": 20260910,
+  "toolBudget": {
+    "finalSlotForCompletion": true,
+    "sharedCallbacks": 256,
+    "wrapUpAt": 224
+  }
+}

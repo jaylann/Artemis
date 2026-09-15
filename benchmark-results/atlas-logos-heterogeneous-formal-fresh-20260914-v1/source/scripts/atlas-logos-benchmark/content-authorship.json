@@ -1,0 +1,53 @@
+{
+  "authorship": "Original agent-authored synthetic coursework; not sampled production material or a mapping-quality answer key.",
+  "authorModel": "gpt-5.6-luna",
+  "reasoningEffort": "xhigh",
+  "groups": [
+    {
+      "topics": "01-04",
+      "notes": {
+        "provenance": "Original agent-authored synthetic coursework for a thesis benchmark.",
+        "mappingIntent": "The four topics, exercises, and lecture units are intended to provide coherent heterogeneous learning objects for content extraction and maintenance observations.",
+        "validationBoundary": "The intended associations and worked solutions were reviewed for structural coherence; mapping quality, pedagogical validity, and student outcomes are not validated by this artifact."
+      }
+    },
+    {
+      "topics": "05-08",
+      "notes": {
+        "status": "Original realistic synthetic coursework authored for benchmark input.",
+        "associationIntent": {
+          "t05": [
+            "trees",
+            "binary search trees",
+            "traversals"
+          ],
+          "t06": [
+            "hash maps",
+            "collisions",
+            "load factors",
+            "resizing"
+          ],
+          "t07": [
+            "sorting",
+            "binary search",
+            "stability",
+            "complexity"
+          ],
+          "t08": [
+            "graphs",
+            "breadth-first search",
+            "reachability",
+            "shortest paths"
+          ]
+        },
+        "mappingValidation": "Topic-to-exercise and topic-to-lecture associations are intended authoring associations; this file is not a validated mapping gold standard.",
+        "wireFormatNote": "Quiz question objects use Artemis creation DTO fields: multiple-choice answer options use text, hint, explanation, and isCorrect; short-answer components use tempID and mappings use solutionTempId and spotTempId; drag-and-drop components use tempID and mappings use dragItemTempId and dropLocationTempId."
+      }
+    },
+    {
+      "topics": "09-12",
+      "notes": "All four topics are original synthetic coursework authored for a thesis benchmark fixture. Each topic intentionally contains one programming, text, modeling, file-upload, and quiz exercise, plus one lecture unit. The quiz nodes follow Artemis create DTO field names and use temporary IDs whose mapping references resolve within each question; drag items contain text only and no media paths. Programming example solutions are reviewer-only reference material; non-programming example fields contain instructor solution prose without role labels. Attachment/video and online lecture entries contain synthetic metadata; the online source is a placeholder and was not fetched, and no media extraction is claimed. Every semanticUpdate changes a learning-relevant requirement or concept and includes the revised solution, explanation, or quiz key where needed; mappings and correct answers remain internally consistent. Topic associations and taxonomies are authoring intentions, not a validated mapping gold standard."
+    }
+  ],
+  "limits": "Intended topic associations are authoring aids, not a validated mapping-quality answer key."
+}

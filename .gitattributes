@@ -149,3 +149,6 @@ Procfile        text
 *.otf           binary
 *.woff          binary
 *.woff2         binary
+
+# Frozen benchmark evidence and source snapshots must survive checkout byte-for-byte.
+benchmark-results/** -text

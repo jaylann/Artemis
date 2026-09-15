@@ -1,0 +1,355 @@
+{
+  "bootstrapWorkflows": [
+    {
+      "costEur": "0.1262616310276166565665310363",
+      "courseKey": "r01-bootstrap"
+    },
+    {
+      "costEur": "0.1092961128906588174184053329",
+      "courseKey": "r02-bootstrap"
+    },
+    {
+      "costEur": "0.1161818716994199636395117306",
+      "courseKey": "r03-bootstrap"
+    },
+    {
+      "costEur": "0.1001600900354947623582373821",
+      "courseKey": "r04-bootstrap"
+    },
+    {
+      "costEur": "0.1104694312180763570253657692",
+      "courseKey": "r05-bootstrap"
+    },
+    {
+      "costEur": "0.1099460912475110380053675006",
+      "courseKey": "r06-bootstrap"
+    },
+    {
+      "costEur": "0.09992733962427495454938966318",
+      "courseKey": "r07-bootstrap"
+    },
+    {
+      "costEur": "0.1076137130984330361007704960",
+      "courseKey": "r08-bootstrap"
+    },
+    {
+      "costEur": "0.1059457276426283438663319193",
+      "courseKey": "r09-bootstrap"
+    },
+    {
+      "costEur": "0.1209225608172452601506363085",
+      "courseKey": "r10-bootstrap"
+    }
+  ],
+  "campaignId": "atlas-logos-heterogeneous-formal-fresh-20260914-v1",
+  "classifications": {
+    "valid-completed": 90
+  },
+  "conditions": {
+    "assignment-only": {
+      "completed": {
+        "count": 10,
+        "maximumEur": "0.01961459613886243615271405072",
+        "measuredCount": 10,
+        "medianEur": "0.01752716215046316336247943901",
+        "rangeEur": [
+          "0.01413742533114016102501947883",
+          "0.01961459613886243615271405072"
+        ]
+      },
+      "failures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "infrastructureFailures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "partial": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "unmeasuredCount": 0
+    },
+    "bootstrap": {
+      "completed": {
+        "count": 10,
+        "maximumEur": "0.02494128646870400831096874730",
+        "measuredCount": 10,
+        "medianEur": "0.01932553025712059561942688944",
+        "rangeEur": [
+          "0.01807419271058782789368885810",
+          "0.02494128646870400831096874730"
+        ]
+      },
+      "failures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "infrastructureFailures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "partial": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "unmeasuredCount": 0
+    },
+    "lecture-maintenance": {
+      "completed": {
+        "count": 10,
+        "maximumEur": "0.008250281360921132369491818889",
+        "measuredCount": 10,
+        "medianEur": "0.005210791273482815340663146045",
+        "rangeEur": [
+          "0.003946593368539520387845208205",
+          "0.008250281360921132369491818889"
+        ]
+      },
+      "failures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "infrastructureFailures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "partial": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "unmeasuredCount": 0
+    },
+    "maintained": {
+      "completed": {
+        "count": 10,
+        "maximumEur": "0.01742531382564280148904856721",
+        "measuredCount": 10,
+        "medianEur": "0.01591259631200761838801835339",
+        "rangeEur": [
+          "0.01359101376504198770669206129",
+          "0.01742531382564280148904856721"
+        ]
+      },
+      "failures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "infrastructureFailures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "partial": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "unmeasuredCount": 0
+    },
+    "mixed": {
+      "completed": {
+        "count": 10,
+        "maximumEur": "0.02417954289671889879664098346",
+        "measuredCount": 10,
+        "medianEur": "0.01987193316595965717253917410",
+        "rangeEur": [
+          "0.01657704094883559864946757856",
+          "0.02417954289671889879664098346"
+        ]
+      },
+      "failures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "infrastructureFailures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "partial": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "unmeasuredCount": 0
+    },
+    "single-exercise": {
+      "completed": {
+        "count": 10,
+        "maximumEur": "0.007674235996883386719764522552",
+        "measuredCount": 10,
+        "medianEur": "0.00548016189074539000952298502",
+        "rangeEur": [
+          "0.004061994632499350705566617609",
+          "0.007674235996883386719764522552"
+        ]
+      },
+      "failures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "infrastructureFailures": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "partial": {
+        "count": 0,
+        "maximumEur": null,
+        "measuredCount": 0,
+        "medianEur": null,
+        "rangeEur": null
+      },
+      "unmeasuredCount": 0
+    }
+  },
+  "criterion": "pass",
+  "fullReport": "/Users/justin/Programming/University/artemis2/.worktrees/thesis-logos-benchmark-20260910/build/atlas-logos-benchmark/evidence/atlas-logos-heterogeneous-formal-fresh-20260914-v1/report.json",
+  "integrityIssues": [],
+  "knownCostEur": "1.744587351744437711020690849",
+  "marginToCriterionEur": "0.4546564626439269327330967016",
+  "maximumMeasuredInvocationCostEur": "0.04534353735607306726690329841",
+  "operationalPauses": [
+    {
+      "afterObservation": "r08-bootstrap-s1",
+      "beforeObservation": "r08-bootstrap-s2",
+      "completedAtPause": 67,
+      "limitation": "Repetition-8 bootstrap spans this user-requested pause; provider cache expiry may affect subsequent measured costs.",
+      "method": "SIGCONT of the same suspended processes",
+      "noReplay": true,
+      "pauseDurationSeconds": 5841.1566,
+      "pausedAt": "2026-09-14T19:18:48.933773+00:00",
+      "pids": {
+        "coordinator": 36271,
+        "driver": 43334,
+        "parent": 39196
+      },
+      "remainingAtResume": 23,
+      "resumeRequestedAt": "2026-09-14T20:56:10.086333+00:00",
+      "resumedAt": "2026-09-14T20:56:10.090373+00:00",
+      "sourceRuntimeEvidenceAndDatabaseVerified": true
+    }
+  ],
+  "phaseTokenTotals": {
+    "flavor_strip": {
+      "attempts": 1543,
+      "cacheWriteInputTokens": 55802,
+      "cachedInputTokens": 5035232,
+      "inputTokens": 5095663,
+      "outputTokens": 231762,
+      "reasoningTokens": 205662,
+      "unknownUsageAttempts": 0
+    },
+    "orchestration": {
+      "attempts": 565,
+      "cacheWriteInputTokens": 2317017,
+      "cachedInputTokens": 9030455,
+      "inputTokens": 11349167,
+      "outputTokens": 325519,
+      "reasoningTokens": 203695,
+      "unknownUsageAttempts": 0
+    },
+    "worker": {
+      "attempts": 531,
+      "cacheWriteInputTokens": 919150,
+      "cachedInputTokens": 1743063,
+      "inputTokens": 2672501,
+      "outputTokens": 169955,
+      "reasoningTokens": 40142,
+      "unknownUsageAttempts": 0
+    }
+  },
+  "planned": 90,
+  "typeCoverage": {
+    "exercise:file-upload": {
+      "completedObservations": 72,
+      "scheduledObservations": 72,
+      "targetedObjectOccurrences": 152
+    },
+    "exercise:modeling": {
+      "completedObservations": 72,
+      "scheduledObservations": 72,
+      "targetedObjectOccurrences": 182
+    },
+    "exercise:programming": {
+      "completedObservations": 72,
+      "scheduledObservations": 72,
+      "targetedObjectOccurrences": 182
+    },
+    "exercise:quiz": {
+      "completedObservations": 72,
+      "scheduledObservations": 72,
+      "targetedObjectOccurrences": 182
+    },
+    "exercise:text": {
+      "completedObservations": 72,
+      "scheduledObservations": 72,
+      "targetedObjectOccurrences": 182
+    },
+    "lecture:attachment-video": {
+      "completedObservations": 73,
+      "scheduledObservations": 73,
+      "targetedObjectOccurrences": 73
+    },
+    "lecture:online": {
+      "completedObservations": 73,
+      "scheduledObservations": 73,
+      "targetedObjectOccurrences": 73
+    },
+    "lecture:text": {
+      "completedObservations": 64,
+      "scheduledObservations": 64,
+      "targetedObjectOccurrences": 74
+    }
+  },
+  "unknownReservationEur": "0",
+  "unknownReservationEvidenceMissing": false
+}
