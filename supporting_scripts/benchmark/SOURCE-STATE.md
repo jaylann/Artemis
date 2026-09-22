@@ -1,6 +1,6 @@
 # Exact source state
 
-Status: refreshed PR integration, preparing the verified source for Justin’s commit. No paid campaign has been frozen or executed.
+Status: source published at `1bd8d1603e2ede31083cf9cbce3f244bbc250712`; external harness live validation is in progress. The initial smoke stopped before any provider request; its incomplete evidence is preserved.
 
 ## Develop
 
@@ -38,14 +38,6 @@ Everything else added locally is outside the application:
 Workspace: `/Users/justin/Programming/University/artemis2/.worktrees/atlas-cost-benchmark-20260922`.
 The original `/Users/justin/Programming/University/artemis2/.worktrees/atlas-demo` was read only. `source-snapshot.json` records the initial copy, before this refresh; `../demo/integration.json` records the current integration. The earlier larger benchmark workspace is retained separately and is not used here.
 
-The Git parent remains fork tip `2f07475e4270da9b846668f283221c000848832c`, allowing an ordinary forward publication after Justin creates the source commit. This parent is separate from the implementation base listed above because the agent is prohibited from creating commits. No commit or push has occurred. Paid execution requires the committed source SHA to match the fork; manifests are prepared only afterward.
+The source commit's parent is fork tip `2f07475e4270da9b846668f283221c000848832c`, separate from the implementation base above. Justin explicitly authorized the agent to commit and push; publication was an ordinary forward update to `jaylann/Artemis` branch `feat/atlas-benchmark-cap256-20260911`, with matching remote SHA. Paid execution requires the committed source SHA to match the fork. Subsequent harness fixes must also be published before use.
 
-## Commit handoff
-
-The complete forward update is staged in this copied workspace. Review the staged diff and create the commit here; do not commit in the original demo or historical benchmark worktree:
-
-```bash
-git -C /Users/justin/Programming/University/artemis2/.worktrees/atlas-cost-benchmark-20260922 commit -m "feat(benchmark): integrate current Atlas PRs with external cost tracking"
-```
-
-The agent must verify the created commit against the staged-source record, then push it to the existing fork branch and compare the remote SHA before paid execution. The current source heads were rechecked after verification; upstream CI remains queued/running. Live preflight, smoke/formal execution, evidence publication and canonical thesis results are still pending.
+Live validation found two external API-observer mismatches: course configuration is nested in response DTOs (update DTO fields remain flat), and the simple STOMP broker does not send subscription receipts. The harness follows those existing contracts. No application behavior was changed.

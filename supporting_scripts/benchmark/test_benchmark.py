@@ -33,6 +33,21 @@ class BenchmarkTests(unittest.TestCase):
     def reserve(self):
         return self.m.reserve(json.dumps(REQUEST).encode(), '/v1/responses')
 
+    def test_nested_course_response_and_flat_update_contract(self):
+        current = {'id': 7, 'courseConfiguration': {'autoOrchestratorEnabled': False, 'maxDailyOrchestrationOverride': 1}}
+        writes = []
+        def api(base, method, path, payload=None, multipart=False):
+            if method == 'PUT':
+                writes.append(payload)
+                current['courseConfiguration'].update({key: payload[key] for key in
+                    ('autoOrchestratorEnabled', 'maxDailyOrchestrationOverride', 'debounceWindowSecondsOverride')})
+            return current
+        with patch.object(seed, 'api', side_effect=api), patch.object(seed.time, 'sleep'):
+            seed.set_automation('http://localhost', {'courseId': 7, 'dailyCap': 2}, True, 10)
+        self.assertEqual(len(writes), 1)
+        self.assertTrue(writes[0]['autoOrchestratorEnabled'])
+        self.assertEqual(current['courseConfiguration']['maxDailyOrchestrationOverride'], 2)
+
     def test_decimal_categories_and_reasoning_included_once(self):
         self.assertEqual(meter.cost(RESPONSE, PRICING), (D(80)*D('.2')+D(20)*D('.02')+D(50)*D('1.2'))/D(1000000)/D('1.149'))
         for tokens, multiplier in [(272000, 1), (272001, 2)]:

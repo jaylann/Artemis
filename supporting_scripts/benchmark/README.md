@@ -2,7 +2,7 @@
 
 This workspace started as a copy of `atlas-demo` and now integrates current develop and the four refreshed Atlas PRs, with an external cost meter and the heterogeneous thesis fixture. Local application changes are confined to the demo’s Hazelcast isolation and one combined-PR test adaptation. The meter forwards the original Responses request and response bodies; it adds no application hooks or behavioral fixes. See [SOURCE-STATE.md](SOURCE-STATE.md) for the exact develop/PR/local composition.
 
-**State: refreshed PR integration; preparing the verified source for Justin’s commit.** No source commit, campaign freeze, publication, paid smoke/formal execution, or thesis result replacement has occurred. Recheck heads before the final handoff. Any subsequent source update requires affected verification before freezing either paid campaign.
+**State: source published; live smoke validation in progress.** Source commit `1bd8d1603e2ede31083cf9cbce3f244bbc250712` was published after Justin explicitly authorized the agent to commit and push. The initial smoke stopped before any provider request because the observer expected unsupported STOMP receipts; its cleanup readback also used the old flat response fields. Both are external harness issues. Preserve that attempt as incomplete with zero provider dispatches. Any source update requires affected verification and distinct campaign manifests.
 
 ## Files
 
@@ -14,9 +14,9 @@ This workspace started as a copy of `atlas-demo` and now integrates current deve
 
 The seed is `20260910`. Formal design: six conditions × ten repetitions, 60 isolated courses and 90 invocations including bootstrap continuations of 12/24/24/12 objects. The three-observation smoke has its own courses and ID. The cost acceptance criterion is **EUR 15 per invocation**. Campaign spending ceilings are independently **EUR 1 smoke / EUR 20 formal**, counting settled attempts and outstanding worst-case reservations. Atlas uses Luna through Responses: xhigh orchestration, high workers, high flavor stripping. Its native 256-callback limit and wrap-up at 224 are unchanged; AtlasML stays disabled.
 
-## Operation after source verification and Justin’s commit
+## Operation after source verification and publication
 
-Source must be committed by Justin, pushed to `jaylann/Artemis` branch `feat/atlas-benchmark-cap256-20260911`, and match the remote SHA before `run --paid` will dispatch. Prepare manifests only after that commit; use distinct, never-reused IDs. Run commands from this copied checkout.
+Source must be committed, pushed to `jaylann/Artemis` branch `feat/atlas-benchmark-cap256-20260911`, and match the remote SHA before `run --paid` will dispatch. Prepare manifests only after that commit; use distinct, never-reused IDs. Run commands from this copied checkout.
 
 ```bash
 python3 -m venv .demo/venv
@@ -37,7 +37,7 @@ supporting_scripts/benchmark/server.sh stop
 
 Ports: Artemis 8083, PostgreSQL 55433, Git SSH 7924, Hazelcast 5704, request meter 18091. The original demo uses different resources. No runtime files, credentials, databases, or repositories were copied from it. The server’s API key is forwarded to the configured upstream; the meter never writes it to the ledger. The meter is available only while the campaign command is running. Before execution, verify Docker health, free disk/storage, port availability, model access, the runtime build, and current pricing. Live preflight and smoke remain pending.
 
-Automatic observations subscribe before triggering and verify the native batch count. The existing scheduler DEBUG logger is enabled through `SPRING_APPLICATION_JSON` to preserve its case-sensitive class name; matched firing/terminal log records establish `NO_OP` completion. A native per-course daily cap equal to the bootstrap stage prevents a failed batch from being replayed by a later scheduler tick; courses are disabled again after each observation. This is an explicit experimental course setting, not a scheduler modification. Mutating HTTP calls are never automatically retried. A dispatch marker is written before changing content; interrupted seeding or execution requires inspection and cannot be replayed with the same command. Failed dependencies remain skipped in the report.
+The simple broker does not acknowledge STOMP subscription receipts. Automatic observations subscribe before triggering and verify the native batch count. The existing scheduler DEBUG logger is enabled through `SPRING_APPLICATION_JSON` to preserve its case-sensitive class name; matched firing/terminal log records establish `NO_OP` completion. A native per-course daily cap equal to the bootstrap stage prevents a failed batch from being replayed by a later scheduler tick; courses are disabled again after each observation. This is an explicit experimental course setting, not a scheduler modification. Mutating HTTP calls are never automatically retried. A dispatch marker is written before changing content; interrupted seeding or execution requires inspection and cannot be replayed with the same command. Failed dependencies remain skipped in the report.
 
 ## Evidence and limits
 
@@ -58,7 +58,7 @@ JAVA_HOME=/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home \
   python3 supporting_scripts/benchmark/verify_fixture.py --classpath-file .demo/validation/classpath.txt --output .demo/validation
 ```
 
-Paid execution is intentionally not a test target. The local transport test uses a fake upstream and verifies exact request/response bytes. The complete application copy, integration changes, and harness are reviewable before Justin creates the source commit.
+Paid execution is intentionally not a test target. The local transport test uses a fake upstream and verifies exact request/response bytes. The complete application copy, integration changes, and harness are reviewable before source publication.
 
 Verification records for the refreshed source are under `.demo/refresh-20260922/`; earlier copy checks remain separately under `.demo/validation/`. The diff against the older fork flags existing whitespace in develop’s generated OpenAPI files; those files are intentionally preserved. These offline checks are not a live-campaign result.
 

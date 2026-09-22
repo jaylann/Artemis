@@ -50,10 +50,10 @@ class Completion:
             self.ws.send('CONNECT\naccept-version:1.2\nhost:' + url.netloc + '\nheart-beat:0,0\n\n\0')
             if not self.frame(30).startswith('CONNECTED\n'):
                 raise RuntimeError('STOMP connection not acknowledged')
-            self.ws.send(f'SUBSCRIBE\nid:benchmark\ndestination:/topic/atlas/orchestrator/{course_id}\nack:auto\nreceipt:ready\n\n\0')
-            frame = self.frame(30)
-            if not frame.startswith('RECEIPT\n') or 'receipt-id:ready' not in frame:
-                raise RuntimeError('STOMP subscription not acknowledged')
+            # Spring's simple broker does not implement STOMP receipts. Subscribe
+            # before changing content, as the native client does; only a terminal
+            # message or matching native NO_OP log establishes completion.
+            self.ws.send(f'SUBSCRIBE\nid:benchmark\ndestination:/topic/atlas/orchestrator/{course_id}\nack:auto\n\n\0')
         except BaseException:
             if hasattr(self, 'ws'): self.ws.close()
             self.log.close()

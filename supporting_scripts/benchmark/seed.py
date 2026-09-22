@@ -119,7 +119,7 @@ def set_automation(base: str, record: dict[str, Any], enabled: bool, debounce: i
         current = api(base, "GET", path)
         if current.get("courseConfiguration") is None:
             raise RuntimeError("Course configuration was not loaded; automation state is unknown")
-        if current.get("courseConfiguration") is not None and current.get("autoOrchestratorEnabled") == enabled and current.get("maxDailyOrchestrationOverride") == record.get("dailyCap", 1) and (not enabled or current.get("debounceWindowSecondsOverride") == debounce):
+        if current.get("courseConfiguration") is not None and current["courseConfiguration"].get("autoOrchestratorEnabled") == enabled and current["courseConfiguration"].get("maxDailyOrchestrationOverride") == record.get("dailyCap", 1) and (not enabled or current["courseConfiguration"].get("debounceWindowSecondsOverride") == debounce):
             record["automationEnabled"] = enabled
             return
         update = dict(current)
@@ -139,7 +139,7 @@ def set_automation(base: str, record: dict[str, Any], enabled: bool, debounce: i
             last_error = error
         time.sleep(attempt + 1)
     current = api(base, "GET", path)
-    if current.get("courseConfiguration") is not None and current.get("autoOrchestratorEnabled") == enabled and current.get("maxDailyOrchestrationOverride") == record.get("dailyCap", 1) and (not enabled or current.get("debounceWindowSecondsOverride") == debounce):
+    if current.get("courseConfiguration") is not None and current["courseConfiguration"].get("autoOrchestratorEnabled") == enabled and current["courseConfiguration"].get("maxDailyOrchestrationOverride") == record.get("dailyCap", 1) and (not enabled or current["courseConfiguration"].get("debounceWindowSecondsOverride") == debounce):
         record["automationEnabled"] = enabled
         return
     raise RuntimeError(f"automation readback failed for course {record['courseId']}: {last_error or 'setting not persisted'}")
