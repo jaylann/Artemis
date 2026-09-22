@@ -7,9 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -18,13 +16,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.metadata.EmptyUsage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.tool.ToolCallbackProvider;
@@ -36,7 +33,7 @@ import org.springframework.stereotype.Service;
 import de.tum.cit.aet.artemis.account.repository.UserRepository;
 import de.tum.cit.aet.artemis.admin.domain.LLMServiceType;
 import de.tum.cit.aet.artemis.admin.service.LLMTokenUsageService;
-import de.tum.cit.aet.artemis.atlas.config.AtlasEnabled;
+import de.tum.cit.aet.artemis.atlas.config.AtlasLLMEnabled;
 import de.tum.cit.aet.artemis.atlas.config.AtlasOrchestratorProperties;
 import de.tum.cit.aet.artemis.atlas.config.AtlasToolSurface;
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
@@ -44,8 +41,6 @@ import de.tum.cit.aet.artemis.atlas.dto.CompetencyIndexDTO;
 import de.tum.cit.aet.artemis.atlas.dto.CompetencyIndexResponseDTO;
 import de.tum.cit.aet.artemis.atlas.dto.CompetencyOrchestrationResultDTO;
 import de.tum.cit.aet.artemis.atlas.dto.ExtractedContentDTO;
-import de.tum.cit.aet.artemis.atlas.dto.LearningObjectOutcomeDTO;
-import de.tum.cit.aet.artemis.atlas.dto.OrchestrationCompletionDTO;
 import de.tum.cit.aet.artemis.atlas.service.ContentChangeAccumulatorService.BatchClaim;
 import de.tum.cit.aet.artemis.atlas.service.OrchestratorToolContextKeys.AppliedActionsBuffer;
 import de.tum.cit.aet.artemis.atlas.service.atlasml.AtlasMLShortlistService;
@@ -56,7 +51,6 @@ import de.tum.cit.aet.artemis.core.service.distributed.api.map.DistributedMap;
 import de.tum.cit.aet.artemis.exercise.domain.Exercise;
 import de.tum.cit.aet.artemis.exercise.repository.ExerciseRepository;
 import de.tum.cit.aet.artemis.lecture.api.LectureUnitRepositoryApi;
-import de.tum.cit.aet.artemis.lecture.domain.ExerciseUnit;
 import de.tum.cit.aet.artemis.lecture.domain.LectureUnit;
 
 /**
@@ -74,7 +68,7 @@ import de.tum.cit.aet.artemis.lecture.domain.LectureUnit;
  * Course context is injected via {@code ToolContext} (see {@link OrchestratorToolContextKeys}) so the
  * LLM cannot forge the course id through tool arguments.
  */
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 @Lazy
 @Service
 public class CompetencyOrchestrationService {
@@ -94,13 +88,15 @@ public class CompetencyOrchestrationService {
     /** Length caps on instructor-controlled strings to bound prompt size and injection surface. */
     private static final int EXERCISE_TITLE_MAX = 200;
 
-    private static final int PROBLEM_STATEMENT_MAX = 8_000;
+    private static final int PROBLEM_STATEMENT_MAX = 16_000;
 
     private static final int COMPETENCY_TITLE_MAX = 200;
 
     private static final int LECTURE_UNIT_NAME_MAX = 200;
 
-    private static final int TYPE_LABEL_MAX = 50;
+    static final int TYPE_LABEL_MAX = 50;
+
+    static final int LECTURE_UNIT_METADATA_VALUE_MAX = 1_000;
 
     private final ExerciseRepository exerciseRepository;
 
@@ -114,16 +110,13 @@ public class CompetencyOrchestrationService {
 
     private final AtlasAgentDelegationService delegationService;
 
-    @Nullable
-    private final ChatClient chatClient;
+    private final ToolCallbackProvider terminalToolCallbackProvider;
 
     private final ToolCallbackProvider orchestratorReadToolCallbackProvider;
 
     private final ToolCallbackProvider orchestratorPlanningToolCallbackProvider;
 
     private final ToolCallbackProvider orchestratorDelegationToolCallbackProvider;
-
-    private final ToolCallbackProvider orchestratorTerminalToolCallbackProvider;
 
     private final String deploymentName;
 
@@ -145,11 +138,10 @@ public class CompetencyOrchestrationService {
 
     public CompetencyOrchestrationService(ExerciseRepository exerciseRepository, Optional<LectureUnitRepositoryApi> lectureUnitRepositoryApi,
             ContentExtractionService contentExtractionService, OrchestratorPlanningToolsService orchestratorPlanningToolsService, AtlasPromptTemplateService templateService,
-            AtlasAgentDelegationService delegationService, @Nullable ChatClient chatClient,
+            AtlasAgentDelegationService delegationService, @Qualifier("orchestratorTerminalToolCallbackProvider") AtlasToolSurface terminalTools,
             @Qualifier("orchestratorReadToolCallbackProvider") AtlasToolSurface orchestratorReadToolCallbackProvider,
             @Qualifier("orchestratorPlanningToolCallbackProvider") AtlasToolSurface orchestratorPlanningToolCallbackProvider,
             @Qualifier("orchestratorDelegationToolCallbackProvider") AtlasToolSurface orchestratorDelegationToolCallbackProvider,
-            @Qualifier("orchestratorTerminalToolCallbackProvider") AtlasToolSurface orchestratorTerminalToolCallbackProvider,
             Optional<DistributedDataProvider> distributedDataProvider, AtlasOrchestratorProperties properties, ContentChangeAccumulatorService contentChangeAccumulatorService,
             LLMTokenUsageService llmTokenUsageService, UserRepository userRepository, AtlasMLShortlistService shortlistService) {
         this.exerciseRepository = exerciseRepository;
@@ -158,11 +150,10 @@ public class CompetencyOrchestrationService {
         this.orchestratorPlanningToolsService = orchestratorPlanningToolsService;
         this.templateService = templateService;
         this.delegationService = delegationService;
-        this.chatClient = chatClient;
+        this.terminalToolCallbackProvider = terminalTools.provider();
         this.orchestratorReadToolCallbackProvider = orchestratorReadToolCallbackProvider.provider();
         this.orchestratorPlanningToolCallbackProvider = orchestratorPlanningToolCallbackProvider.provider();
         this.orchestratorDelegationToolCallbackProvider = orchestratorDelegationToolCallbackProvider.provider();
-        this.orchestratorTerminalToolCallbackProvider = orchestratorTerminalToolCallbackProvider.provider();
         this.deploymentName = properties.model();
         this.temperature = properties.temperature();
         this.reasoningEffort = properties.reasoningEffort();
@@ -250,11 +241,11 @@ public class CompetencyOrchestrationService {
     }
 
     /**
-     * Run one orchestration pass for the given programming exercise. The orchestrator plans
+     * Run one orchestration pass for the given exercise (any type). The orchestrator plans
      * internally and executes its plan by calling write tools — each tool call mutates state
      * immediately and appends to the applied-actions list returned in the result.
      *
-     * @param exerciseId the programming exercise to orchestrate competencies for
+     * @param exerciseId the exercise to orchestrate competencies for
      * @return one of:
      *         <ul>
      *         <li>{@link CompetencyOrchestrationResultDTO.Status#SUCCESS} with the LLM's summary message and the applied actions;</li>
@@ -278,9 +269,7 @@ public class CompetencyOrchestrationService {
         if (existing != null) {
             log.info("Atlas orchestrator rejected for exercise {} (course {}): run {} already in progress for exercise {}", exerciseId, courseId, existing.runId(),
                     existing.exerciseId());
-            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.")
-                    .withObjectOutcomes(List.of(
-                            outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, LearningObjectOutcomeDTO.Status.DEFERRED, true, "Another course run is active.")));
+            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.");
         }
         try {
             return orchestrateExercise(exercise, courseId);
@@ -294,12 +283,12 @@ public class CompetencyOrchestrationService {
      * Runs the automatic pipeline over a whole accumulated batch in a single orchestrator
      * invocation: all changed exercises are rendered into one EXERCISE CHANGE BATCH and reasoned
      * over in one LLM call, rather than one call per exercise. Exam and unknown exercises, plus any
-     * whose owning course does not match {@code courseId}, are recorded as skipped. Holds the per-course
+     * whose owning course does not match {@code courseId}, are dropped silently. Holds the per-course
      * {@link #runMap} claim once for the whole batch — a concurrent manual run or scheduled tick
      * observes {@link CompetencyOrchestrationResultDTO.Status#IN_PROGRESS}.
      *
      * @param courseId    the course whose buffered batch is being drained
-     * @param exerciseIds programming-exercise ids in the batch
+     * @param exerciseIds exercise ids in the batch (any type)
      * @return the single batch result; {@code SUCCESS} when the run completed, {@code NO_OP} when no
      *         claimed exercise was applicable (so nothing was processed), {@code IN_PROGRESS} when
      *         another run holds the course lock
@@ -309,9 +298,9 @@ public class CompetencyOrchestrationService {
     }
 
     /**
-     * Runs the automatic pipeline over a whole accumulated batch of changed exercises AND lecture units
+     * Runs the automatic pipeline over a whole accumulated batch of changed exercises and lecture units
      * in a single orchestrator invocation. Both are resolved (exam/unknown/wrong-course exercises and
-     * ExerciseUnit/unknown/wrong-course lecture units are recorded as skipped) and rendered into one change
+     * ExerciseUnit/unknown/wrong-course lecture units are dropped silently) and rendered into one change
      * batch reasoned over in one LLM call. Holds the per-course {@link #runMap} claim once for the whole
      * batch — a concurrent manual run or scheduled tick observes {@link CompetencyOrchestrationResultDTO.Status#IN_PROGRESS}.
      *
@@ -322,15 +311,13 @@ public class CompetencyOrchestrationService {
      *         claimed learning object was applicable, {@code IN_PROGRESS} when another run holds the lock
      */
     public CompetencyOrchestrationResultDTO runBatch(long courseId, Set<Long> exerciseIds, Set<Long> lectureUnitIds) {
+        if (!delegationService.isOrchestratorAvailable()) {
+            return CompetencyOrchestrationResultDTO.failed("Atlas chat model is not configured.", CompetencyOrchestrationResultDTO.FailureReason.NO_CHAT_CLIENT);
+        }
         List<Exercise> exercises = resolveBatchExercises(courseId, exerciseIds);
         List<LectureUnit> lectureUnits = resolveBatchLectureUnits(courseId, lectureUnitIds);
-        List<LearningObjectOutcomeDTO> initialOutcomes = skippedResolutionOutcomes(exerciseIds, lectureUnitIds, exercises, lectureUnits);
         if (exercises.isEmpty() && lectureUnits.isEmpty()) {
-            return CompetencyOrchestrationResultDTO.noOp("No applicable exercises or lecture units in batch.").withObjectOutcomes(initialOutcomes);
-        }
-        if (chatClient == null) {
-            return CompetencyOrchestrationResultDTO.failed("Atlas chat model is not configured.", CompetencyOrchestrationResultDTO.FailureReason.NO_CHAT_CLIENT)
-                    .withObjectOutcomes(appendResolvedOutcomes(initialOutcomes, exercises, lectureUnits, LearningObjectOutcomeDTO.Status.FAILED, true, "Chat model unavailable."));
+            return CompetencyOrchestrationResultDTO.noOp("No applicable exercises or lecture units in batch.");
         }
 
         long anchorId = exercises.isEmpty() ? lectureUnits.getFirst().getId() : exercises.getFirst().getId();
@@ -338,12 +325,10 @@ public class CompetencyOrchestrationService {
         RunInfo existing = claimRun(courseId, claim);
         if (existing != null) {
             log.info("Atlas orchestrator (batch) rejected for course {}: run {} already in progress for exercise {}", courseId, existing.runId(), existing.exerciseId());
-            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.")
-                    .withObjectOutcomes(
-                            appendResolvedOutcomes(initialOutcomes, exercises, lectureUnits, LearningObjectOutcomeDTO.Status.DEFERRED, true, "Another course run is active."));
+            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.");
         }
         try {
-            return orchestrateBatch(exercises, lectureUnits, courseId, initialOutcomes);
+            return orchestrateBatch(exercises, lectureUnits, courseId);
         }
         finally {
             releaseRun(courseId, claim);
@@ -374,9 +359,7 @@ public class CompetencyOrchestrationService {
         if (existing != null) {
             log.info("Atlas orchestrator (manual flush) rejected for exercise {} (course {}): run {} already in progress for exercise {}", exerciseId, courseId, existing.runId(),
                     existing.exerciseId());
-            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.")
-                    .withObjectOutcomes(List.of(
-                            outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, LearningObjectOutcomeDTO.Status.DEFERRED, true, "Another course run is active.")));
+            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.");
         }
         try {
             Optional<BatchClaim> drained = contentChangeAccumulatorService.claimBatchNow(courseId);
@@ -390,12 +373,16 @@ public class CompetencyOrchestrationService {
                     mergedExerciseIds.size(), queuedLectureUnitIds.size(), exerciseId);
             List<Exercise> exercises = resolveBatchExercises(courseId, mergedExerciseIds);
             List<LectureUnit> lectureUnits = resolveBatchLectureUnits(courseId, queuedLectureUnitIds);
-            List<LearningObjectOutcomeDTO> initialOutcomes = skippedResolutionOutcomes(mergedExerciseIds, queuedLectureUnitIds, exercises, lectureUnits);
             if (exercises.isEmpty() && lectureUnits.isEmpty()) {
-                return CompetencyOrchestrationResultDTO.noOp("No applicable exercises or lecture units in batch.").withObjectOutcomes(initialOutcomes);
+                return CompetencyOrchestrationResultDTO.noOp("No applicable exercises or lecture units in batch.");
             }
-            CompetencyOrchestrationResultDTO result = orchestrateBatch(exercises, lectureUnits, courseId, initialOutcomes);
-            requeueRetryEligible(courseId, result.objectOutcomes());
+            CompetencyOrchestrationResultDTO result = orchestrateBatch(exercises, lectureUnits, courseId);
+            // Preserve drained ids after retryable failures; budget and completion failures must not be replayed automatically.
+            if (result.status() == CompetencyOrchestrationResultDTO.Status.FAILED
+                    && result.failureReason() != CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED
+                    && result.failureReason() != CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION) {
+                contentChangeAccumulatorService.requeueAfterFailedRun(courseId, mergedExerciseIds, queuedLectureUnitIds);
+            }
             return result;
         }
         finally {
@@ -404,54 +391,55 @@ public class CompetencyOrchestrationService {
     }
 
     /**
-     * Manual lecture-unit trigger that flushes and processes the course's complete queued batch.
+     * Runs the manual "suggest competencies" flow for a content-bearing lecture unit. The clicked
+     * unit is merged with any queued exercise and lecture-unit changes from the same course so the
+     * orchestrator reasons over one course-scoped batch.
      *
-     * @param lectureUnitId content-bearing lecture unit to include in the run
-     * @return the verified orchestration result or a typed failure
+     * @param lectureUnitId the manually triggered lecture unit
+     * @return the single result covering the clicked unit and any queued changes
      */
     public CompetencyOrchestrationResultDTO runLectureUnitWithQueuedFlush(long lectureUnitId) {
         if (lectureUnitRepositoryApi.isEmpty()) {
-            return CompetencyOrchestrationResultDTO.failed("Lecture units are unavailable.", CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_LEARNING_OBJECT)
-                    .withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnitId, LearningObjectOutcomeDTO.Status.FAILED, true,
-                            "Lecture-unit repository unavailable.")));
+            return CompetencyOrchestrationResultDTO.failed("Lecture units are unavailable.", CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_LEARNING_OBJECT);
         }
         LectureUnit clicked = lectureUnitRepositoryApi.get().findWithLectureById(lectureUnitId).orElse(null);
-        if (clicked == null || clicked instanceof ExerciseUnit || clicked.getLecture() == null || clicked.getLecture().getCourse() == null) {
-            return CompetencyOrchestrationResultDTO
-                    .failed("Atlas orchestrator only operates on content-bearing course lecture units.", CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_LEARNING_OBJECT)
-                    .withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnitId, LearningObjectOutcomeDTO.Status.SKIPPED, false,
-                            "Unavailable, unsupported, or not course-owned.")));
+        if (clicked == null || !ContentExtractionService.isLectureUnitEligibleForOrchestration(clicked) || clicked.getLecture() == null
+                || clicked.getLecture().getCourse() == null) {
+            return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator only operates on content-bearing course lecture units.",
+                    CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_LEARNING_OBJECT);
         }
-        if (chatClient == null) {
-            return CompetencyOrchestrationResultDTO.failed("Atlas chat model is not configured.", CompetencyOrchestrationResultDTO.FailureReason.NO_CHAT_CLIENT).withObjectOutcomes(
-                    List.of(outcome(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnitId, LearningObjectOutcomeDTO.Status.FAILED, true, "Chat model unavailable.")));
+        if (!delegationService.isOrchestratorAvailable()) {
+            return CompetencyOrchestrationResultDTO.failed("Atlas chat model is not configured.", CompetencyOrchestrationResultDTO.FailureReason.NO_CHAT_CLIENT);
         }
+
         long courseId = clicked.getLecture().getCourse().getId();
         RunInfo claim = new RunInfo(UUID.randomUUID().toString(), lectureUnitId, Instant.now());
         RunInfo existing = claimRun(courseId, claim);
         if (existing != null) {
-            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.")
-                    .withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnitId, LearningObjectOutcomeDTO.Status.DEFERRED, true,
-                            "Another course run is active.")));
+            log.info("Atlas orchestrator (manual flush) rejected for lecture unit {} (course {}): run {} already in progress", lectureUnitId, courseId, existing.runId());
+            return CompetencyOrchestrationResultDTO.inProgress("Another Atlas orchestrator run is already in progress for this course. Please wait for it to finish.");
         }
+
         try {
             Optional<BatchClaim> drained = contentChangeAccumulatorService.claimBatchNow(courseId);
             Set<Long> exerciseIds = new LinkedHashSet<>(drained.map(BatchClaim::exerciseIds).orElseGet(Set::of));
             Set<Long> lectureUnitIds = new LinkedHashSet<>(drained.map(BatchClaim::lectureUnitIds).orElseGet(Set::of));
             lectureUnitIds.add(lectureUnitId);
+
             List<Exercise> exercises = resolveBatchExercises(courseId, exerciseIds);
             List<LectureUnit> lectureUnits = resolveBatchLectureUnits(courseId, lectureUnitIds);
-            List<LearningObjectOutcomeDTO> initialOutcomes = skippedResolutionOutcomes(exerciseIds, lectureUnitIds, exercises, lectureUnits);
             if (lectureUnits.stream().noneMatch(unit -> unit.getId().equals(lectureUnitId))) {
-                CompetencyOrchestrationResultDTO result = CompetencyOrchestrationResultDTO
-                        .failed("Lecture unit is not eligible for orchestration.", CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_LEARNING_OBJECT)
-                        .withObjectOutcomes(appendResolvedOutcomes(initialOutcomes, exercises, lectureUnits, LearningObjectOutcomeDTO.Status.DEFERRED, true,
-                                "Manual trigger became unavailable before orchestration."));
-                requeueRetryEligible(courseId, result.objectOutcomes());
-                return result;
+                contentChangeAccumulatorService.requeueAfterFailedRun(courseId, exerciseIds, drained.map(BatchClaim::lectureUnitIds).orElseGet(Set::of));
+                return CompetencyOrchestrationResultDTO.failed("Lecture unit is not eligible for orchestration.",
+                        CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_LEARNING_OBJECT);
             }
-            CompetencyOrchestrationResultDTO result = orchestrateBatch(exercises, lectureUnits, courseId, initialOutcomes);
-            requeueRetryEligible(courseId, result.objectOutcomes());
+
+            CompetencyOrchestrationResultDTO result = orchestrateBatch(exercises, lectureUnits, courseId);
+            if (result.status() == CompetencyOrchestrationResultDTO.Status.FAILED
+                    && result.failureReason() != CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED
+                    && result.failureReason() != CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION) {
+                contentChangeAccumulatorService.requeueAfterFailedRun(courseId, exerciseIds, lectureUnitIds);
+            }
             return result;
         }
         finally {
@@ -460,7 +448,7 @@ public class CompetencyOrchestrationService {
     }
 
     /**
-     * Resolves a set of exercise ids into the programming exercises eligible for orchestration,
+     * Resolves a set of exercise ids into the exercises eligible for orchestration,
      * dropping unknown and exam exercises and — as a defence against a stale/corrupt accumulator
      * entry — any whose owning course does not match {@code courseId} (mixing course content is
      * never correct). Order of {@code exerciseIds} is preserved.
@@ -492,12 +480,10 @@ public class CompetencyOrchestrationService {
     }
 
     /**
-     * Resolves a set of lecture-unit ids into the units eligible for orchestration, dropping unknown
-     * units, {@link ExerciseUnit}s (never orchestrated — {@code CourseCompetency.prePersistOrUpdate}
-     * strips their links) and — as a defence against a stale/corrupt accumulator entry — any whose
-     * owning course does not match {@code courseId}. The lecture (and its course) is fetch-joined so
-     * the course-ownership check needs no lazy traversal. Order of {@code lectureUnitIds} is preserved.
-     * Returns an empty list immediately when no ids are requested or the lecture module is unavailable.
+     * Resolves lecture-unit ids into orchestratable, course-owned units. Unknown units, unsupported
+     * subtypes, blank-description attachment/video units, and wrong-course units are skipped.
+     * The lecture and course are fetch-joined for the ownership check. Input order is preserved.
+     * Returns an empty list when no ids are requested or the lecture module is unavailable.
      */
     private List<LectureUnit> resolveBatchLectureUnits(long courseId, Collection<Long> lectureUnitIds) {
         if (lectureUnitIds.isEmpty() || lectureUnitRepositoryApi.isEmpty()) {
@@ -514,8 +500,8 @@ public class CompetencyOrchestrationService {
                 log.info("Atlas orchestrator (batch) skipping lecture unit {}: not found", id);
                 continue;
             }
-            if (lectureUnit instanceof ExerciseUnit) {
-                log.info("Atlas orchestrator (batch) skipping exercise-backed lecture unit {}", id);
+            if (!ContentExtractionService.isLectureUnitEligibleForOrchestration(lectureUnit)) {
+                log.info("Atlas orchestrator (batch) skipping unsupported lecture unit {}", id);
                 continue;
             }
             var lecture = lectureUnit.getLecture();
@@ -539,15 +525,12 @@ public class CompetencyOrchestrationService {
     private CompetencyOrchestrationResultDTO precheckExercise(Exercise exercise) {
         if (exercise.isExamExercise()) {
             log.info("Atlas orchestrator rejected for exam exercise {}", exercise.getId());
-            return CompetencyOrchestrationResultDTO
-                    .failed("Atlas orchestrator only operates on course exercises.", CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_EXERCISE)
-                    .withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exercise.getId(), LearningObjectOutcomeDTO.Status.SKIPPED, false,
-                            "Exam exercises are unsupported.")));
+            return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator only operates on course exercises.",
+                    CompetencyOrchestrationResultDTO.FailureReason.UNSUPPORTED_EXERCISE);
         }
-        if (chatClient == null) {
+        if (!delegationService.isOrchestratorAvailable()) {
             log.info("Atlas orchestrator requested for exercise {} but no ChatClient is available", exercise.getId());
-            return CompetencyOrchestrationResultDTO.failed("Atlas chat model is not configured.", CompetencyOrchestrationResultDTO.FailureReason.NO_CHAT_CLIENT).withObjectOutcomes(
-                    List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exercise.getId(), LearningObjectOutcomeDTO.Status.FAILED, true, "Chat model unavailable.")));
+            return CompetencyOrchestrationResultDTO.failed("Atlas chat model is not configured.", CompetencyOrchestrationResultDTO.FailureReason.NO_CHAT_CLIENT);
         }
         return null;
     }
@@ -561,10 +544,6 @@ public class CompetencyOrchestrationService {
         String systemPrompt;
         try {
             ExtractedContentDTO extracted = contentExtractionService.extractContent(exercise);
-            if (extracted.extractedLearningText() == null || extracted.extractedLearningText().isBlank()) {
-                return CompetencyOrchestrationResultDTO.noOp("No learning-relevant content in exercise.").withObjectOutcomes(List
-                        .of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, LearningObjectOutcomeDTO.Status.SKIPPED, false, "No learning-relevant content.")));
-            }
             List<ExerciseChange> changes = List.of(new ExerciseChange(exerciseId, extracted.title(), extracted.extractedLearningText()));
             CompetencyIndexResponseDTO competencyIndex = orchestratorPlanningToolsService.listCompetencyIndex(courseId);
             String renderedIndex = renderCompetencyIndex(competencyIndex);
@@ -578,92 +557,87 @@ public class CompetencyOrchestrationService {
         }
         catch (Exception ex) {
             log.warn("Atlas orchestrator preparation failed for exercise {}: {}", exerciseId, ex.getMessage(), ex);
-            return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.INTERNAL_ERROR).withObjectOutcomes(
-                    List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, LearningObjectOutcomeDTO.Status.FAILED, false, "Preparation failed.")));
+            return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.INTERNAL_ERROR);
         }
         // Synchronized list: Spring AI's roadmap supports parallel tool calls; the orchestrator's
         // write tools all go through OrchestratorToolHelpers.appendAction which only adds.
         List<AppliedActionDTO> appliedActions = Collections.synchronizedList(new ArrayList<>());
-        OrchestrationCompletionDTO completion;
+        String content;
         try {
-            completion = callChatClient(systemPrompt, courseId, exerciseId, appliedActions);
+            content = callChatClient(systemPrompt, courseId, exerciseId, appliedActions);
         }
         catch (AtlasToolCallBudget.LimitReachedException ex) {
             log.warn("Atlas orchestration tool budget exhausted for exercise {}", exerciseId);
-            return toolLimitResult(appliedActions, ex.summary()).withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId,
-                    appliedActions.isEmpty() ? LearningObjectOutcomeDTO.Status.FAILED : LearningObjectOutcomeDTO.Status.PARTIAL, false, "Shared tool-call limit reached.")));
+            return toolLimitResult(appliedActions, ex.summary());
+        }
+        catch (IncompleteOrchestrationException ex) {
+            return appliedActions.isEmpty() ? CompetencyOrchestrationResultDTO.failed(ex.getMessage(), CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION)
+                    : CompetencyOrchestrationResultDTO.partial(ex.getMessage(), List.copyOf(appliedActions),
+                            CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION);
         }
         catch (Exception ex) {
             log.warn("Atlas orchestrator LLM call failed for exercise {} after applying {} action(s): {}", exerciseId, appliedActions.size(), ex.getMessage(), ex);
             if (appliedActions.isEmpty()) {
-                return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR).withObjectOutcomes(
-                        List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, LearningObjectOutcomeDTO.Status.FAILED, false, "Model execution failed.")));
+                return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR);
             }
-            return CompetencyOrchestrationResultDTO
-                    .partial("Atlas orchestrator run failed after applying " + appliedActions.size() + " action(s).", List.copyOf(appliedActions),
-                            CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR)
-                    .withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, LearningObjectOutcomeDTO.Status.PARTIAL, false,
-                            "Mutation committed before verification failed.")));
+            return CompetencyOrchestrationResultDTO.partial("Atlas orchestrator run failed after applying " + appliedActions.size() + " action(s).", List.copyOf(appliedActions),
+                    CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR);
         }
         log.info("Atlas orchestrator completed for exercise {} (course {}) with {} applied action(s)", exerciseId, courseId, appliedActions.size());
-        CompetencyOrchestrationResultDTO result = resultFromCompletion(completion, appliedActions);
-        LearningObjectOutcomeDTO.Status objectStatus = result.status() == CompetencyOrchestrationResultDTO.Status.PARTIAL ? LearningObjectOutcomeDTO.Status.PARTIAL
-                : result.status() == CompetencyOrchestrationResultDTO.Status.FAILED ? LearningObjectOutcomeDTO.Status.FAILED : LearningObjectOutcomeDTO.Status.PROCESSED;
-        return result.withObjectOutcomes(List.of(outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exerciseId, objectStatus, false, "Single-object orchestration completed.")));
+        String summary = content.isBlank() ? "Atlas orchestrator run completed." : content;
+        return appliedActions.isEmpty() ? CompetencyOrchestrationResultDTO.noOp(summary) : CompetencyOrchestrationResultDTO.success(summary, List.copyOf(appliedActions));
     }
 
     /**
-     * Orchestrates a batch of exercises and lecture units in one LLM call. All are extracted and
-     * rendered into a single numbered change batch; the prompt already reasons across multiple entries.
-     * Caller is responsible for holding the per-course {@link #runMap} claim.
+     * Orchestrates a batch of exercises in one LLM call. All exercises are extracted and rendered
+     * into a single numbered EXERCISE CHANGE BATCH; the prompt already reasons across multiple
+     * entries. Caller is responsible for holding the per-course {@link #runMap} claim.
      */
-    private CompetencyOrchestrationResultDTO orchestrateBatch(List<Exercise> exercises, List<LectureUnit> lectureUnits, long courseId,
-            List<LearningObjectOutcomeDTO> initialOutcomes) {
-        Map<LearningObjectKey, LearningObjectOutcomeDTO> outcomes = outcomeMap(initialOutcomes);
-        List<LearningObjectKey> processedCandidates = new ArrayList<>();
-        List<ExerciseChange> exerciseChanges = new ArrayList<>();
-        List<LectureUnitChange> lectureUnitChanges = new ArrayList<>();
+    private CompetencyOrchestrationResultDTO orchestrateBatch(List<Exercise> exercises, List<LectureUnit> lectureUnits, long courseId) {
+        Set<Long> skippedExercises = new LinkedHashSet<>();
+        Set<Long> skippedLectureUnits = new LinkedHashSet<>();
         String systemPrompt;
         try {
+            List<ExerciseChange> exerciseChanges = new ArrayList<>();
             for (Exercise exercise : exercises) {
-                LearningObjectKey key = new LearningObjectKey(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exercise.getId());
                 try {
                     ExtractedContentDTO extracted = contentExtractionService.extractContent(exercise);
-                    if (extracted.extractedLearningText() == null || extracted.extractedLearningText().isBlank()) {
-                        outcomes.put(key, outcome(key.objectType(), key.objectId(), LearningObjectOutcomeDTO.Status.SKIPPED, false, "No learning-relevant content."));
-                        continue;
-                    }
                     exerciseChanges.add(new ExerciseChange(exercise.getId(), extracted.title(), extracted.extractedLearningText()));
-                    processedCandidates.add(key);
                 }
                 catch (Exception ex) {
-                    outcomes.put(key, outcome(key.objectType(), key.objectId(), LearningObjectOutcomeDTO.Status.FAILED, true, "Content extraction failed."));
+                    skippedExercises.add(exercise.getId());
                     log.warn("Atlas orchestrator (batch) skipping exercise {} for course {}: {}", exercise.getId(), courseId, ex.getMessage(), ex);
                 }
             }
+
+            List<LectureUnitChange> lectureUnitChanges = new ArrayList<>();
             for (LectureUnit lectureUnit : lectureUnits) {
-                LearningObjectKey key = new LearningObjectKey(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnit.getId());
                 try {
                     ExtractedContentDTO extracted = contentExtractionService.extractContent(lectureUnit);
-                    if (extracted.extractedLearningText() == null || extracted.extractedLearningText().isBlank()) {
-                        outcomes.put(key, outcome(key.objectType(), key.objectId(), LearningObjectOutcomeDTO.Status.SKIPPED, false, "No learning-relevant content."));
+                    boolean blankLearningText = extracted.extractedLearningText() == null || extracted.extractedLearningText().isBlank();
+                    boolean hasSourceMetadata = extracted.metadata().entrySet().stream()
+                            .anyMatch(entry -> !"lectureUnitType".equals(entry.getKey()) && entry.getValue() != null && !entry.getValue().isBlank());
+                    if (blankLearningText && !hasSourceMetadata) {
+                        log.debug("Atlas orchestrator (batch) skipping lecture unit {} for course {}: no learning text", lectureUnit.getId(), courseId);
                         continue;
                     }
-                    lectureUnitChanges.add(new LectureUnitChange(lectureUnit.getId(), extracted.title(), extracted.extractedLearningText()));
-                    processedCandidates.add(key);
+                    lectureUnitChanges.add(new LectureUnitChange(lectureUnit.getId(), extracted.title(), extracted.extractedLearningText(), extracted.metadata()));
                 }
                 catch (Exception ex) {
-                    outcomes.put(key, outcome(key.objectType(), key.objectId(), LearningObjectOutcomeDTO.Status.FAILED, true, "Content extraction failed."));
+                    skippedLectureUnits.add(lectureUnit.getId());
                     log.warn("Atlas orchestrator (batch) skipping lecture unit {} for course {}: {}", lectureUnit.getId(), courseId, ex.getMessage(), ex);
                 }
             }
+
             if (exerciseChanges.isEmpty() && lectureUnitChanges.isEmpty()) {
-                boolean extractionFailed = outcomes.values().stream().anyMatch(outcome -> outcome.status() == LearningObjectOutcomeDTO.Status.FAILED);
-                CompetencyOrchestrationResultDTO result = extractionFailed
-                        ? CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.INTERNAL_ERROR)
-                        : CompetencyOrchestrationResultDTO.noOp("No learning-relevant content in batch.");
-                return attachBatchOutcomes(result, outcomes, processedCandidates);
+                if (!skippedExercises.isEmpty() || !skippedLectureUnits.isEmpty()) {
+                    log.warn("Atlas orchestrator (batch) has no extractable content for course {} because all extractions failed", courseId);
+                    return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.INTERNAL_ERROR);
+                }
+                log.info("Atlas orchestrator (batch) has no learning-relevant content for course {}", courseId);
+                return CompetencyOrchestrationResultDTO.noOp("No learning-relevant content in batch.");
             }
+
             CompetencyIndexResponseDTO competencyIndex = orchestratorPlanningToolsService.listCompetencyIndex(courseId);
             String renderedIndex = renderCompetencyIndex(competencyIndex);
             String renderedChanges = renderChangeBatch(exerciseChanges, lectureUnitChanges);
@@ -673,133 +647,75 @@ public class CompetencyOrchestrationService {
         }
         catch (Exception ex) {
             log.warn("Atlas orchestrator (batch) preparation failed for course {}: {}", courseId, ex.getMessage(), ex);
-            return attachBatchOutcomes(CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.INTERNAL_ERROR),
-                    outcomes, processedCandidates);
+            return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.INTERNAL_ERROR);
         }
+
         List<AppliedActionDTO> appliedActions = Collections.synchronizedList(new ArrayList<>());
-        OrchestrationCompletionDTO completion;
-        long anchorId = exerciseChanges.isEmpty() ? lectureUnitChanges.getFirst().lectureUnitId() : exerciseChanges.getFirst().exerciseId();
+        String content;
+        Long trackingExerciseId = exercises.isEmpty() ? null : exercises.getFirst().getId();
         try {
-            completion = callChatClient(systemPrompt, courseId, anchorId, appliedActions);
+            content = callChatClient(systemPrompt, courseId, trackingExerciseId, appliedActions);
         }
         catch (AtlasToolCallBudget.LimitReachedException ex) {
             log.warn("Atlas orchestration tool budget exhausted for course {}", courseId);
-            return attachBatchOutcomes(toolLimitResult(appliedActions, ex.summary()), outcomes, processedCandidates);
+            requeueSkipped(courseId, skippedExercises, skippedLectureUnits);
+            return toolLimitResult(appliedActions, ex.summary());
+        }
+        catch (IncompleteOrchestrationException ex) {
+            requeueSkipped(courseId, skippedExercises, skippedLectureUnits);
+            return appliedActions.isEmpty() ? CompetencyOrchestrationResultDTO.failed(ex.getMessage(), CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION)
+                    : CompetencyOrchestrationResultDTO.partial(ex.getMessage(), List.copyOf(appliedActions),
+                            CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION);
         }
         catch (Exception ex) {
             log.warn("Atlas orchestrator (batch) LLM call failed for course {} after applying {} action(s): {}", courseId, appliedActions.size(), ex.getMessage(), ex);
-            CompetencyOrchestrationResultDTO result = appliedActions.isEmpty()
-                    ? CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR)
-                    : CompetencyOrchestrationResultDTO.partial("Atlas orchestrator run failed after applying " + appliedActions.size() + " action(s).", List.copyOf(appliedActions),
-                            CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR);
-            return attachBatchOutcomes(result, outcomes, processedCandidates);
+            if (appliedActions.isEmpty()) {
+                return CompetencyOrchestrationResultDTO.failed("Atlas orchestrator run failed.", CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR);
+            }
+            requeueSkipped(courseId, skippedExercises, skippedLectureUnits);
+            return CompetencyOrchestrationResultDTO.partial("Atlas orchestrator run failed after applying " + appliedActions.size() + " action(s).", List.copyOf(appliedActions),
+                    CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR);
         }
-        log.info("Atlas orchestrator (batch) completed for course {} over {} exercise(s) and {} lecture unit(s) with {} applied action(s)", courseId, exerciseChanges.size(),
-                lectureUnitChanges.size(), appliedActions.size());
-        return attachBatchOutcomes(resultFromCompletion(completion, appliedActions), outcomes, processedCandidates);
+        log.info("Atlas orchestrator (batch) completed for course {} over {} exercise(s) and {} lecture unit(s) with {} applied action(s)", courseId, exercises.size(),
+                lectureUnits.size(), appliedActions.size());
+        requeueSkipped(courseId, skippedExercises, skippedLectureUnits);
+        String summary = content.isBlank() ? "Atlas orchestrator run completed." : content;
+        return appliedActions.isEmpty() ? CompetencyOrchestrationResultDTO.noOp(summary) : CompetencyOrchestrationResultDTO.success(summary, List.copyOf(appliedActions));
     }
 
-    /** Requeues only untouched objects whose recorded outcome explicitly permits retry. */
-    private void requeueRetryEligible(long courseId, List<LearningObjectOutcomeDTO> outcomes) {
-        Set<Long> exerciseIds = retryEligibleIds(outcomes, LearningObjectOutcomeDTO.ObjectType.EXERCISE);
-        Set<Long> lectureUnitIds = retryEligibleIds(outcomes, LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT);
-        if (exerciseIds.isEmpty() && lectureUnitIds.isEmpty()) {
+    /**
+     * Requeue learning-object ids that were dropped mid-batch because their content extraction threw. Only
+     * called on paths where the caller keeps the drained accumulator bucket, including terminal
+     * tool-budget and incomplete-orchestration failures; on other FAILED paths the caller requeues
+     * the whole batch instead. The reservation is kept (a run did happen), so the per-course daily
+     * cap still bounds retries. Safe after committed work: skipped ids never reached the prompt, so
+     * no mutation was committed for them.
+     * <p>
+     * The requeue is best-effort and must never throw: by the time it runs the LLM has already
+     * committed its competency tool mutations. If a requeue failure escaped {@code runBatch},
+     * {@link ContentChangeScheduler#processBatch} would treat it as a pre-mutation error and requeue
+     * the <em>whole</em> batch, so the already-applied competency changes would be re-orchestrated on
+     * the next tick. Losing the skipped ids (logged below) is strictly preferable to re-applying
+     * committed mutations, so a requeue failure is logged and swallowed.
+     */
+    private void requeueSkipped(long courseId, Set<Long> skippedExercises, Set<Long> skippedLectureUnits) {
+        if (skippedExercises.isEmpty() && skippedLectureUnits.isEmpty()) {
             return;
         }
+        log.info("Atlas orchestrator (batch) requeueing {} exercise(s) and {} lecture unit(s) skipped mid-run for course {}", skippedExercises.size(), skippedLectureUnits.size(),
+                courseId);
         try {
-            contentChangeAccumulatorService.requeueAfterFailedRun(courseId, exerciseIds, lectureUnitIds);
+            contentChangeAccumulatorService.requeueAfterFailedRun(courseId, skippedExercises, skippedLectureUnits);
         }
-        catch (RuntimeException ex) {
-            log.warn("Atlas orchestrator could not requeue retry-eligible content for course {}: {}", courseId, ex.getMessage(), ex);
+        catch (Exception ex) {
+            log.warn("Atlas orchestrator (batch) failed to requeue skipped learning objects for course {}; dropping them: {}", courseId, ex.getMessage(), ex);
         }
-    }
-
-    private static CompetencyOrchestrationResultDTO attachBatchOutcomes(CompetencyOrchestrationResultDTO result, Map<LearningObjectKey, LearningObjectOutcomeDTO> outcomes,
-            List<LearningObjectKey> processedCandidates) {
-        LearningObjectOutcomeDTO.Status objectStatus;
-        boolean retryEligible;
-        String detail;
-        switch (result.status()) {
-            case SUCCESS, NO_OP -> {
-                objectStatus = LearningObjectOutcomeDTO.Status.PROCESSED;
-                retryEligible = false;
-                detail = "Included in a verified orchestration decision.";
-            }
-            case PARTIAL -> {
-                objectStatus = LearningObjectOutcomeDTO.Status.PARTIAL;
-                retryEligible = false;
-                detail = "Shared run committed a mutation before verification failed.";
-            }
-            case FAILED -> {
-                objectStatus = LearningObjectOutcomeDTO.Status.FAILED;
-                retryEligible = true;
-                detail = "Run failed before a verified terminal decision.";
-            }
-            case IN_PROGRESS -> {
-                objectStatus = LearningObjectOutcomeDTO.Status.DEFERRED;
-                retryEligible = true;
-                detail = "Another course run is active.";
-            }
-            default -> throw new IllegalStateException("Unsupported orchestration status: " + result.status());
-        }
-        for (LearningObjectKey key : processedCandidates) {
-            outcomes.put(key, outcome(key.objectType(), key.objectId(), objectStatus, retryEligible, detail));
-        }
-        if (result.failureReason() == CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED) {
-            outcomes.replaceAll((key, value) -> new LearningObjectOutcomeDTO(value.objectType(), value.objectId(), value.status(), false, value.detail()));
-        }
-        return result.withObjectOutcomes(sortedOutcomes(outcomes.values()));
-    }
-
-    private static List<LearningObjectOutcomeDTO> skippedResolutionOutcomes(Set<Long> claimedExerciseIds, Set<Long> claimedLectureUnitIds, List<Exercise> exercises,
-            List<LectureUnit> lectureUnits) {
-        Set<Long> resolvedExerciseIds = exercises.stream().map(Exercise::getId).collect(Collectors.toSet());
-        Set<Long> resolvedLectureUnitIds = lectureUnits.stream().map(LectureUnit::getId).collect(Collectors.toSet());
-        List<LearningObjectOutcomeDTO> outcomes = new ArrayList<>();
-        claimedExerciseIds.stream().filter(id -> !resolvedExerciseIds.contains(id)).sorted().map(id -> outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, id,
-                LearningObjectOutcomeDTO.Status.SKIPPED, false, "Unavailable, unsupported, or outside the active course.")).forEach(outcomes::add);
-        claimedLectureUnitIds.stream().filter(id -> !resolvedLectureUnitIds.contains(id)).sorted().map(id -> outcome(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, id,
-                LearningObjectOutcomeDTO.Status.SKIPPED, false, "Unavailable, unsupported, or outside the active course.")).forEach(outcomes::add);
-        return List.copyOf(outcomes);
-    }
-
-    private static List<LearningObjectOutcomeDTO> appendResolvedOutcomes(List<LearningObjectOutcomeDTO> initialOutcomes, List<Exercise> exercises, List<LectureUnit> lectureUnits,
-            LearningObjectOutcomeDTO.Status status, boolean retryEligible, String detail) {
-        Map<LearningObjectKey, LearningObjectOutcomeDTO> outcomes = outcomeMap(initialOutcomes);
-        exercises.forEach(exercise -> outcomes.put(new LearningObjectKey(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exercise.getId()),
-                outcome(LearningObjectOutcomeDTO.ObjectType.EXERCISE, exercise.getId(), status, retryEligible, detail)));
-        lectureUnits.forEach(lectureUnit -> outcomes.put(new LearningObjectKey(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnit.getId()),
-                outcome(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, lectureUnit.getId(), status, retryEligible, detail)));
-        return sortedOutcomes(outcomes.values());
-    }
-
-    private static Map<LearningObjectKey, LearningObjectOutcomeDTO> outcomeMap(Collection<LearningObjectOutcomeDTO> outcomes) {
-        Map<LearningObjectKey, LearningObjectOutcomeDTO> result = new LinkedHashMap<>();
-        outcomes.forEach(outcome -> result.put(new LearningObjectKey(outcome.objectType(), outcome.objectId()), outcome));
-        return result;
-    }
-
-    private static List<LearningObjectOutcomeDTO> sortedOutcomes(Collection<LearningObjectOutcomeDTO> outcomes) {
-        return outcomes.stream().sorted(Comparator.comparing(LearningObjectOutcomeDTO::objectType).thenComparingLong(LearningObjectOutcomeDTO::objectId)).toList();
-    }
-
-    private static Set<Long> retryEligibleIds(List<LearningObjectOutcomeDTO> outcomes, LearningObjectOutcomeDTO.ObjectType objectType) {
-        return outcomes.stream().filter(LearningObjectOutcomeDTO::retryEligible).filter(outcome -> outcome.objectType() == objectType).map(LearningObjectOutcomeDTO::objectId)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    private static LearningObjectOutcomeDTO outcome(LearningObjectOutcomeDTO.ObjectType objectType, long objectId, LearningObjectOutcomeDTO.Status status, boolean retryEligible,
-            String detail) {
-        return new LearningObjectOutcomeDTO(objectType, objectId, status, retryEligible, detail);
-    }
-
-    private record LearningObjectKey(LearningObjectOutcomeDTO.ObjectType objectType, long objectId) {
     }
 
     /**
      * Drive the Spring AI tool-calling loop through the shared {@link AtlasAgentDelegationService}
-     * harness. {@link #run(long)} / {@link #runBatch(long, Set)} guarantee {@link #chatClient} is
-     * non-null before we get here, so the harness short-circuit never trips. Returns the (possibly
+     * harness. {@link #run(long)} / {@link #runBatch(long, Set)} check the selected transport
+     * before dispatch. Returns the (possibly
      * empty) final assistant message; the orchestrator's mutations have already been appended to
      * {@code appliedActions} via the typed {@link AppliedActionsBuffer} in the tool context (passed by
      * reference into the harness).
@@ -812,44 +728,62 @@ public class CompetencyOrchestrationService {
      * Tracking is best-effort: it never throws, and {@code userId} resolves to {@code null} when there
      * is no {@code SecurityContext} (e.g. a scheduler-driven run).
      */
-    private OrchestrationCompletionDTO callChatClient(String systemPrompt, long courseId, long exerciseId, List<AppliedActionDTO> appliedActions) {
+    private String callChatClient(String systemPrompt, long courseId, @Nullable Long exerciseId, List<AppliedActionDTO> appliedActions) {
         OpenAiChatOptions.Builder options = buildChatOptions();
         Map<String, Object> toolContext = new HashMap<>();
         toolContext.put(OrchestratorToolContextKeys.COURSE_ID_KEY, courseId);
         toolContext.put(OrchestratorToolContextKeys.APPLIED_ACTIONS_KEY, new AppliedActionsBuffer(appliedActions));
-        toolContext.put(OrchestratorToolContextKeys.LEARNING_OBJECT_ID_KEY, exerciseId);
-        toolContext.put(OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        toolContext.put(OrchestratorToolContextKeys.LAST_INDEX_READ_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        toolContext.put(OrchestratorToolContextKeys.LAST_DELEGATION_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        AtomicReference<OrchestrationCompletionDTO> completionHolder = OrchestratorToolContextKeys.newOrchestrationCompletionHolder();
-        toolContext.put(OrchestratorToolContextKeys.ORCHESTRATION_COMPLETION_KEY, completionHolder);
-        ChatResponse chatResponse = delegationService.delegateOrchestratorRound(systemPrompt, "Plan, delegate, verify, optionally correct once, then call completeOrchestration.",
-                options, toolContext, orchestratorReadToolCallbackProvider, orchestratorPlanningToolCallbackProvider, orchestratorDelegationToolCallbackProvider,
-                orchestratorTerminalToolCallbackProvider);
+        if (exerciseId != null) {
+            toolContext.put(OrchestratorToolContextKeys.LEARNING_OBJECT_ID_KEY, exerciseId);
+        }
+        toolContext.put(OrchestratorToolContextKeys.DELEGATION_COUNT_KEY, new AtomicInteger());
+        AtlasToolCallBudget budget = AtlasToolCallBudget.budgetForContext(toolContext);
+        ChatResponse chatResponse;
+        try {
+            chatResponse = delegationService.delegateOrchestratorRound(systemPrompt,
+                    "Plan the competency-management work, delegate semantic batches in dependency order, verify the final index, and terminate explicitly.", options, toolContext,
+                    orchestratorReadToolCallbackProvider, orchestratorPlanningToolCallbackProvider, orchestratorDelegationToolCallbackProvider, terminalToolCallbackProvider);
+        }
+        catch (RuntimeException ex) {
+            if (budget.completion() != null) {
+                throw new IncompleteOrchestrationException("Atlas attempted further work after completion. " + budget.completion().message());
+            }
+            throw ex;
+        }
         Long userId = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findIdByLogin).orElse(null);
-        llmTokenUsageService.trackChatResponseTokenUsage(chatResponse, LLMServiceType.ATLAS, ORCHESTRATION_PIPELINE_ID,
-                builder -> builder.withCourse(courseId).withExercise(exerciseId).withUser(userId));
+        if (chatResponse != null) {
+            llmTokenUsageService.trackChatResponseTokenUsage(chatResponse, LLMServiceType.ATLAS, ORCHESTRATION_PIPELINE_ID,
+                    builder -> builder.withCourse(courseId).withExercise(exerciseId).withUser(userId));
+            if (Boolean.FALSE.equals(chatResponse.getMetadata().get(AtlasResponsesChatModel.USAGE_COMPLETE_METADATA_KEY))) {
+                if (chatResponse.getMetadata().getUsage() instanceof EmptyUsage) {
+                    log.warn("Atlas orchestration usage is unavailable for course {}; no zero-cost record is stored", courseId);
+                }
+                else {
+                    log.warn("Atlas orchestration usage is incomplete for course {}; storing the reported partial usage", courseId);
+                }
+            }
+        }
+        else {
+            log.warn("Atlas orchestration usage is unavailable for course {}; no zero-cost record is stored", courseId);
+        }
         AtlasToolCallBudget.checkResponse(chatResponse, toolContext);
-        OrchestrationCompletionDTO completion = completionHolder.get();
-        if (completion == null) {
-            throw new IllegalStateException("Main orchestrator returned without calling completeOrchestration.");
+        if (chatResponse != null && chatResponse.getResult() != null) {
+            String finish = chatResponse.getResult().getMetadata().getFinishReason();
+            if (java.util.Set.of("failed", "incomplete", "cancelled", "queued", "in_progress", "missing_status").contains(finish == null ? "" : finish)) {
+                throw new IllegalStateException("Atlas Responses request did not complete: " + finish);
+            }
         }
-        return completion;
-    }
-
-    /** Keeps committed actions and identifies budget exhaustion as a terminal failure. */
-    private static CompetencyOrchestrationResultDTO toolLimitResult(List<AppliedActionDTO> actions, String message) {
-        return actions.isEmpty() ? CompetencyOrchestrationResultDTO.failed(message, CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED)
-                : CompetencyOrchestrationResultDTO.partial(message, List.copyOf(actions), CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED);
-    }
-
-    private static CompetencyOrchestrationResultDTO resultFromCompletion(OrchestrationCompletionDTO completion, List<AppliedActionDTO> appliedActions) {
-        List<AppliedActionDTO> actions = List.copyOf(appliedActions);
-        if (completion.verified()) {
-            return actions.isEmpty() ? CompetencyOrchestrationResultDTO.noOp(completion.message()) : CompetencyOrchestrationResultDTO.success(completion.message(), actions);
+        if (budget.completion() == null) {
+            throw new IncompleteOrchestrationException("Atlas returned without calling completeOrchestration; completion could not be verified.");
         }
-        return actions.isEmpty() ? CompetencyOrchestrationResultDTO.failed(completion.message(), CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR)
-                : CompetencyOrchestrationResultDTO.partial(completion.message(), actions, CompetencyOrchestrationResultDTO.FailureReason.LLM_ERROR);
+        var completion = budget.completion();
+        if (!completion.verified()) {
+            if (budget.calls() >= AtlasToolCallBudget.WRAP_UP_AT) {
+                throw new AtlasToolCallBudget.LimitReachedException(completion.message());
+            }
+            throw new IncompleteOrchestrationException(completion.message());
+        }
+        return completion.message();
     }
 
     /** GPT-5 reasoning models reject explicit temperature alongside reasoningEffort, so we omit one when the other is set. */
@@ -862,6 +796,19 @@ public class CompetencyOrchestrationService {
             builder.temperature(temperature);
         }
         return builder;
+    }
+
+    private static final class IncompleteOrchestrationException extends RuntimeException {
+
+        private IncompleteOrchestrationException(String message) {
+            super(message);
+        }
+    }
+
+    /** Keeps committed actions and identifies budget exhaustion as a terminal failure. */
+    private static CompetencyOrchestrationResultDTO toolLimitResult(List<AppliedActionDTO> actions, String message) {
+        return actions.isEmpty() ? CompetencyOrchestrationResultDTO.failed(message, CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED)
+                : CompetencyOrchestrationResultDTO.partial(message, List.copyOf(actions), CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED);
     }
 
     private static String renderExerciseChangeBatch(List<ExerciseChange> changes) {
@@ -894,6 +841,10 @@ public class CompetencyOrchestrationService {
                 sb.append("\n\n");
             }
             sb.append(index).append(". [UPDATE lecture-unit id=").append(change.lectureUnitId()).append("] ").append(safeTitle).append('\n').append(safeBody);
+            String metadata = renderLectureUnitMetadata(change.metadata());
+            if (!metadata.isBlank()) {
+                sb.append("\nSource metadata: ").append(metadata);
+            }
             index++;
         }
         return sb.toString();
@@ -904,7 +855,16 @@ public class CompetencyOrchestrationService {
     }
 
     /** One extracted lecture-unit change rendered as a numbered entry in the change batch block. */
-    private record LectureUnitChange(long lectureUnitId, String title, @Nullable String learningText) {
+    private record LectureUnitChange(long lectureUnitId, String title, @Nullable String learningText, Map<String, String> metadata) {
+    }
+
+    private static String renderLectureUnitMetadata(Map<String, String> metadata) {
+        if (metadata == null || metadata.isEmpty()) {
+            return "";
+        }
+        return metadata.entrySet().stream().filter(entry -> !"lectureUnitType".equals(entry.getKey())).filter(entry -> entry.getValue() != null && !entry.getValue().isBlank())
+                .map(entry -> sanitizeForPrompt(entry.getKey(), TYPE_LABEL_MAX) + "=" + sanitizeForPrompt(entry.getValue(), LECTURE_UNIT_METADATA_VALUE_MAX))
+                .reduce((left, right) -> left + ", " + right).orElse("");
     }
 
     /**
@@ -982,7 +942,8 @@ public class CompetencyOrchestrationService {
             appendLeafGroup(sb, childIndent, "lecture units", lectureUnitLines, !hasRelations);
         }
         if (hasRelations) {
-            List<String> relationLines = entry.relations().stream().map(CompetencyOrchestrationService::formatRelationLine).toList();
+            List<String> relationLines = entry.relations().stream()
+                    .map(relation -> relation.tailCompetencyId() + " --" + relation.relationType() + "--> " + relation.headCompetencyId()).toList();
             appendLeafGroup(sb, childIndent, "relations", relationLines, true);
         }
     }
@@ -990,21 +951,16 @@ public class CompetencyOrchestrationService {
     private static String formatExerciseLine(CompetencyIndexDTO.ExerciseLinkRefDTO exercise) {
         String safeTitle = sanitizeForPrompt(exercise.title(), EXERCISE_TITLE_MAX);
         String safeType = sanitizeForPrompt(Objects.requireNonNullElse(exercise.type(), "unknown"), TYPE_LABEL_MAX);
-        String provenance = "generatedByAi=" + exercise.generatedByAi();
         if (exercise.weight() == null) {
-            return safeTitle + " (" + safeType + ", " + provenance + ")";
+            return safeTitle + " (" + safeType + ")";
         }
-        return safeTitle + " (" + safeType + ", w=" + String.format(Locale.ROOT, "%.1f", exercise.weight()) + ", " + provenance + ")";
+        return safeTitle + " (" + safeType + ", w=" + String.format(Locale.ROOT, "%.1f", exercise.weight()) + ")";
     }
 
     private static String formatLectureUnitLine(CompetencyIndexDTO.LectureUnitRefDTO lectureUnit) {
         String safeName = sanitizeForPrompt(lectureUnit.name(), LECTURE_UNIT_NAME_MAX);
         String safeType = sanitizeForPrompt(Objects.requireNonNullElse(lectureUnit.type(), "unknown"), TYPE_LABEL_MAX);
-        return safeName + " (" + safeType + ", generatedByAi=" + lectureUnit.generatedByAi() + ")";
-    }
-
-    private static String formatRelationLine(CompetencyIndexDTO.RelationRefDTO relation) {
-        return relation.tailCompetencyId() + " --" + relation.relationType() + "--> " + relation.headCompetencyId();
+        return safeName + " (" + safeType + ")";
     }
 
     /** Distributed map entry guarding per-course runs; expired via {@link #RUN_LEASE} in {@link #claimRun}. */

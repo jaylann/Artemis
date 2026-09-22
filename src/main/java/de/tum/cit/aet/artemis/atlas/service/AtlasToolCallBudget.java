@@ -25,10 +25,11 @@ import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.metadata.ToolMetadata;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import de.tum.cit.aet.artemis.atlas.dto.ExtractedContentDTO;
+import de.tum.cit.aet.artemis.atlas.dto.OrchestrationCompletionDTO;
 
 /**
  * One atomic tool-call quota shared by an autonomous Atlas run and every role worker it spawns.
@@ -40,15 +41,74 @@ public final class AtlasToolCallBudget {
     /** Tool-context key carrying the budget object through parent and worker rounds. */
     public static final String CONTEXT_KEY = "atlasToolCallBudget";
 
+    /** Context marker distinguishing worker callbacks in the shared audit trail. */
+    public static final String WORKER_CONTEXT_KEY = "atlasBudgetWorker";
+
     /** Maximum number of autonomous tool callbacks in one top-level run. */
     public static final int LIMIT = 256;
 
     /** Work stops here; the remaining callbacks are reserved for verification and completion. */
     public static final int WRAP_UP_AT = LIMIT - 32;
 
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final JsonMapper JSON = new JsonMapper();
 
     private final AtomicBoolean workBlocked = new AtomicBoolean();
+
+    // Admission and completion share this monitor. No provider or tool work runs under the monitor.
+    private long mutationVersion;
+
+    private long verifiedVersion = -1;
+
+    private int activeWork;
+
+    @Nullable
+    private OrchestrationCompletionDTO completion;
+
+    /** @return the main orchestrator's terminal decision, if recorded */
+    @Nullable
+    public synchronized OrchestrationCompletionDTO completion() {
+        return completion;
+    }
+
+    /**
+     * Records the existing main-orchestrator completion contract after the final index read.
+     *
+     * @param verified whether the model verified all requested work
+     * @param message  instructor-facing summary
+     */
+    public synchronized void complete(boolean verified, String message) {
+        if (completion != null) {
+            throw new IllegalStateException("completeOrchestration was already called.");
+        }
+        if (activeWork != 0) {
+            throw new IllegalStateException("Wait for active work before completing orchestration.");
+        }
+        if (verified && (verifiedVersion != mutationVersion || workBlocked() || exhausted())) {
+            throw new IllegalStateException("verified=true requires a successful index refresh after the latest work, with no budget-blocked work.");
+        }
+        completion = new OrchestrationCompletionDTO(verified, message);
+    }
+
+    private synchronized long begin(boolean work) {
+        if (completion != null) {
+            throw new IllegalStateException("Orchestration is complete; no further callbacks are allowed.");
+        }
+        if (work) {
+            activeWork++;
+            mutationVersion++;
+            return mutationVersion;
+        }
+        return activeWork == 0 ? mutationVersion : -1;
+    }
+
+    private synchronized void finish(boolean work, long version, boolean verifiedIndex) {
+        if (work) {
+            activeWork--;
+        }
+        if (verifiedIndex && activeWork == 0 && version == mutationVersion) {
+            verifiedVersion = version;
+        }
+    }
 
     private final Map<String, ExtractedContentDTO> contentSnapshots = new ConcurrentHashMap<>();
 
@@ -79,13 +139,14 @@ public final class AtlasToolCallBudget {
         try {
             return JSON.writeValueAsString(Map.of("result", result, "atlasBudget", instructions()));
         }
-        catch (JsonProcessingException ex) {
+        catch (JacksonException ex) {
             throw new IllegalStateException("Cannot encode tool budget notice", ex);
         }
     }
 
     private static boolean readOnly(String name) {
-        return name.startsWith("get") || name.startsWith("list") || name.equals("searchLectureContent");
+        return name.equals("getCompetencyDetails") || name.equals("getExerciseContent") || name.equals("getLectureUnitContent") || name.equals("listCompetencyIndex")
+                || name.equals("searchLectureContent");
     }
 
     private static boolean terminal(String name) {
@@ -123,8 +184,9 @@ public final class AtlasToolCallBudget {
     public static void checkResponse(@Nullable ChatResponse response, Map<String, Object> context) {
         AtlasToolCallBudget budget = existingBudget(context);
         if (budget != null && (budget.exhausted() || budget.workBlocked())) {
-            String summary = response != null && response.getResult() != null ? response.getResult().getOutput().getText() : null;
-            throw new LimitReachedException(budget.exhausted() ? null : summary);
+            String summary = budget.completion() != null ? budget.completion().message()
+                    : response != null && response.getResult() != null ? response.getResult().getOutput().getText() : null;
+            throw new LimitReachedException(summary);
         }
         checkResponse(response);
     }
@@ -272,10 +334,13 @@ public final class AtlasToolCallBudget {
         private String invoke(String arguments, @Nullable ToolContext context) {
             String toolName = delegate.getToolDefinition().name();
             boolean completion = terminal(toolName);
-            if (!budget.reserve(completion)) {
+            if (!budget.reserve(toolName.equals("completeOrchestration"))) {
                 throw limitException(toolName);
             }
             String outcome = "completed";
+            boolean work = !readOnly(toolName) && !completion;
+            long version = budget.begin(work);
+            boolean verifiedIndex = false;
             try {
                 if (budget.calls() > WRAP_UP_AT && !readOnly(toolName) && !completion) {
                     budget.workBlocked.set(true);
@@ -283,6 +348,10 @@ public final class AtlasToolCallBudget {
                     return budget.response("NOT EXECUTED: work budget reached. Finish the current worker, refresh relevant state, and complete with unresolved work reported.");
                 }
                 String result = delegate.call(arguments, context);
+                if (toolName.equals("listCompetencyIndex") && result != null) {
+                    var index = JSON.readTree(result);
+                    verifiedIndex = index.isObject() && !index.has("error");
+                }
                 if (budget.exhausted()) {
                     throw limitException(toolName);
                 }
@@ -293,11 +362,17 @@ public final class AtlasToolCallBudget {
                 if (budget.exhausted() && !(exception instanceof ToolCallLimitExceededException)) {
                     throw limitException(toolName);
                 }
+                if (toolName.equals("completeOrchestration")) {
+                    // returnDirect ends this round even when verification was rejected. The caller
+                    // records the accumulated usage and reports missing completion without replay.
+                    return budget.response("COMPLETION REJECTED: " + exception.getMessage());
+                }
                 throw exception;
             }
             finally {
+                budget.finish(work, version, verifiedIndex);
                 budget.activity.add(Map.of("tool", toolName, "argumentsSha256", argumentHash(arguments), "outcome", outcome, "role",
-                        context != null && Boolean.TRUE.equals(context.getContext().get("atlasBudgetWorker")) ? "worker" : "orchestrator"));
+                        context != null && Boolean.TRUE.equals(context.getContext().get(WORKER_CONTEXT_KEY)) ? "worker" : "orchestrator"));
             }
         }
     }

@@ -1,17 +1,18 @@
 package de.tum.cit.aet.artemis.atlas.service;
 
-import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolContextKeys.APPLIED_ACTIONS_KEY;
-import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolContextKeys.COURSE_ID_KEY;
-import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolContextKeys.LEARNING_OBJECT_ID_KEY;
+import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.hasWorkerMutationError;
+import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.isWorkerCompletionTerminal;
+import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.tryReserveDelegationSlot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -23,13 +24,10 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.tum.cit.aet.artemis.account.repository.UserRepository;
 import de.tum.cit.aet.artemis.admin.domain.LLMServiceType;
 import de.tum.cit.aet.artemis.admin.service.LLMTokenUsageService;
-import de.tum.cit.aet.artemis.atlas.config.AtlasEnabled;
+import de.tum.cit.aet.artemis.atlas.config.AtlasLLMEnabled;
 import de.tum.cit.aet.artemis.atlas.config.AtlasOrchestratorProperties;
 import de.tum.cit.aet.artemis.atlas.config.AtlasToolSurface;
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
@@ -37,19 +35,25 @@ import de.tum.cit.aet.artemis.atlas.dto.WorkerCompletionDTO;
 import de.tum.cit.aet.artemis.atlas.dto.WorkerResultDTO;
 import de.tum.cit.aet.artemis.core.security.SecurityUtils;
 
-/** Main-agent tools that synchronously spawn stateless semantic-batch role workers. */
+/** Main-orchestrator tools that synchronously delegate semantic action batches to isolated workers. */
 @Lazy
 @Service
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 public class OrchestratorDelegationToolsService {
 
-    private static final String PIPELINE_ID = "ATLAS_ORCHESTRATION";
+    private static final Logger log = LoggerFactory.getLogger(OrchestratorDelegationToolsService.class);
+
+    private static final String ORCHESTRATION_PIPELINE_ID = "ATLAS_ORCHESTRATION";
+
+    private static final String CREATOR_PROMPT_PATH = "prompts/atlas/orchestrator_creator_worker_prompt.st";
+
+    private static final String ASSIGNER_PROMPT_PATH = "prompts/atlas/orchestrator_assigner_worker_prompt.st";
+
+    private static final String EDITOR_PROMPT_PATH = "prompts/atlas/orchestrator_editor_worker_prompt.st";
 
     private final AtlasPromptTemplateService templateService;
 
     private final AtlasAgentDelegationService delegationService;
-
-    private final ObjectMapper objectMapper;
 
     private final ToolCallbackProvider readTools;
 
@@ -61,7 +65,7 @@ public class OrchestratorDelegationToolsService {
 
     private final ToolCallbackProvider terminalTools;
 
-    private final String workerModel;
+    private final String workerDeploymentName;
 
     private final String workerReasoningEffort;
 
@@ -69,139 +73,142 @@ public class OrchestratorDelegationToolsService {
 
     private final UserRepository userRepository;
 
-    public OrchestratorDelegationToolsService(AtlasPromptTemplateService templateService, AtlasAgentDelegationService delegationService, ObjectMapper objectMapper,
+    public OrchestratorDelegationToolsService(AtlasPromptTemplateService templateService, AtlasAgentDelegationService delegationService,
             @Qualifier("orchestratorReadToolCallbackProvider") AtlasToolSurface readTools, @Qualifier("creatorToolCallbackProvider") AtlasToolSurface creatorTools,
             @Qualifier("assignerToolCallbackProvider") AtlasToolSurface assignerTools, @Qualifier("editorToolCallbackProvider") AtlasToolSurface editorTools,
             @Qualifier("workerTerminalToolCallbackProvider") AtlasToolSurface terminalTools, AtlasOrchestratorProperties properties, LLMTokenUsageService llmTokenUsageService,
             UserRepository userRepository) {
         this.templateService = templateService;
         this.delegationService = delegationService;
-        this.objectMapper = objectMapper;
         this.readTools = readTools.provider();
         this.creatorTools = creatorTools.provider();
         this.assignerTools = assignerTools.provider();
         this.editorTools = editorTools.provider();
         this.terminalTools = terminalTools.provider();
-        this.workerModel = properties.workerModel();
+        this.workerDeploymentName = properties.workerModel();
         this.workerReasoningEffort = properties.workerReasoningEffort();
         this.llmTokenUsageService = llmTokenUsageService;
         this.userRepository = userRepository;
     }
 
-    @Tool(description = "Spawn the Creator worker synchronously for one semantic batch of competency creations. The result contains its success, message, and applied actions.")
-    public String delegateToCreator(@ToolParam(description = "complete semantic batch for the Creator worker") String task, ToolContext context) {
-        return delegate("prompts/atlas/orchestrator_creator_worker.st", task, creatorTools, context);
+    @Tool(description = "Delegate one semantic batch of competency creations to a stateless Creator worker. The worker can read course state and call createCompetency only.")
+    public WorkerResultDTO delegateToCreator(@ToolParam(description = "complete, self-contained creation batch with evidence and expected outcome") String task,
+            ToolContext toolContext) {
+        return delegate(WorkerRole.CREATOR, task, toolContext, creatorTools);
     }
 
-    @Tool(description = "Spawn the Assigner worker synchronously for one semantic batch of exercise or lecture-unit link changes.")
-    public String delegateToAssigner(@ToolParam(description = "complete semantic batch for the Assigner worker") String task, ToolContext context) {
-        return delegate("prompts/atlas/orchestrator_assigner_worker.st", task, assignerTools, context);
+    @Tool(description = "Delegate one semantic batch of exercise link assignments or removals to a stateless Assigner worker. The worker can read course state and call assignment tools only.")
+    public WorkerResultDTO delegateToAssigner(
+            @ToolParam(description = "complete, self-contained exercise assignment batch with ids, weights, evidence, and expected outcome") String task, ToolContext toolContext) {
+        return delegate(WorkerRole.ASSIGNER, task, toolContext, assignerTools);
     }
 
-    @Tool(description = "Spawn the Editor worker synchronously for one semantic batch of competency field edits or safe deletions.")
-    public String delegateToEditor(@ToolParam(description = "complete semantic batch for the Editor worker") String task, ToolContext context) {
-        return delegate("prompts/atlas/orchestrator_editor_worker.st", task, editorTools, context);
+    @Tool(description = "Delegate one semantic batch of competency edits or deletions to a stateless Editor worker. The worker can read course state and call edit/delete tools only.")
+    public WorkerResultDTO delegateToEditor(@ToolParam(description = "complete, self-contained edit/delete batch with evidence and expected outcome") String task,
+            ToolContext toolContext) {
+        return delegate(WorkerRole.EDITOR, task, toolContext, editorTools);
     }
 
-    private String delegate(String promptPath, String task, ToolCallbackProvider roleTools, ToolContext parentContext) {
+    private WorkerResultDTO delegate(WorkerRole role, @Nullable String task, @Nullable ToolContext parentContext, ToolCallbackProvider roleTools) {
         if (task == null || task.isBlank()) {
-            return serialize(new WorkerResultDTO(false, "Worker task must not be blank.", List.of()));
+            return new WorkerResultDTO(false, "Worker task must not be blank.", List.of());
         }
-        Long courseId = contextLong(parentContext, COURSE_ID_KEY);
+        Long courseId = OrchestratorToolHelpers.courseIdFromContext(parentContext);
         OrchestratorToolContextKeys.AppliedActionsBuffer buffer = OrchestratorToolHelpers.appliedActionsBufferFromContext(parentContext);
         if (courseId == null || buffer == null) {
-            return serialize(new WorkerResultDTO(false, "Worker delegation is missing course or audit context.", List.of()));
+            return new WorkerResultDTO(false, "Worker delegation context is incomplete.", List.of());
         }
-        AtlasToolCallBudget budget;
-        try {
-            budget = parentContext == null || parentContext.getContext() == null ? null : AtlasToolCallBudget.existingBudget(parentContext.getContext());
-        }
-        catch (IllegalStateException ex) {
-            return serialize(new WorkerResultDTO(false, "Worker delegation has an invalid tool-call budget.", List.of()));
-        }
+        AtlasToolCallBudget budget = parentContext == null ? null : AtlasToolCallBudget.existingBudget(parentContext.getContext());
         if (budget == null) {
-            return serialize(new WorkerResultDTO(false, "Worker delegation is missing tool-call budget.", List.of()));
+            return new WorkerResultDTO(false, "Worker delegation requires the parent tool-call budget.", List.of());
+        }
+        if (!tryReserveDelegationSlot(parentContext)) {
+            return new WorkerResultDTO(false, "Worker delegation cap (" + OrchestratorToolContextKeys.MAX_DELEGATION_CALLS + ") reached for this run; verify and terminate.",
+                    List.of());
         }
 
-        int actionStart;
-        synchronized (buffer.actions()) {
-            actionStart = buffer.actions().size();
-        }
-        AtomicReference<WorkerCompletionDTO> completion = OrchestratorToolContextKeys.newWorkerCompletionHolder();
+        int actionStart = buffer.actions().size();
+        AtomicReference<WorkerCompletionDTO> completionHolder = OrchestratorToolContextKeys.newWorkerCompletionHolder();
         Map<String, Object> workerContext = new HashMap<>();
-        workerContext.put(COURSE_ID_KEY, courseId);
-        workerContext.put("atlasBudgetWorker", true);
-        workerContext.put(APPLIED_ACTIONS_KEY, buffer);
         workerContext.put(AtlasToolCallBudget.CONTEXT_KEY, budget);
-        workerContext.put(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY, completion);
+        workerContext.put(AtlasToolCallBudget.WORKER_CONTEXT_KEY, true);
+        workerContext.put(OrchestratorToolContextKeys.COURSE_ID_KEY, courseId);
+        workerContext.put(OrchestratorToolContextKeys.APPLIED_ACTIONS_KEY, buffer);
+        workerContext.put(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY, completionHolder);
+        workerContext.put(OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceMarker());
+        workerContext.put(OrchestratorToolContextKeys.WORKER_COMPLETION_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceMarker());
+        workerContext.put(OrchestratorToolContextKeys.WORKER_MUTATION_OUTCOME_COUNT_KEY, new AtomicInteger());
+        workerContext.put(OrchestratorToolContextKeys.WORKER_MUTATION_ERROR_KEY, OrchestratorToolContextKeys.newWorkerMutationErrorMarker());
         workerContext.put(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY, new AtomicInteger());
         workerContext.put(OrchestratorToolContextKeys.WORKER_ACTION_START_KEY, actionStart);
-        workerContext.put(OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        workerContext.put(OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        workerContext.put(OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY, OrchestratorToolContextKeys.newWorkerTerminalInvalidatedHolder());
-        workerContext.put(OrchestratorToolContextKeys.WORKER_STATE_LOCK_KEY, new Object());
-        Long learningObjectId = contextLong(parentContext, LEARNING_OBJECT_ID_KEY);
-        if (learningObjectId != null) {
-            workerContext.put(LEARNING_OBJECT_ID_KEY, learningObjectId);
-        }
+        copyContextValue(parentContext, workerContext, OrchestratorToolContextKeys.LEARNING_OBJECT_ID_KEY);
 
         try {
-            String systemPrompt = templateService.render(promptPath, Map.of("task", task));
-            OpenAiChatOptions.Builder options = OpenAiChatOptions.builder().deploymentName(workerModel).reasoningEffort(workerReasoningEffort);
-            ChatResponse response = delegationService.delegateOrchestratorRound(systemPrompt, "Execute the supplied task, then call completeWorkerTask.", options, workerContext,
-                    readTools, roleTools, terminalTools);
-            trackUsage(response, courseId, learningObjectId);
-            AtlasToolCallBudget.checkResponse(response);
+            String systemPrompt = templateService.render(role.promptPath, Map.of());
+            OpenAiChatOptions.Builder options = OpenAiChatOptions.builder().deploymentName(workerDeploymentName).reasoningEffort(workerReasoningEffort);
+            ChatResponse response = delegationService.delegateOrchestratorRound(systemPrompt,
+                    task + "\n\nExecute this batch, then call completeWorkerTask exactly once with the outcome.", options, workerContext, readTools, roleTools, terminalTools);
+            trackUsage(response, courseId, workerContext);
+            AtlasToolCallBudget.checkResponse(response, workerContext);
+            if (response == null || response.getResult() == null || java.util.Set.of("failed", "incomplete", "cancelled", "queued", "in_progress", "missing_status")
+                    .contains(java.util.Objects.requireNonNullElse(response.getResult().getMetadata().getFinishReason(), ""))) {
+                return new WorkerResultDTO(false, role.displayName + " worker provider response did not complete.", actionSlice(buffer, actionStart));
+            }
+            WorkerCompletionDTO completion = completionHolder.get();
+            if (completion == null) {
+                return new WorkerResultDTO(false, role.displayName + " worker returned without calling completeWorkerTask.", actionSlice(buffer, actionStart));
+            }
+            ToolContext finalWorkerToolContext = new ToolContext(workerContext);
+            if (!isWorkerCompletionTerminal(finalWorkerToolContext)) {
+                return new WorkerResultDTO(false, role.displayName + " worker called another tool after completeWorkerTask, so its batch result is stale.",
+                        actionSlice(buffer, actionStart));
+            }
+            if (completion.success() && hasWorkerMutationError(finalWorkerToolContext)) {
+                return new WorkerResultDTO(false, role.displayName + " worker reported success after a mutation tool error.", actionSlice(buffer, actionStart));
+            }
+            return new WorkerResultDTO(completion.success(), completion.message(), actionSlice(buffer, actionStart));
         }
         catch (Exception ex) {
-            return serialize(new WorkerResultDTO(false, "Worker execution failed: " + Objects.requireNonNullElse(ex.getMessage(), ex.getClass().getSimpleName()),
-                    actionSlice(buffer, actionStart)));
+            log.warn("Atlas {} worker failed after applying {} action(s): {}", role.displayName, actionSlice(buffer, actionStart).size(), ex.getMessage(), ex);
+            return new WorkerResultDTO(false, role.displayName + " worker failed while executing its batch.", actionSlice(buffer, actionStart));
         }
-        finally {
-            OrchestratorToolHelpers.markDelegation(parentContext);
-        }
-
-        WorkerCompletionDTO terminal = completion.get();
-        if (terminal == null) {
-            String message = OrchestratorToolHelpers.workerCompletionInvalidated(workerContext) ? "Worker completion was invalidated by tool activity after completeWorkerTask."
-                    : "Worker returned without calling completeWorkerTask.";
-            return serialize(new WorkerResultDTO(false, message, actionSlice(buffer, actionStart)));
-        }
-        return serialize(new WorkerResultDTO(terminal.success(), terminal.message(), actionSlice(buffer, actionStart)));
     }
 
-    private List<AppliedActionDTO> actionSlice(OrchestratorToolContextKeys.AppliedActionsBuffer buffer, int start) {
+    private void trackUsage(ChatResponse response, long courseId, Map<String, Object> workerContext) {
+        Long userId = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findIdByLogin).orElse(null);
+        Object exerciseValue = workerContext.get(OrchestratorToolContextKeys.LEARNING_OBJECT_ID_KEY);
+        Long exerciseId = exerciseValue instanceof Number number ? number.longValue() : null;
+        llmTokenUsageService.trackChatResponseTokenUsage(response, LLMServiceType.ATLAS, ORCHESTRATION_PIPELINE_ID,
+                builder -> builder.withCourse(courseId).withExercise(exerciseId).withUser(userId));
+    }
+
+    private static List<AppliedActionDTO> actionSlice(OrchestratorToolContextKeys.AppliedActionsBuffer buffer, int start) {
         synchronized (buffer.actions()) {
             int safeStart = Math.min(start, buffer.actions().size());
-            return new ArrayList<>(buffer.actions().subList(safeStart, buffer.actions().size()));
+            return List.copyOf(buffer.actions().subList(safeStart, buffer.actions().size()));
         }
     }
 
-    private void trackUsage(ChatResponse response, long courseId, Long learningObjectId) {
-        Long userId = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findIdByLogin).orElse(null);
-        llmTokenUsageService.trackChatResponseTokenUsage(response, LLMServiceType.ATLAS, PIPELINE_ID, builder -> {
-            builder.withCourse(courseId).withUser(userId);
-            if (learningObjectId != null) {
-                return builder.withExercise(learningObjectId);
+    private static void copyContextValue(@Nullable ToolContext source, Map<String, Object> target, String key) {
+        if (source != null && source.getContext() != null) {
+            Object value = source.getContext().get(key);
+            if (value != null) {
+                target.put(key, value);
             }
-            return builder;
-        });
+        }
     }
 
-    private static Long contextLong(ToolContext context, String key) {
-        if (context == null || context.getContext() == null) {
-            return null;
-        }
-        Object value = context.getContext().get(key);
-        return value instanceof Number number ? number.longValue() : null;
-    }
+    private enum WorkerRole {
 
-    private String serialize(WorkerResultDTO result) {
-        try {
-            return objectMapper.writeValueAsString(result);
-        }
-        catch (JsonProcessingException ex) {
-            return "{\"success\":false,\"message\":\"Failed to serialize worker result.\"}";
+        CREATOR("Creator", CREATOR_PROMPT_PATH), ASSIGNER("Assigner", ASSIGNER_PROMPT_PATH), EDITOR("Editor", EDITOR_PROMPT_PATH);
+
+        private final String displayName;
+
+        private final String promptPath;
+
+        WorkerRole(String displayName, String promptPath) {
+            this.displayName = displayName;
+            this.promptPath = promptPath;
         }
     }
 }

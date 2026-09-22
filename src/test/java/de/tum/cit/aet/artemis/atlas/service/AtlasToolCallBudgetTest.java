@@ -9,7 +9,13 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
@@ -42,9 +48,9 @@ class AtlasToolCallBudgetTest {
     @Test
     void sameToolMayRun48TimesThroughNativeAdvisor() {
         AtomicInteger calls = new AtomicInteger();
-        ChatModel model = modelReturning(new AtomicInteger(), round -> round <= 48 ? toolCallResponse("getRead") : textResponse("done"));
+        ChatModel model = modelReturning(new AtomicInteger(), round -> round <= 48 ? toolCallResponse("getExerciseContent") : textResponse("done"));
         ChatResponse response = newService(model).delegateOrchestratorRound("system", "run", OpenAiChatOptions.builder(), new HashMap<>(),
-                ToolCallbackProvider.from(callback("getRead", calls, false)));
+                ToolCallbackProvider.from(callback("getExerciseContent", calls, false)));
         assertThat(calls).hasValue(48);
         assertThat(response.getResult().getOutput().getText()).isEqualTo("done");
     }
@@ -61,7 +67,7 @@ class AtlasToolCallBudgetTest {
         assertThat(writes).hasValue(224);
         assertThat(budget.workBlocked()).isTrue();
         AtomicInteger reads = new AtomicInteger();
-        assertThat(decorate(callback("listCompetencyIndex", reads, false), budget).call("{}")).contains("ok", "226/256");
+        assertThat(decorate(callback("getExerciseContent", reads, false), budget).call("{}")).contains("ok", "226/256");
         AtomicInteger completions = new AtomicInteger();
         decorate(callback("completeOrchestration", completions, false), budget).call("{}");
         assertThat(reads).hasValue(1);
@@ -72,7 +78,7 @@ class AtlasToolCallBudgetTest {
     @Test
     void lastSlotIsReservedForCompletion() {
         AtlasToolCallBudget budget = new AtlasToolCallBudget();
-        ToolCallback read = decorate(callback("getRead", new AtomicInteger(), false), budget);
+        ToolCallback read = decorate(callback("getExerciseContent", new AtomicInteger(), false), budget);
         for (int i = 0; i < 255; i++) {
             read.call("{}");
         }
@@ -85,11 +91,25 @@ class AtlasToolCallBudgetTest {
     }
 
     @Test
+    void workerCompletionCannotSpendTheMainOrchestratorsFinalSlot() {
+        AtlasToolCallBudget budget = new AtlasToolCallBudget();
+        ToolCallback read = decorate(callback("getExerciseContent", new AtomicInteger(), false), budget);
+        for (int i = 0; i < 255; i++) {
+            read.call("{}");
+        }
+        AtomicInteger completions = new AtomicInteger();
+        ToolCallback workerCompletion = decorate(callback("completeWorkerTask", completions, false), budget);
+        assertThatThrownBy(() -> workerCompletion.call("{}")).isInstanceOf(ToolCallLimitExceededException.class);
+        assertThat(completions).hasValue(0);
+        assertThat(budget.calls()).isEqualTo(255);
+    }
+
+    @Test
     void uncooperativeModelStopsAtHardLimitAndRetainsUsage() {
         Map<String, Object> context = new HashMap<>();
-        ChatModel model = modelReturning(new AtomicInteger(), round -> toolCallResponseWithUsage("getRead"));
+        ChatModel model = modelReturning(new AtomicInteger(), round -> toolCallResponseWithUsage("getExerciseContent"));
         ChatResponse response = newService(model).delegateOrchestratorRound("system", "run", OpenAiChatOptions.builder(), context,
-                ToolCallbackProvider.from(callback("getRead", new AtomicInteger(), false)));
+                ToolCallbackProvider.from(callback("getExerciseContent", new AtomicInteger(), false)));
         assertThat(AtlasToolCallBudget.budgetForContext(context).calls()).isEqualTo(255);
         assertThat(response.getMetadata().getUsage().getPromptTokens()).isEqualTo(256);
         assertThatThrownBy(() -> AtlasToolCallBudget.checkResponse(response, context)).isInstanceOf(AtlasToolCallBudget.LimitReachedException.class);
@@ -119,7 +139,7 @@ class AtlasToolCallBudgetTest {
         Map<String, Object> worker = new HashMap<>(Map.of(AtlasToolCallBudget.CONTEXT_KEY, budget));
         assertThat(AtlasToolCallBudget.budgetForContext(worker)).isSameAs(budget);
         assertThat(AtlasToolCallBudget.budgetForContext(new HashMap<>())).isNotSameAs(budget);
-        ToolCallback read = decorate(callback("getRead", new AtomicInteger(), false), budget);
+        ToolCallback read = decorate(callback("getExerciseContent", new AtomicInteger(), false), budget);
         for (int i = 0; i < 224; i++) {
             read.call("{}");
         }
@@ -142,6 +162,48 @@ class AtlasToolCallBudgetTest {
     }
 
     @Test
+    void indexReadStartedDuringActiveWorkCannotVerifyCompletion() throws Exception {
+        AtlasToolCallBudget budget = new AtlasToolCallBudget();
+        CountDownLatch workStarted = new CountDownLatch(1);
+        CountDownLatch allowWorkToFinish = new CountDownLatch(1);
+        CountDownLatch indexStarted = new CountDownLatch(1);
+        CountDownLatch allowIndexToFinish = new CountDownLatch(1);
+        ToolCallback write = decorate(callback("assignExerciseToCompetency", () -> {
+            workStarted.countDown();
+            await(allowWorkToFinish);
+            return "ok";
+        }), budget);
+        ToolCallback index = decorate(callback("listCompetencyIndex", () -> {
+            indexStarted.countDown();
+            await(allowIndexToFinish);
+            return "{}";
+        }), budget);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            Future<String> work = executor.submit(() -> write.call("{}"));
+            assertThat(workStarted.await(5, TimeUnit.SECONDS)).isTrue();
+            Future<String> staleIndex = executor.submit(() -> index.call("{}"));
+            assertThat(indexStarted.await(5, TimeUnit.SECONDS)).isTrue();
+
+            allowWorkToFinish.countDown();
+            assertThat(work.get(5, TimeUnit.SECONDS)).contains("ok");
+            allowIndexToFinish.countDown();
+            assertThat(staleIndex.get(5, TimeUnit.SECONDS)).contains("atlasBudget");
+
+            assertThatThrownBy(() -> budget.complete(true, "stale verification")).isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("successful index refresh after the latest work");
+            index.call("{}");
+            budget.complete(true, "fresh verification");
+            assertThat(budget.completion().message()).isEqualTo("fresh verification");
+        }
+        finally {
+            allowWorkToFinish.countDown();
+            allowIndexToFinish.countDown();
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
     void failedCallbacksCountAndEvidenceContainsHashesInsteadOfArguments() {
         AtlasToolCallBudget budget = new AtlasToolCallBudget();
         ToolCallback callback = decorate(callback("failing", new AtomicInteger(), true), budget);
@@ -156,7 +218,7 @@ class AtlasToolCallBudgetTest {
     void nestedExhaustionStopsParentWithoutAnotherProviderRound() {
         Map<String, Object> context = new HashMap<>();
         AtlasToolCallBudget budget = AtlasToolCallBudget.budgetForContext(context);
-        ToolCallback reads = decorate(callback("getRead", new AtomicInteger(), false), budget);
+        ToolCallback reads = decorate(callback("getExerciseContent", new AtomicInteger(), false), budget);
         AtomicInteger modelCalls = new AtomicInteger();
         ToolCallback worker = new ToolCallback() {
 
@@ -218,6 +280,16 @@ class AtlasToolCallBudgetTest {
     }
 
     private static ToolCallback callback(String name, AtomicInteger calls, boolean fail) {
+        return callback(name, () -> {
+            calls.incrementAndGet();
+            if (fail) {
+                throw new IllegalStateException("callback failed");
+            }
+            return "ok";
+        });
+    }
+
+    private static ToolCallback callback(String name, Supplier<String> invocation) {
         ToolDefinition definition = ToolDefinition.builder().name(name).description("test tool").inputSchema("{}").build();
         ToolMetadata metadata = DefaultToolMetadata.builder().returnDirect(false).build();
         return new ToolCallback() {
@@ -234,13 +306,21 @@ class AtlasToolCallBudgetTest {
 
             @Override
             public String call(String arguments) {
-                calls.incrementAndGet();
-                if (fail) {
-                    throw new IllegalStateException("callback failed");
-                }
-                return "ok";
+                return invocation.get();
             }
         };
+    }
+
+    private static void await(CountDownLatch latch) {
+        try {
+            if (!latch.await(5, TimeUnit.SECONDS)) {
+                throw new AssertionError("Timed out waiting for concurrent callback ordering");
+            }
+        }
+        catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new AssertionError(ex);
+        }
     }
 
     private static ChatResponse toolCallResponse(String name) {

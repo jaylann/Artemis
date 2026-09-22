@@ -165,8 +165,7 @@ public class LLMTokenUsageService {
     /**
      * Convenience method to track token usage from a {@link ChatResponse}.
      * Extracts metadata (model, prompt/completion tokens) from the response, builds an {@link LLMRequest},
-     * and persists it. Missing response data and persistence failures are logged and suppressed so that
-     * tracking failures never affect the main operation.
+     * and persists it. Catches all exceptions so that tracking failures never affect the main operation.
      *
      * @param chatResponse    the chat response containing usage metadata, may be null
      * @param serviceType     the LLM service type (e.g. HYPERION, IRIS)
@@ -188,6 +187,9 @@ public class LLMTokenUsageService {
             Usage usage = metadata.getUsage();
             if (usage == null) {
                 log.warn("Failed to store token usage for pipeline [{}]: usage metadata is missing.", pipelineId);
+                return;
+            }
+            if (usage instanceof org.springframework.ai.chat.metadata.EmptyUsage) {
                 return;
             }
             String model = metadata.getModel() != null ? metadata.getModel() : "";

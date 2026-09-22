@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.model.ToolContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import de.tum.cit.aet.artemis.atlas.domain.competency.Competency;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyExerciseLink;
+import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyLectureUnitLink;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyTaxonomy;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CourseCompetency;
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
@@ -74,7 +75,7 @@ class EditorToolsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new EditorToolsService(new ObjectMapper(), courseCompetencyRepository, courseCompetencyService, competencyValidator, atlasMLNotificationService,
+        service = new EditorToolsService(new JsonMapper(), courseCompetencyRepository, courseCompetencyService, competencyValidator, atlasMLNotificationService,
                 competencyRelationRepository);
         appliedActions = Collections.synchronizedList(new ArrayList<>());
         appliedActionsBuffer = new AppliedActionsBuffer(appliedActions);
@@ -189,29 +190,33 @@ class EditorToolsServiceTest {
     }
 
     @Test
-    void deleteCompetency_withLearningObjectLinks_isRejected() {
-        Course course = courseWithId(COURSE_ID);
-        CourseCompetency competency = newCompetency(10L, "Used", "Desc", CompetencyTaxonomy.APPLY, course);
-        competency.setExerciseLinks(Set.of(mock(CompetencyExerciseLink.class)));
-        when(courseCompetencyRepository.findByIdWithExercisesAndLectureUnitsAndLectures(10L)).thenReturn(Optional.of(competency));
-
-        String result = service.deleteCompetency(10L, JUSTIFICATION, toolContext);
-
-        assertThat(result).contains("still has linked learning objects");
-        verify(courseCompetencyService, never()).deleteCourseCompetency(any(), any());
+    void deleteCompetency_exerciseLinks_refusesWithoutSideEffects() {
+        CourseCompetency competency = newCompetency(7L, "Keep", "Desc", CompetencyTaxonomy.APPLY, courseWithId(COURSE_ID));
+        when(courseCompetencyRepository.findByIdWithExercisesAndLectureUnitsAndLectures(7L)).thenReturn(Optional.of(competency));
+        competency.getExerciseLinks().add(mock(CompetencyExerciseLink.class));
+        assertThat(service.deleteCompetency(7L, JUSTIFICATION, toolContext)).contains("linked learning objects");
+        verifyNoInteractions(courseCompetencyService, atlasMLNotificationService);
+        assertThat(appliedActions).isEmpty();
     }
 
     @Test
-    void deleteCompetency_withRelations_isRejected() {
-        Course course = courseWithId(COURSE_ID);
-        CourseCompetency competency = newCompetency(10L, "Related", "Desc", CompetencyTaxonomy.APPLY, course);
-        when(courseCompetencyRepository.findByIdWithExercisesAndLectureUnitsAndLectures(10L)).thenReturn(Optional.of(competency));
-        when(competencyRelationRepository.countByHeadCompetencyIdOrTailCompetencyId(10L, 10L)).thenReturn(1L);
+    void deleteCompetency_lectureLinks_refusesWithoutSideEffects() {
+        CourseCompetency competency = newCompetency(7L, "Keep", "Desc", CompetencyTaxonomy.APPLY, courseWithId(COURSE_ID));
+        when(courseCompetencyRepository.findByIdWithExercisesAndLectureUnitsAndLectures(7L)).thenReturn(Optional.of(competency));
+        competency.getLectureUnitLinks().add(mock(CompetencyLectureUnitLink.class));
+        assertThat(service.deleteCompetency(7L, JUSTIFICATION, toolContext)).contains("linked learning objects");
+        verifyNoInteractions(courseCompetencyService, atlasMLNotificationService);
+        assertThat(appliedActions).isEmpty();
+    }
 
-        String result = service.deleteCompetency(10L, JUSTIFICATION, toolContext);
-
-        assertThat(result).contains("still has competency relations");
-        verify(courseCompetencyService, never()).deleteCourseCompetency(any(), any());
+    @Test
+    void deleteCompetency_relations_refusesWithoutSideEffects() {
+        CourseCompetency competency = newCompetency(7L, "Keep", "Desc", CompetencyTaxonomy.APPLY, courseWithId(COURSE_ID));
+        when(courseCompetencyRepository.findByIdWithExercisesAndLectureUnitsAndLectures(7L)).thenReturn(Optional.of(competency));
+        when(competencyRelationRepository.existsByHeadCompetencyIdOrTailCompetencyId(7L, 7L)).thenReturn(true);
+        assertThat(service.deleteCompetency(7L, JUSTIFICATION, toolContext)).contains("competency relations");
+        verifyNoInteractions(courseCompetencyService, atlasMLNotificationService);
+        assertThat(appliedActions).isEmpty();
     }
 
     @Test

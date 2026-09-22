@@ -41,7 +41,7 @@ import de.tum.cit.aet.artemis.atlas.service.OrchestratorReadToolsService;
  */
 @Lazy
 @Configuration
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 public class AtlasAgentToolConfig {
 
     // ---------------------------------------------------------------------------------------------
@@ -133,27 +133,6 @@ public class AtlasAgentToolConfig {
         return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
     }
 
-    @Bean
-    @Lazy
-    @Qualifier("workerTerminalToolCallbackProvider")
-    public AtlasToolSurface workerTerminalToolCallbackProvider(AtlasWorkerTerminalToolService service) {
-        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
-    }
-
-    @Bean
-    @Lazy
-    @Qualifier("orchestratorTerminalToolCallbackProvider")
-    public AtlasToolSurface orchestratorTerminalToolCallbackProvider(AtlasOrchestratorTerminalToolService service) {
-        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
-    }
-
-    @Bean
-    @Lazy
-    @Qualifier("orchestratorDelegationToolCallbackProvider")
-    public AtlasToolSurface orchestratorDelegationToolCallbackProvider(OrchestratorDelegationToolsService service) {
-        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
-    }
-
     /**
      * Creator write tool ({@code createCompetency}).
      *
@@ -190,6 +169,45 @@ public class AtlasAgentToolConfig {
     @Lazy
     @Qualifier("assignerToolCallbackProvider")
     public AtlasToolSurface assignerToolCallbackProvider(AssignerToolsService service) {
+        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
+    }
+
+    /**
+     * Terminal tool shared by all stateless orchestration workers.
+     *
+     * @param service the worker terminal tool service
+     * @return the worker terminal tool surface
+     */
+    @Bean
+    @Lazy
+    @Qualifier("workerTerminalToolCallbackProvider")
+    public AtlasToolSurface workerTerminalToolCallbackProvider(AtlasWorkerTerminalToolService service) {
+        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
+    }
+
+    /**
+     * Delegation-only mutation surface exposed to the main orchestrator.
+     *
+     * @param service the orchestrator delegation tool service
+     * @return the orchestrator delegation tool surface
+     */
+    @Bean
+    @Lazy
+    @Qualifier("orchestratorDelegationToolCallbackProvider")
+    public AtlasToolSurface orchestratorDelegationToolCallbackProvider(OrchestratorDelegationToolsService service) {
+        return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
+    }
+
+    /**
+     * Explicit one-shot completion surface exposed to the main orchestrator.
+     *
+     * @param service the orchestrator terminal tool service
+     * @return the orchestrator terminal tool surface
+     */
+    @Bean
+    @Lazy
+    @Qualifier("orchestratorTerminalToolCallbackProvider")
+    public AtlasToolSurface orchestratorTerminalToolCallbackProvider(AtlasOrchestratorTerminalToolService service) {
         return new AtlasToolSurface(MethodToolCallbackProvider.builder().toolObjects(service).build());
     }
 }

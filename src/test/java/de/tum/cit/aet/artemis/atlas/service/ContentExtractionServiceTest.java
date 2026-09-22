@@ -18,6 +18,7 @@ import de.tum.cit.aet.artemis.atlas.domain.LearningObject;
 import de.tum.cit.aet.artemis.atlas.dto.ExtractedContentDTO;
 import de.tum.cit.aet.artemis.exercise.domain.DifficultyLevel;
 import de.tum.cit.aet.artemis.fileupload.domain.FileUploadExercise;
+import de.tum.cit.aet.artemis.lecture.domain.Attachment;
 import de.tum.cit.aet.artemis.lecture.domain.AttachmentVideoUnit;
 import de.tum.cit.aet.artemis.lecture.domain.ExerciseUnit;
 import de.tum.cit.aet.artemis.lecture.domain.OnlineUnit;
@@ -128,6 +129,8 @@ class ContentExtractionServiceTest {
 
     @Test
     void extractContent_nullLearningObject_throwsException() {
+        // The parameter is declared @NonNull rather than asserted with Objects.requireNonNull, so the message is the
+        // one the JVM produces for the pattern-matching switch that dereferences it, not one this service chose.
         assertThatThrownBy(() -> contentExtractionService.extractContent(null)).isInstanceOf(NullPointerException.class);
     }
 
@@ -204,12 +207,17 @@ class ContentExtractionServiceTest {
         AttachmentVideoUnit unit = new AttachmentVideoUnit();
         unit.setName("Lecture 3 slides");
         unit.setDescription("Covers hashing and collision resolution.");
+        unit.setVideoSource(" https://videos.example/lecture-3 ");
+        Attachment attachment = new Attachment();
+        attachment.setLink(" /api/core/files/lecture-3.pdf ");
+        unit.setAttachment(attachment);
 
         ExtractedContentDTO result = contentExtractionService.extractContent(unit);
 
         assertThat(result.title()).isEqualTo("Lecture 3 slides");
         assertThat(result.extractedLearningText()).isEqualTo("Covers hashing and collision resolution.");
-        assertThat(result.metadata()).containsEntry("lectureUnitType", "attachment");
+        assertThat(result.metadata()).containsEntry("lectureUnitType", "attachment").containsEntry("videoSource", "https://videos.example/lecture-3")
+                .containsEntry("attachmentLink", "lecture-3.pdf");
     }
 
     @Test

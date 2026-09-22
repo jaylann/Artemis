@@ -2,7 +2,6 @@ package de.tum.cit.aet.artemis.atlas.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,18 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.model.ToolContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
-import de.tum.cit.aet.artemis.atlas.api.AtlasMLApi;
 import de.tum.cit.aet.artemis.atlas.api.CompetencyProgressApi;
 import de.tum.cit.aet.artemis.atlas.domain.competency.Competency;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyExerciseLink;
@@ -40,6 +41,7 @@ import de.tum.cit.aet.artemis.course.domain.Course;
 import de.tum.cit.aet.artemis.exam.domain.ExerciseGroup;
 import de.tum.cit.aet.artemis.exercise.repository.ExerciseTestRepository;
 import de.tum.cit.aet.artemis.lecture.api.LectureUnitRepositoryApi;
+import de.tum.cit.aet.artemis.lecture.domain.AttachmentVideoUnit;
 import de.tum.cit.aet.artemis.lecture.domain.ExerciseUnit;
 import de.tum.cit.aet.artemis.lecture.domain.Lecture;
 import de.tum.cit.aet.artemis.lecture.domain.TextUnit;
@@ -73,9 +75,6 @@ class AssignerToolsServiceTest {
     @Mock
     private CompetencyProgressApi competencyProgressApi;
 
-    @Mock
-    private AtlasMLApi atlasMLApi;
-
     private AssignerToolsService service;
 
     private ToolContext toolContext;
@@ -86,13 +85,15 @@ class AssignerToolsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new AssignerToolsService(new ObjectMapper(), courseCompetencyRepository, exerciseRepository, competencyExerciseLinkRepository,
-                competencyLectureUnitLinkRepository, Optional.of(lectureUnitRepositoryApi), Optional.of(competencyProgressApi), Optional.of(atlasMLApi));
-        lenient().when(atlasMLApi.saveExerciseWithCompetencies(any())).thenReturn(true);
+        service = new AssignerToolsService(new JsonMapper(), courseCompetencyRepository, exerciseRepository, competencyExerciseLinkRepository, competencyLectureUnitLinkRepository,
+                Optional.of(lectureUnitRepositoryApi), Optional.of(competencyProgressApi));
         appliedActions = Collections.synchronizedList(new ArrayList<>());
         appliedActionsBuffer = new AppliedActionsBuffer(appliedActions);
         Map<String, Object> ctx = new HashMap<>();
         ctx.put(OrchestratorToolContextKeys.COURSE_ID_KEY, COURSE_ID);
+        ctx.put(OrchestratorToolContextKeys.WORKER_MUTATION_ERROR_KEY, OrchestratorToolContextKeys.newWorkerMutationErrorMarker());
+        ctx.put(OrchestratorToolContextKeys.WORKER_MUTATION_OUTCOME_COUNT_KEY, new AtomicInteger());
+        ctx.put(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY, OrchestratorToolContextKeys.newWorkerCompletionHolder());
         ctx.put(OrchestratorToolContextKeys.APPLIED_ACTIONS_KEY, appliedActionsBuffer);
         toolContext = new ToolContext(ctx);
     }
@@ -109,50 +110,16 @@ class AssignerToolsServiceTest {
         String result = service.assignExerciseToCompetency(5L, 20L, 1.0, JUSTIFICATION, toolContext);
 
         assertThat(result).contains("\"status\":\"ok\"").contains("\"weight\":1.0");
-        verify(competencyExerciseLinkRepository).save(any(CompetencyExerciseLink.class));
+        ArgumentCaptor<CompetencyExerciseLink> linkCaptor = ArgumentCaptor.forClass(CompetencyExerciseLink.class);
+        verify(competencyExerciseLinkRepository).save(linkCaptor.capture());
+        assertThat(linkCaptor.getValue().isGeneratedByAi()).isTrue();
         verify(competencyProgressApi).updateProgressByLearningObjectAsync(exercise);
-        verify(atlasMLApi).saveExerciseWithCompetencies(exercise);
         assertThat(appliedActions).singleElement().satisfies(a -> {
             assertThat(a.type()).isEqualTo(AppliedActionDTO.ActionType.ASSIGN);
             assertThat(a.exerciseId()).isEqualTo(20L);
             assertThat(a.weight()).isEqualTo(1.0);
             assertThat(a.justification()).isEqualTo(JUSTIFICATION);
         });
-    }
-
-    @Test
-    void assignExerciseToCompetency_newLink_isFlaggedAsGeneratedByAi() {
-        Course course = courseWithId(COURSE_ID);
-        CourseCompetency competency = newCompetency(5L, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
-        ProgrammingExercise exercise = exerciseInCourse(20L, "Implement Quicksort", course);
-        when(courseCompetencyRepository.findById(5L)).thenReturn(Optional.of(competency));
-        when(exerciseRepository.findByIdElseThrow(20L)).thenReturn(exercise);
-        when(competencyExerciseLinkRepository.findByExerciseIdAndCompetencyId(20L, 5L)).thenReturn(Optional.empty());
-
-        service.assignExerciseToCompetency(5L, 20L, 1.0, JUSTIFICATION, toolContext);
-
-        ArgumentCaptor<CompetencyExerciseLink> captor = ArgumentCaptor.forClass(CompetencyExerciseLink.class);
-        verify(competencyExerciseLinkRepository).save(captor.capture());
-        assertThat(captor.getValue().isGeneratedByAi()).isTrue();
-    }
-
-    @Test
-    void assignExerciseToCompetency_reweightingInstructorLink_doesNotClaimAuthorship() {
-        // Re-weighting a link an instructor created must not transfer authorship to the agent.
-        Course course = courseWithId(COURSE_ID);
-        CourseCompetency competency = newCompetency(5L, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
-        ProgrammingExercise exercise = exerciseInCourse(20L, "Implement Quicksort", course);
-        CompetencyExerciseLink instructorLink = new CompetencyExerciseLink(competency, exercise, 1.0);
-        when(courseCompetencyRepository.findById(5L)).thenReturn(Optional.of(competency));
-        when(exerciseRepository.findByIdElseThrow(20L)).thenReturn(exercise);
-        when(competencyExerciseLinkRepository.findByExerciseIdAndCompetencyId(20L, 5L)).thenReturn(Optional.of(instructorLink));
-
-        service.assignExerciseToCompetency(5L, 20L, 0.5, JUSTIFICATION, toolContext);
-
-        ArgumentCaptor<CompetencyExerciseLink> captor = ArgumentCaptor.forClass(CompetencyExerciseLink.class);
-        verify(competencyExerciseLinkRepository).save(captor.capture());
-        assertThat(captor.getValue().getWeight()).isEqualTo(0.5);
-        assertThat(captor.getValue().isGeneratedByAi()).isFalse();
     }
 
     @Test
@@ -213,6 +180,7 @@ class AssignerToolsServiceTest {
         String result = service.assignExerciseToCompetency(5L, 20L, 0.5, " ", toolContext);
 
         assertThat(result).contains("justification is required");
+        assertThat(new AtlasWorkerTerminalToolService(new JsonMapper()).completeWorkerTask(false, "justification is required", toolContext)).contains("\"completed\":true");
         verify(competencyExerciseLinkRepository, never()).save(any(CompetencyExerciseLink.class));
         assertThat(appliedActions).isEmpty();
     }
@@ -230,9 +198,27 @@ class AssignerToolsServiceTest {
         String result = service.assignExerciseToCompetency(5L, 20L, 1.0, JUSTIFICATION, toolContext);
 
         assertThat(result).contains("noop");
+        assertThat(new AtlasWorkerTerminalToolService(new JsonMapper()).completeWorkerTask(true, "Already in the requested state", toolContext)).contains("\"completed\":true");
         verify(competencyExerciseLinkRepository, never()).save(any(CompetencyExerciseLink.class));
         verify(competencyProgressApi, never()).updateProgressByLearningObjectAsync(any());
         assertThat(appliedActions).isEmpty();
+    }
+
+    @Test
+    void assignExerciseToCompetency_reweightPreservesExistingAuthorship() {
+        Course course = courseWithId(COURSE_ID);
+        CourseCompetency competency = newCompetency(5L, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
+        ProgrammingExercise exercise = exerciseInCourse(20L, "Implement Quicksort", course);
+        CompetencyExerciseLink existing = new CompetencyExerciseLink(competency, exercise, 0.5);
+        existing.setGeneratedByAi(true);
+        when(courseCompetencyRepository.findById(5L)).thenReturn(Optional.of(competency));
+        when(exerciseRepository.findByIdElseThrow(20L)).thenReturn(exercise);
+        when(competencyExerciseLinkRepository.findByExerciseIdAndCompetencyId(20L, 5L)).thenReturn(Optional.of(existing));
+
+        service.assignExerciseToCompetency(5L, 20L, 1.0, JUSTIFICATION, toolContext);
+
+        assertThat(existing.getWeight()).isEqualTo(1.0);
+        assertThat(existing.isGeneratedByAi()).isTrue();
     }
 
     @Test
@@ -276,6 +262,7 @@ class AssignerToolsServiceTest {
         String result = service.unassignExerciseFromCompetency(5L, 20L, JUSTIFICATION, toolContext);
 
         assertThat(result).contains("noop");
+        assertThat(new AtlasWorkerTerminalToolService(new JsonMapper()).completeWorkerTask(true, "Already in the requested state", toolContext)).contains("\"completed\":true");
         verify(competencyExerciseLinkRepository, never()).delete(any(CompetencyExerciseLink.class));
         assertThat(appliedActions).isEmpty();
     }
@@ -285,6 +272,7 @@ class AssignerToolsServiceTest {
         String result = service.unassignExerciseFromCompetency(5L, 20L, "", toolContext);
 
         assertThat(result).contains("justification is required");
+        assertThat(new AtlasWorkerTerminalToolService(new JsonMapper()).completeWorkerTask(false, "justification is required", toolContext)).contains("\"completed\":true");
         verify(competencyExerciseLinkRepository, never()).delete(any(CompetencyExerciseLink.class));
         assertThat(appliedActions).isEmpty();
     }
@@ -354,7 +342,7 @@ class AssignerToolsServiceTest {
     private static final long COMPETENCY_ID = 5L;
 
     @Test
-    void assignLectureUnitToCompetency_newLink_createsMarksAiGeneratedAndTriggersProgress() {
+    void assignLectureUnitToCompetency_newLink_createsAndTriggersProgress() {
         Course course = courseWithId(COURSE_ID);
         CourseCompetency competency = newCompetency(COMPETENCY_ID, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
         TextUnit unit = lectureUnitInCourse(LECTURE_UNIT_ID, "Recursion basics", course);
@@ -365,9 +353,9 @@ class AssignerToolsServiceTest {
         String result = service.assignLectureUnitToCompetency(COMPETENCY_ID, LECTURE_UNIT_ID, 0.5, JUSTIFICATION, toolContext);
 
         assertThat(result).contains("\"status\":\"ok\"").contains("\"weight\":0.5").contains("\"lectureUnitId\":30");
-        ArgumentCaptor<CompetencyLectureUnitLink> captor = ArgumentCaptor.forClass(CompetencyLectureUnitLink.class);
-        verify(competencyLectureUnitLinkRepository).save(captor.capture());
-        assertThat(captor.getValue().isGeneratedByAi()).isTrue();
+        ArgumentCaptor<CompetencyLectureUnitLink> linkCaptor = ArgumentCaptor.forClass(CompetencyLectureUnitLink.class);
+        verify(competencyLectureUnitLinkRepository).save(linkCaptor.capture());
+        assertThat(linkCaptor.getValue().isGeneratedByAi()).isTrue();
         verify(competencyProgressApi).updateProgressByLearningObjectAsync(unit);
         assertThat(appliedActions).singleElement().satisfies(a -> {
             assertThat(a.type()).isEqualTo(AppliedActionDTO.ActionType.ASSIGN);
@@ -377,13 +365,14 @@ class AssignerToolsServiceTest {
         });
     }
 
-    @Test
-    void assignLectureUnitToCompetency_reweightExistingInstructorLinkPreservesProvenance() {
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void assignLectureUnitToCompetency_reweightExistingLink_preservesProvenance(boolean generatedByAi) {
         Course course = courseWithId(COURSE_ID);
         CourseCompetency competency = newCompetency(COMPETENCY_ID, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
         TextUnit unit = lectureUnitInCourse(LECTURE_UNIT_ID, "Recursion basics", course);
         CompetencyLectureUnitLink existing = new CompetencyLectureUnitLink(competency, unit, 0.3);
-        assertThat(existing.isGeneratedByAi()).isFalse();
+        existing.setGeneratedByAi(generatedByAi);
         when(courseCompetencyRepository.findById(COMPETENCY_ID)).thenReturn(Optional.of(competency));
         when(lectureUnitRepositoryApi.findWithLectureById(LECTURE_UNIT_ID)).thenReturn(Optional.of(unit));
         when(competencyLectureUnitLinkRepository.findByLectureUnitIdAndCompetencyId(LECTURE_UNIT_ID, COMPETENCY_ID)).thenReturn(Optional.of(existing));
@@ -393,7 +382,7 @@ class AssignerToolsServiceTest {
         assertThat(result).contains("\"status\":\"ok\"").contains("\"weight\":1.0");
         verify(competencyLectureUnitLinkRepository).save(existing);
         assertThat(existing.getWeight()).isEqualTo(1.0);
-        assertThat(existing.isGeneratedByAi()).isFalse();
+        assertThat(existing.isGeneratedByAi()).isEqualTo(generatedByAi);
     }
 
     @Test
@@ -409,9 +398,11 @@ class AssignerToolsServiceTest {
         String result = service.assignLectureUnitToCompetency(COMPETENCY_ID, LECTURE_UNIT_ID, 0.5, JUSTIFICATION, toolContext);
 
         assertThat(result).contains("noop");
+        assertThat(new AtlasWorkerTerminalToolService(new JsonMapper()).completeWorkerTask(true, "Already in the requested state", toolContext)).contains("\"completed\":true");
         verify(competencyLectureUnitLinkRepository, never()).save(any(CompetencyLectureUnitLink.class));
         verify(competencyProgressApi, never()).updateProgressByLearningObjectAsync(any());
         assertThat(appliedActions).isEmpty();
+        assertThat(OrchestratorToolHelpers.hasWorkerMutationError(toolContext)).isFalse();
     }
 
     @Test
@@ -438,6 +429,26 @@ class AssignerToolsServiceTest {
         assertThat(result).contains("not a linkable lecture unit");
         verify(competencyLectureUnitLinkRepository, never()).save(any(CompetencyLectureUnitLink.class));
         assertThat(appliedActions).isEmpty();
+        assertThat(OrchestratorToolHelpers.hasWorkerMutationError(toolContext)).isTrue();
+    }
+
+    @Test
+    void assignLectureUnitToCompetency_blankAttachmentDescription_isRejected() {
+        Course course = courseWithId(COURSE_ID);
+        CourseCompetency competency = newCompetency(COMPETENCY_ID, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
+        AttachmentVideoUnit unit = new AttachmentVideoUnit();
+        unit.setId(LECTURE_UNIT_ID);
+        unit.setDescription(" ");
+        unit.setLecture(lectureInCourse(course));
+        when(courseCompetencyRepository.findById(COMPETENCY_ID)).thenReturn(Optional.of(competency));
+        when(lectureUnitRepositoryApi.findWithLectureById(LECTURE_UNIT_ID)).thenReturn(Optional.of(unit));
+
+        String result = service.assignLectureUnitToCompetency(COMPETENCY_ID, LECTURE_UNIT_ID, 1.0, JUSTIFICATION, toolContext);
+
+        assertThat(result).contains("not a linkable lecture unit");
+        verify(competencyLectureUnitLinkRepository, never()).save(any(CompetencyLectureUnitLink.class));
+        assertThat(appliedActions).isEmpty();
+        assertThat(OrchestratorToolHelpers.hasWorkerMutationError(toolContext)).isTrue();
     }
 
     @Test
@@ -453,12 +464,13 @@ class AssignerToolsServiceTest {
 
         assertThat(result).contains("not a linkable lecture unit");
         verify(competencyLectureUnitLinkRepository, never()).save(any(CompetencyLectureUnitLink.class));
+        assertThat(OrchestratorToolHelpers.hasWorkerMutationError(toolContext)).isTrue();
     }
 
     @Test
     void assignLectureUnitToCompetency_lectureApiAbsent_failsClosed() {
-        AssignerToolsService noLectureService = new AssignerToolsService(new ObjectMapper(), courseCompetencyRepository, exerciseRepository, competencyExerciseLinkRepository,
-                competencyLectureUnitLinkRepository, Optional.empty(), Optional.of(competencyProgressApi), Optional.of(atlasMLApi));
+        AssignerToolsService noLectureService = new AssignerToolsService(new JsonMapper(), courseCompetencyRepository, exerciseRepository, competencyExerciseLinkRepository,
+                competencyLectureUnitLinkRepository, Optional.empty(), Optional.of(competencyProgressApi));
         Course course = courseWithId(COURSE_ID);
         CourseCompetency competency = newCompetency(COMPETENCY_ID, "Target", "Desc", CompetencyTaxonomy.APPLY, course);
         when(courseCompetencyRepository.findById(COMPETENCY_ID)).thenReturn(Optional.of(competency));
@@ -467,6 +479,7 @@ class AssignerToolsServiceTest {
 
         assertThat(result).contains("not a linkable lecture unit");
         verify(competencyLectureUnitLinkRepository, never()).save(any(CompetencyLectureUnitLink.class));
+        assertThat(OrchestratorToolHelpers.hasWorkerMutationError(toolContext)).isTrue();
     }
 
     @Test
@@ -507,8 +520,10 @@ class AssignerToolsServiceTest {
         String result = service.unassignLectureUnitFromCompetency(COMPETENCY_ID, LECTURE_UNIT_ID, JUSTIFICATION, toolContext);
 
         assertThat(result).contains("noop");
+        assertThat(new AtlasWorkerTerminalToolService(new JsonMapper()).completeWorkerTask(true, "Already in the requested state", toolContext)).contains("\"completed\":true");
         verify(competencyLectureUnitLinkRepository, never()).delete(any(CompetencyLectureUnitLink.class));
         assertThat(appliedActions).isEmpty();
+        assertThat(OrchestratorToolHelpers.hasWorkerMutationError(toolContext)).isFalse();
     }
 
     private static TextUnit lectureUnitInCourse(long id, String name, Course course) {

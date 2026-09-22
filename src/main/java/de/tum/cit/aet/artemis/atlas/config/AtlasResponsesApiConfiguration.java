@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openai.client.OpenAIClient;
+
+import tools.jackson.databind.json.JsonMapper;
 
 import de.tum.cit.aet.artemis.atlas.service.AtlasResponsesChatModel;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -29,9 +30,19 @@ import io.micrometer.observation.ObservationRegistry;
  * {@link AtlasResponsesChatClient}. This keeps the Responses adapter out of unqualified
  * {@code ChatModel}/{@code ChatClient} injection used by interactive Atlas and Hyperion flows.
  */
+@Lazy
 @Configuration(proxyBeanMethods = false)
-@Conditional(AtlasEnabled.class)
-@ConditionalOnProperty(prefix = "artemis.atlas.orchestrator", name = "responses-api-enabled", havingValue = "true")
+@Conditional(AtlasLLMEnabled.class)
+@ConditionalOnProperty(prefix = "artemis.atlas.orchestrator", name = "responses-api-enabled", havingValue = "true", matchIfMissing = true)
+// The beans below are the only ones in Atlas that cannot be built without Spring AI, because they need
+// OpenAiCommonProperties. Without this condition, enabling AtlasLLM on an installation that has no chat model fails the
+// whole context rather than leaving the adapter out: a bean definition that cannot be created is fatal, where an absent
+// one is not. The value and matchIfMissing are copied from OpenAiChatAutoConfiguration so that the two cannot drift.
+// The condition is deliberately stricter than "the properties bean exists": six OpenAI autoconfigurations contribute
+// it, one per model kind, so an embedding-only installation has the bean while this adapter still has no chat
+// deployment to talk to. Artemis pins the property to "none" in application.yml, so "missing" only occurs off that
+// classpath.
+@ConditionalOnProperty(name = "spring.ai.model.chat", havingValue = "openai", matchIfMissing = true)
 public class AtlasResponsesApiConfiguration {
 
     /** Name of the provider-aware raw client bean used by the Atlas adapter. */
@@ -51,7 +62,7 @@ public class AtlasResponsesApiConfiguration {
     @Bean(name = ATLAS_RESPONSES_CHAT_CLIENT)
     @Lazy
     AtlasResponsesChatClient atlasResponsesChatClient(@Qualifier(ATLAS_RESPONSES_OPENAI_CLIENT) OpenAIClient openAIClient, OpenAiCommonProperties properties,
-            ObjectMapper objectMapper) {
+            JsonMapper objectMapper) {
         AtlasResponsesChatModel chatModel = new AtlasResponsesChatModel(openAIClient, objectMapper, properties.getModel());
         ChatClient chatClient = ChatClient.builder(chatModel).build();
         return new AtlasResponsesChatClient(chatClient);

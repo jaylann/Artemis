@@ -1,6 +1,7 @@
 package de.tum.cit.aet.artemis.exercise.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -19,20 +20,13 @@ import de.tum.cit.aet.artemis.atlas.domain.competency.Competency;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyExerciseLink;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyTaxonomy;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CourseCompetency;
+import de.tum.cit.aet.artemis.core.exception.BadRequestAlertException;
 import de.tum.cit.aet.artemis.course.domain.Course;
 import de.tum.cit.aet.artemis.exercise.dto.CompetencyLinksHolderDTO;
 import de.tum.cit.aet.artemis.lecture.dto.CompetencyDTO;
 import de.tum.cit.aet.artemis.lecture.dto.CompetencyLinkDTO;
 import de.tum.cit.aet.artemis.text.domain.TextExercise;
 
-/**
- * Verifies that an instructor saving an exercise never rewrites the {@code generatedByAi} provenance
- * of its competency links.
- * <p>
- * The merge in {@link CompetencyExerciseLinkService#updateCompetencyLinks} reuses the managed link
- * and only assigns the weight, so provenance survives implicitly rather than by explicit code. That
- * makes it exactly the kind of behaviour a future refactor could drop silently — hence these tests.
- */
 @ExtendWith(MockitoExtension.class)
 class CompetencyExerciseLinkProvenanceTest {
 
@@ -68,13 +62,12 @@ class CompetencyExerciseLinkProvenanceTest {
     }
 
     @Test
-    void reSavingAnExerciseKeepsAnAgentAuthoredLinkFlagged() {
+    void reweightingPreservesAiAuthorship() {
         CourseCompetency competency = competency(5L, "Sorting");
-        CompetencyExerciseLink agentLink = new CompetencyExerciseLink(competency, exercise, 1.0);
-        agentLink.setGeneratedByAi(true);
-        exercise.setCompetencyLinks(new HashSet<>(Set.of(agentLink)));
+        CompetencyExerciseLink aiLink = new CompetencyExerciseLink(competency, exercise, 1.0);
+        aiLink.setGeneratedByAi(true);
+        exercise.setCompetencyLinks(new HashSet<>(Set.of(aiLink)));
 
-        // The instructor re-saves the exercise, changing only the weight of the existing link.
         CompetencyLinksHolderDTO dto = () -> Set.of(new CompetencyLinkDTO(new CompetencyDTO(5L, "Sorting"), 0.5));
         service.updateCompetencyLinks(dto, exercise);
 
@@ -85,7 +78,7 @@ class CompetencyExerciseLinkProvenanceTest {
     }
 
     @Test
-    void aLinkTheInstructorAddsIsNotFlagged() {
+    void manuallyAddedLinkDefaultsToManualAuthorship() {
         CourseCompetency added = competency(6L, "Recursion");
         exercise.setCompetencyLinks(new HashSet<>());
         when(competencyRepositoryApi.findCompetencyOrPrerequisiteByIdElseThrow(6L)).thenReturn(added);
@@ -97,14 +90,37 @@ class CompetencyExerciseLinkProvenanceTest {
     }
 
     @Test
-    void creationPathCarriesProvenanceOntoTheSavedExercise() {
+    void hyperionGeneratedLinkIsMarkedDuringUpdate() {
+        CourseCompetency added = competency(6L, "Recursion");
+        exercise.setCompetencyLinks(new HashSet<>());
+        when(competencyRepositoryApi.findCompetencyOrPrerequisiteByIdElseThrow(6L)).thenReturn(added);
+
+        CompetencyLinksHolderDTO dto = () -> Set.of(new CompetencyLinkDTO(new CompetencyDTO(6L, "Recursion"), 1.0));
+        service.updateCompetencyLinks(dto, exercise, Set.of(6L));
+
+        assertThat(exercise.getCompetencyLinks()).singleElement().satisfies(link -> assertThat(link.isGeneratedByAi()).isTrue());
+    }
+
+    @Test
+    void rejectsHyperionProvenanceForLinkMissingFromSave() {
+        CourseCompetency existing = competency(5L, "Sorting");
+        CompetencyExerciseLink existingLink = new CompetencyExerciseLink(existing, exercise, 1.0);
+        exercise.setCompetencyLinks(new HashSet<>(Set.of(existingLink)));
+        CompetencyLinksHolderDTO dto = () -> Set.of(new CompetencyLinkDTO(new CompetencyDTO(5L, "Sorting"), 0.5));
+
+        assertThatThrownBy(() -> service.updateCompetencyLinks(dto, exercise, Set.of(6L))).isInstanceOf(BadRequestAlertException.class);
+        assertThat(existingLink.getWeight()).isEqualTo(1.0);
+        assertThat(existingLink.isGeneratedByAi()).isFalse();
+    }
+
+    @Test
+    void creationCopyPreservesAiAuthorship() {
         CourseCompetency competency = competency(5L, "Sorting");
-        CompetencyExerciseLink agentLink = new CompetencyExerciseLink(competency, exercise, 1.0);
-        agentLink.setGeneratedByAi(true);
+        CompetencyExerciseLink aiLink = new CompetencyExerciseLink(competency, exercise, 1.0);
+        aiLink.setGeneratedByAi(true);
         when(competencyRepositoryApi.findCompetencyOrPrerequisiteByIdElseThrow(5L)).thenReturn(competency);
 
-        // addCompetencyLinksForCreation rebuilds each link against the saved exercise.
-        service.addCompetencyLinksForCreation(exercise, new HashSet<>(Set.of(agentLink)));
+        service.addCompetencyLinksForCreation(exercise, new HashSet<>(Set.of(aiLink)));
 
         assertThat(exercise.getCompetencyLinks()).singleElement().satisfies(link -> assertThat(link.isGeneratedByAi()).isTrue());
     }

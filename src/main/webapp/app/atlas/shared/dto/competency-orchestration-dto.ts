@@ -3,37 +3,15 @@ export enum CompetencyOrchestrationStatus {
     Partial = 'PARTIAL',
     Failed = 'FAILED',
     InProgress = 'IN_PROGRESS',
-    NoOp = 'NO_OP',
 }
 
 export enum CompetencyOrchestrationFailureReason {
     NoChatClient = 'NO_CHAT_CLIENT',
     LlmError = 'LLM_ERROR',
     ToolCallLimitExceeded = 'TOOL_CALL_LIMIT_EXCEEDED',
+    IncompleteOrchestration = 'INCOMPLETE_ORCHESTRATION',
     UnsupportedExercise = 'UNSUPPORTED_EXERCISE',
     UnsupportedLearningObject = 'UNSUPPORTED_LEARNING_OBJECT',
-    InternalError = 'INTERNAL_ERROR',
-}
-
-export enum LearningObjectType {
-    Exercise = 'EXERCISE',
-    LectureUnit = 'LECTURE_UNIT',
-}
-
-export enum LearningObjectOutcomeStatus {
-    Processed = 'PROCESSED',
-    Skipped = 'SKIPPED',
-    Failed = 'FAILED',
-    Partial = 'PARTIAL',
-    Deferred = 'DEFERRED',
-}
-
-export interface LearningObjectOutcomeDTO {
-    objectType: LearningObjectType;
-    objectId: number;
-    status: LearningObjectOutcomeStatus;
-    retryEligible: boolean;
-    detail: string;
 }
 
 export enum AppliedActionType {
@@ -62,5 +40,4 @@ export interface CompetencyOrchestrationResultDTO {
     summary?: string;
     appliedActions?: AppliedActionDTO[];
     failureReason?: CompetencyOrchestrationFailureReason;
-    objectOutcomes?: LearningObjectOutcomeDTO[];
 }

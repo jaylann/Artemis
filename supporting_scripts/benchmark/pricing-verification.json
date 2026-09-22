@@ -1,0 +1,22 @@
+{
+  "verifiedAt": "2026-09-22T12:34:34.622198+00:00",
+  "modelSource": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+  "cacheSource": "https://developers.openai.com/api/docs/guides/prompt-caching",
+  "exchangeRateSource": "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?startPeriod=2026-09-21&endPeriod=2026-09-22&format=csvdata",
+  "exchangeRateDate": "2026-09-21",
+  "usdPerEur": "1.149",
+  "ecbResponseSha256": "e2eafd18b91f340f5373a248eb51f5ff6d1b2e01b04d8e742c2524a5af2433d3",
+  "pricingSha256": "e52355a3097b85f8c1f254eb09ced53d505631f91238cefe8fda6dfe46a6692e",
+  "verifiedUsdPerMillion": {
+    "input": "0.20",
+    "cachedInput": "0.02",
+    "cacheWriteInput": "0.25",
+    "output": "1.20"
+  },
+  "longContext": {
+    "thresholdTokens": 272000,
+    "inputMultiplier": 2,
+    "outputMultiplier": 1.5
+  },
+  "status": "official sources checked; model access and paid smoke still pending"
+}

@@ -12,6 +12,7 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.ToolResponseMessage;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.metadata.ChatGenerationMetadata;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.DefaultUsage;
 import org.springframework.ai.chat.model.ChatModel;
@@ -24,9 +25,6 @@ import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openai.client.OpenAIClient;
 import com.openai.core.JsonValue;
 import com.openai.models.Reasoning;
@@ -45,6 +43,10 @@ import com.openai.models.responses.ResponseStatus;
 import com.openai.models.responses.ResponseUsage;
 import com.openai.models.responses.Tool;
 
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+
 /**
  * Synchronous Spring AI {@link ChatModel} adapter for the OpenAI Responses API.
  *
@@ -60,9 +62,12 @@ public final class AtlasResponsesChatModel implements ChatModel {
     /** Metadata key containing the original ordered Responses output items. */
     public static final String RESPONSES_OUTPUT_ITEMS_METADATA_KEY = "atlas.responses.output-items";
 
+    /** Metadata indicating whether every provider response in the replayed conversation supplied usage. */
+    public static final String USAGE_COMPLETE_METADATA_KEY = "atlas.responses.usage-complete";
+
     private final OpenAIClient openAIClient;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
 
     private final OpenAiChatOptions defaultOptions;
 
@@ -73,7 +78,7 @@ public final class AtlasResponsesChatModel implements ChatModel {
      * @param objectMapper JSON parser used for tool schemas
      * @param defaultModel model/deployment used when a request does not override it
      */
-    public AtlasResponsesChatModel(OpenAIClient openAIClient, ObjectMapper objectMapper, @Nullable String defaultModel) {
+    public AtlasResponsesChatModel(OpenAIClient openAIClient, JsonMapper objectMapper, @Nullable String defaultModel) {
         this.openAIClient = openAIClient;
         this.objectMapper = objectMapper;
         OpenAiChatOptions.Builder options = OpenAiChatOptions.builder();
@@ -95,12 +100,12 @@ public final class AtlasResponsesChatModel implements ChatModel {
 
     /**
      * Sends one complete prompt to the Responses API and converts its output to Spring AI's
-     * response model.
+     * response model. Failed or incomplete provider responses carry a failure finish reason
+     * without executable tools, retaining usage for accounting.
      *
      * @param prompt ordered system, user, assistant, and tool messages
      * @return converted assistant response
      * @throws IllegalArgumentException if the prompt contains unsupported content or malformed tools
-     * @throws IllegalStateException    if OpenAI returns a failed or incomplete response
      */
     @Override
     public ChatResponse call(Prompt prompt) {
@@ -120,7 +125,8 @@ public final class AtlasResponsesChatModel implements ChatModel {
             throw new CancellationException("Atlas Responses dispatch interrupted before request");
         }
         Response response = openAIClient.responses().create(request.build());
-        return toChatResponse(response);
+        boolean priorUsageComplete = prompt.getInstructions().stream().noneMatch(message -> Boolean.FALSE.equals(message.getMetadata().get(USAGE_COMPLETE_METADATA_KEY)));
+        return toChatResponse(response, priorUsageComplete);
     }
 
     private OpenAiChatOptions requireOpenAiOptions(@Nullable ChatOptions options) {
@@ -177,7 +183,7 @@ public final class AtlasResponsesChatModel implements ChatModel {
             schema = objectMapper.readValue(definition.inputSchema(), new TypeReference<>() {
             });
         }
-        catch (JsonProcessingException ex) {
+        catch (JacksonException ex) {
             throw new IllegalArgumentException("Invalid JSON schema for Atlas tool " + definition.name(), ex);
         }
         Map<String, JsonValue> parameters = new LinkedHashMap<>();
@@ -259,14 +265,17 @@ public final class AtlasResponsesChatModel implements ChatModel {
         throw unsupported("Responses output item kind " + outputItem.getClass().getSimpleName());
     }
 
-    private static ChatResponse toChatResponse(Response response) {
-        if (response.error().isPresent()) {
-            throw new IllegalStateException("OpenAI Responses request failed: " + response.error().orElseThrow());
-        }
-        ResponseStatus status = response.status().orElseThrow(() -> new IllegalStateException("OpenAI Responses response omitted status"));
-        if (!ResponseStatus.COMPLETED.equals(status)) {
-            throw new IllegalStateException(
-                    "OpenAI Responses response was " + status.asString() + (response.incompleteDetails().isPresent() ? ": " + response.incompleteDetails().orElseThrow() : ""));
+    private static ChatResponse toChatResponse(Response response, boolean priorUsageComplete) {
+        boolean usageComplete = priorUsageComplete && response.usage().isPresent();
+        ChatResponseMetadata.Builder responseMetadata = ChatResponseMetadata.builder().id(response.id()).model(responseModelName(response)).keyValue(USAGE_COMPLETE_METADATA_KEY,
+                usageComplete);
+        response.usage().ifPresent(usage -> responseMetadata.usage(toUsage(usage)));
+        ResponseStatus status = response.status().orElse(null);
+        if (response.error().isPresent() || !ResponseStatus.COMPLETED.equals(status)) {
+            // Return a terminal, tool-free response so the native advisor retains earlier rounds' usage.
+            // The orchestration layer rejects this finish reason after accounting; incomplete tools never run.
+            String finish = response.error().isPresent() ? "failed" : status == null ? "missing_status" : status.asString();
+            return new ChatResponse(List.of(new Generation(new AssistantMessage(""), ChatGenerationMetadata.builder().finishReason(finish).build())), responseMetadata.build());
         }
         List<ResponseOutputItem> outputItems = List.copyOf(response.output());
         StringBuilder text = new StringBuilder();
@@ -287,10 +296,9 @@ public final class AtlasResponsesChatModel implements ChatModel {
             throw unsupported("Responses output item kind " + outputItem.getClass().getSimpleName());
         }
 
-        Map<String, Object> assistantMetadata = Map.of(RESPONSES_OUTPUT_ITEMS_METADATA_KEY, outputItems);
+        Map<String, Object> assistantMetadata = Map.of(RESPONSES_OUTPUT_ITEMS_METADATA_KEY, outputItems, USAGE_COMPLETE_METADATA_KEY, usageComplete);
         AssistantMessage assistant = AssistantMessage.builder().content(text.toString()).toolCalls(toolCalls).properties(assistantMetadata).build();
-        ChatResponseMetadata.Builder responseMetadata = ChatResponseMetadata.builder().id(response.id()).model(responseModelName(response));
-        response.usage().ifPresent(usage -> responseMetadata.usage(toUsage(usage)));
+
         return new ChatResponse(List.of(new Generation(assistant)), responseMetadata.build());
     }
 

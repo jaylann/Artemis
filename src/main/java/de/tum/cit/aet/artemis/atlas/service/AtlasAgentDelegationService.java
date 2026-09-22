@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import de.tum.cit.aet.artemis.atlas.config.AtlasAgentProperties;
-import de.tum.cit.aet.artemis.atlas.config.AtlasEnabled;
+import de.tum.cit.aet.artemis.atlas.config.AtlasLLMEnabled;
 import de.tum.cit.aet.artemis.atlas.config.AtlasOrchestratorProperties;
 import de.tum.cit.aet.artemis.atlas.config.AtlasResponsesApiConfiguration;
 import de.tum.cit.aet.artemis.atlas.config.AtlasResponsesApiConfiguration.AtlasResponsesChatClient;
@@ -49,7 +49,7 @@ import de.tum.cit.aet.artemis.atlas.config.AtlasResponsesApiConfiguration.AtlasR
  */
 @Lazy
 @Service
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 public class AtlasAgentDelegationService {
 
     @Nullable
@@ -157,16 +157,17 @@ public class AtlasAgentDelegationService {
      */
     ChatResponse delegateOrchestratorRound(String systemPrompt, String userMessage, OpenAiChatOptions.Builder options, Map<String, Object> toolContextMap,
             ToolCallbackProvider... toolCallbackProviders) {
-        if (responsesApiEnabled) {
-            if (responsesChatClient == null) {
-                throw new IllegalStateException("Atlas Responses ChatClient is not configured while responses-api-enabled is true.");
-            }
-            return invoke(responsesChatClient, systemPrompt, userMessage, options, false, null, toolContextMap, true, toolCallbackProviders);
+        ChatClient selectedClient = responsesApiEnabled ? responsesChatClient : chatClient;
+        if (selectedClient == null) {
+            String clientName = responsesApiEnabled ? "Atlas Responses ChatClient" : "ChatClient";
+            throw new IllegalStateException(clientName + " is not configured. Atlas Agent delegation is unavailable.");
         }
-        if (chatClient == null) {
-            throw new IllegalStateException("ChatClient is not configured. Atlas Agent delegation is unavailable.");
-        }
-        return invoke(chatClient, systemPrompt, userMessage, options, false, null, toolContextMap, true, toolCallbackProviders);
+        return invoke(selectedClient, systemPrompt, userMessage, options, false, null, toolContextMap, true, toolCallbackProviders);
+    }
+
+    /** @return whether the configured autonomous transport is available */
+    public boolean isOrchestratorAvailable() {
+        return (responsesApiEnabled ? responsesChatClient : chatClient) != null;
     }
 
     /**

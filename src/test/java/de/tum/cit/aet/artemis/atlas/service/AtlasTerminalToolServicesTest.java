@@ -2,74 +2,83 @@ package de.tum.cit.aet.artemis.atlas.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.model.ToolContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
-import de.tum.cit.aet.artemis.atlas.dto.OrchestrationCompletionDTO;
+import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
 import de.tum.cit.aet.artemis.atlas.dto.WorkerCompletionDTO;
 
 class AtlasTerminalToolServicesTest {
 
-    @Test
-    void workerCompletionRequiresHolderAndCanOnlyBeSetOnce() {
-        AtlasWorkerTerminalToolService service = new AtlasWorkerTerminalToolService(new ObjectMapper());
-        AtomicReference<WorkerCompletionDTO> holder = OrchestratorToolContextKeys.newWorkerCompletionHolder();
-        Map<String, Object> context = new HashMap<>();
-        context.put(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY, holder);
-        context.put(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY, new AtomicInteger(1));
+    private AtlasWorkerTerminalToolService workerTerminal;
 
-        assertThat(service.completeWorkerTask(true, "Created competencies 12 and 13.", new ToolContext(context))).contains("\"success\":true");
-        assertThat(holder.get()).isEqualTo(new WorkerCompletionDTO(true, "Created competencies 12 and 13."));
-        assertThat(service.completeWorkerTask(false, "duplicate", new ToolContext(context))).contains("already called");
+    @BeforeEach
+    void setUp() {
+        JsonMapper objectMapper = new JsonMapper();
+        workerTerminal = new AtlasWorkerTerminalToolService(objectMapper);
     }
 
     @Test
-    void workerCompletionIsInvalidatedByLaterRead() {
-        AtlasWorkerTerminalToolService service = new AtlasWorkerTerminalToolService(new ObjectMapper());
-        AtomicReference<WorkerCompletionDTO> holder = OrchestratorToolContextKeys.newWorkerCompletionHolder();
-        Map<String, Object> context = new HashMap<>();
-        context.put(OrchestratorToolContextKeys.COURSE_ID_KEY, 42L);
-        context.put(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY, holder);
-        context.put(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY, new AtomicInteger(1));
-        context.put(OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        context.put(OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY, OrchestratorToolContextKeys.newSequenceHolder());
-        context.put(OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY, OrchestratorToolContextKeys.newWorkerTerminalInvalidatedHolder());
+    void completeWorkerTask_requiresEvidenceAndIsOneShot() {
+        Map<String, Object> context = workerContext();
         ToolContext toolContext = new ToolContext(context);
 
-        assertThat(service.completeWorkerTask(true, "done", toolContext)).contains("\"success\":true");
-        OrchestratorToolHelpers.courseIdFromContext(toolContext);
-        OrchestratorToolHelpers.markWorkerRead(toolContext);
+        assertThat(workerTerminal.completeWorkerTask(true, "Done", toolContext)).contains("Inspect course state or receive a mutation outcome");
+        assertThat(workerHolder(context)).hasValue(null);
 
-        assertThat(holder.get()).isNull();
-        assertThat(service.completeWorkerTask(true, "stale", toolContext)).contains("invalid after");
+        ((AtomicInteger) context.get(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY)).incrementAndGet();
+        assertThat(workerTerminal.completeWorkerTask(true, "Created requested competency", toolContext)).contains("\"success\":true");
+        assertThat(OrchestratorToolHelpers.isWorkerCompletionTerminal(toolContext)).isTrue();
+        assertThat(workerTerminal.completeWorkerTask(false, "Changed mind", toolContext)).contains("already completed");
+        assertThat(workerHolder(context)).hasValue(new WorkerCompletionDTO(true, "Created requested competency"));
+        assertThat(OrchestratorToolHelpers.isWorkerCompletionTerminal(toolContext)).isFalse();
     }
 
     @Test
-    void mainCompletionStoresVerifiedDecision() {
-        AtlasOrchestratorTerminalToolService service = new AtlasOrchestratorTerminalToolService(new ObjectMapper());
-        AtomicReference<OrchestrationCompletionDTO> holder = OrchestratorToolContextKeys.newOrchestrationCompletionHolder();
-        Map<String, Object> context = new HashMap<>();
-        context.put(OrchestratorToolContextKeys.ORCHESTRATION_COMPLETION_KEY, holder);
+    void completeWorkerTask_acceptsAppliedActionAsEvidence() {
+        Map<String, Object> context = workerContext();
+        OrchestratorToolContextKeys.AppliedActionsBuffer buffer = (OrchestratorToolContextKeys.AppliedActionsBuffer) context.get(OrchestratorToolContextKeys.APPLIED_ACTIONS_KEY);
+        buffer.actions().add(AppliedActionDTO.create(1L, "Loops", "Created competency", "Exercise requires loops"));
 
-        assertThat(service.completeOrchestration(false, "One link remains unresolved.", new ToolContext(context))).contains("\"verified\":false");
-        assertThat(holder.get()).isEqualTo(new OrchestrationCompletionDTO(false, "One link remains unresolved."));
+        String result = workerTerminal.completeWorkerTask(true, "Created competency", new ToolContext(context));
+
+        assertThat(result).contains("\"completed\":true");
     }
 
     @Test
-    void verifiedMainCompletionRequiresFreshIndexRead() {
-        AtlasOrchestratorTerminalToolService service = new AtlasOrchestratorTerminalToolService(new ObjectMapper());
-        Map<String, Object> context = new HashMap<>();
-        context.put(OrchestratorToolContextKeys.ORCHESTRATION_COMPLETION_KEY, OrchestratorToolContextKeys.newOrchestrationCompletionHolder());
-        context.put(OrchestratorToolContextKeys.LAST_INDEX_READ_SEQUENCE_KEY, new java.util.concurrent.atomic.AtomicLong(1));
-        context.put(OrchestratorToolContextKeys.LAST_DELEGATION_SEQUENCE_KEY, new java.util.concurrent.atomic.AtomicLong(2));
+    void attemptedWriteCapIsTwoHundredFiftySix() {
+        assertThat(OrchestratorToolContextKeys.MAX_WRITE_CALLS).isEqualTo(256);
+        OrchestratorToolContextKeys.AppliedActionsBuffer buffer = new OrchestratorToolContextKeys.AppliedActionsBuffer(Collections.synchronizedList(new ArrayList<>()));
+        for (int i = 0; i < 256; i++) {
+            assertThat(buffer.tryReserveSlot(OrchestratorToolContextKeys.MAX_WRITE_CALLS)).isTrue();
+        }
+        assertThat(buffer.tryReserveSlot(OrchestratorToolContextKeys.MAX_WRITE_CALLS)).isFalse();
+    }
 
-        assertThat(service.completeOrchestration(true, "done", new ToolContext(context))).contains("requires a competency-index refresh");
+    private static Map<String, Object> workerContext() {
+        Map<String, Object> context = new HashMap<>();
+        context.put(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY, new AtomicReference<WorkerCompletionDTO>());
+        context.put(OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY, new AtomicLong());
+        context.put(OrchestratorToolContextKeys.WORKER_COMPLETION_SEQUENCE_KEY, new AtomicLong());
+        context.put(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY, new AtomicInteger());
+        context.put(OrchestratorToolContextKeys.WORKER_ACTION_START_KEY, 0);
+        context.put(OrchestratorToolContextKeys.APPLIED_ACTIONS_KEY, new OrchestratorToolContextKeys.AppliedActionsBuffer(Collections.synchronizedList(new ArrayList<>())));
+        return context;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static AtomicReference<WorkerCompletionDTO> workerHolder(Map<String, Object> context) {
+        return (AtomicReference<WorkerCompletionDTO>) context.get(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY);
     }
 }

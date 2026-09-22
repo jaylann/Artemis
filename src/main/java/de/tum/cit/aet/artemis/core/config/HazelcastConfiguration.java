@@ -166,6 +166,9 @@ public class HazelcastConfiguration {
     @Value("${spring.jpa.properties.hibernate.cache.hazelcast.instance_name:Artemis}")
     private String instanceName;
 
+    @Value("${spring.hazelcast.cluster-name:}")
+    private String clusterName;
+
     @Value("${spring.hazelcast.interface:}")
     private String hazelcastInterface;
 
@@ -523,6 +526,9 @@ public class HazelcastConfiguration {
         configureLocalCIQueueIfNeeded(config, artemisProperties);
         configureLiteMemberIfBuildAgent(config);
 
+        if (clusterName != null && !clusterName.isBlank()) {
+            config.setClusterName(clusterName);
+        }
         HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 
         // Register the ACTUAL Hazelcast address in Eureka after the instance starts.
@@ -679,6 +685,7 @@ public class HazelcastConfiguration {
         if (registration.isEmpty()) {
             log.info("No discovery service is set up, Hazelcast cannot create a multi-node cluster.");
             hazelcastBindOnlyOnInterface("127.0.0.1", config);
+            config.getNetworkConfig().setPort(hazelcastPort);
             return;
         }
 

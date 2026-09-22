@@ -1,0 +1,32 @@
+{
+  "develop": "b7d2a004e4e544cb82f08a50912fbeef595d31ad",
+  "patches": [
+    {
+      "number": 13600,
+      "base": "5be30e1d757c739f95291431c048007811ee4b88",
+      "head": "e04fdb714d03a382473f5b6746838843d475d925"
+    },
+    {
+      "number": 13605,
+      "base": "e04fdb714d03a382473f5b6746838843d475d925",
+      "head": "a0f3623ab3273c7dc6339f20c26e6c43d14fc4e1"
+    },
+    {
+      "number": 13579,
+      "base": "a0f3623ab3273c7dc6339f20c26e6c43d14fc4e1",
+      "head": "3c18b332e6189184b38d23639379d26c79986b47"
+    },
+    {
+      "number": 13908,
+      "base": "e04fdb714d03a382473f5b6746838843d475d925",
+      "head": "f1d23ed744e0f94feabe199c7aa2cbe894c131ed"
+    }
+  ],
+  "developCommitTime": "2026-09-22T11:16:00+02:00",
+  "checkedAt": "2026-09-22T13:39:41.374102+00:00",
+  "localSourceChanges": {
+    "src/main/java/de/tum/cit/aet/artemis/core/config/HazelcastConfiguration.java": "Preserved demo cluster-name override and standalone port binding (7 added lines).",
+    "src/test/java/de/tum/cit/aet/artemis/atlas/service/ContentChangeSchedulerTest.java": "Adapt one hardening regression to lecture-aware BatchClaim/runBatch (4 lines)."
+  },
+  "composition": "Current develop plus PR deltas in dependency order: workers, lectures, provenance, hardening. All applied without conflicts. No merge/rebase/cherry-pick/commit performed."
+}

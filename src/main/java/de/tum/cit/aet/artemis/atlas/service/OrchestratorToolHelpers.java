@@ -7,13 +7,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.ai.chat.model.ToolContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyTaxonomy;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CourseCompetency;
@@ -84,154 +83,8 @@ public final class OrchestratorToolHelpers {
         if (toolContext == null || toolContext.getContext() == null) {
             return null;
         }
-        markWorkerActivity(toolContext);
         Object value = toolContext.getContext().get(OrchestratorToolContextKeys.COURSE_ID_KEY);
         return value instanceof Number number ? number.longValue() : null;
-    }
-
-    static void markWorkerRead(@Nullable ToolContext toolContext) {
-        if (toolContext == null || toolContext.getContext() == null) {
-            return;
-        }
-        Object value = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY);
-        if (value instanceof AtomicInteger count) {
-            count.incrementAndGet();
-        }
-    }
-
-    /**
-     * Advances worker activity state and invalidates an already accepted terminal result. The
-     * activity sequence is only present on nested worker contexts, so ordinary main-agent calls
-     * remain unaffected.
-     */
-    static void markWorkerActivity(@Nullable ToolContext toolContext) {
-        if (toolContext == null || toolContext.getContext() == null) {
-            return;
-        }
-        AtomicLong activitySequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY);
-        AtomicLong terminalSequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY);
-        if (activitySequence == null || terminalSequence == null) {
-            return;
-        }
-        synchronized (workerStateLock(toolContext)) {
-            long currentSequence = activitySequence.incrementAndGet();
-            if (terminalSequence.get() > 0 && currentSequence > terminalSequence.get()) {
-                invalidateWorkerCompletion(toolContext);
-            }
-        }
-    }
-
-    /**
-     * Records a worker terminal-tool invocation. A second terminal invocation after an accepted
-     * result is rejected, and any later activity leaves the completion holder empty so the parent
-     * returns a deterministic failed worker result.
-     *
-     * @return the activity sequence for the invocation, or {@code -1} when a prior terminal result
-     *         was already accepted or invalidated
-     */
-    static long markWorkerTerminalActivity(@Nullable ToolContext toolContext) {
-        if (toolContext == null || toolContext.getContext() == null) {
-            return -1;
-        }
-        AtomicLong activitySequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY);
-        AtomicLong terminalSequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY);
-        AtomicBoolean invalidated = atomicBoolean(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
-        if (activitySequence == null || terminalSequence == null || invalidated == null) {
-            return 0;
-        }
-        synchronized (workerStateLock(toolContext)) {
-            long currentSequence = activitySequence.incrementAndGet();
-            if (terminalSequence.get() > 0 || invalidated.get()) {
-                if (terminalSequence.get() > 0) {
-                    invalidateWorkerCompletion(toolContext);
-                }
-                return -1;
-            }
-            return currentSequence;
-        }
-    }
-
-    /** Accepts the terminal result at {@code sequence}; returns false if another result won a race. */
-    static boolean acceptWorkerCompletion(@Nullable ToolContext toolContext, long sequence) {
-        if (toolContext == null || toolContext.getContext() == null || sequence < 0) {
-            return false;
-        }
-        AtomicLong terminalSequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_SEQUENCE_KEY);
-        AtomicBoolean invalidated = atomicBoolean(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
-        if (terminalSequence == null || invalidated == null || invalidated.get()) {
-            return sequence == 0;
-        }
-        AtomicLong activitySequence = atomicLong(toolContext, OrchestratorToolContextKeys.WORKER_ACTIVITY_SEQUENCE_KEY);
-        synchronized (workerStateLock(toolContext)) {
-            if (activitySequence == null || activitySequence.get() != sequence || invalidated.get()) {
-                return false;
-            }
-            return terminalSequence.compareAndSet(0, sequence);
-        }
-    }
-
-    static boolean workerCompletionInvalidated(@Nullable Map<String, Object> context) {
-        if (context == null) {
-            return false;
-        }
-        Object value = context.get(OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
-        return value instanceof AtomicBoolean flag && flag.get();
-    }
-
-    private static void invalidateWorkerCompletion(ToolContext toolContext) {
-        AtomicBoolean invalidated = atomicBoolean(toolContext, OrchestratorToolContextKeys.WORKER_TERMINAL_INVALIDATED_KEY);
-        if (invalidated != null) {
-            invalidated.set(true);
-        }
-        Object value = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY);
-        if (value instanceof AtomicReference<?> reference) {
-            reference.set(null);
-        }
-    }
-
-    private static Object workerStateLock(ToolContext toolContext) {
-        Object lock = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_STATE_LOCK_KEY);
-        return lock == null ? toolContext.getContext() : lock;
-    }
-
-    static void markIndexRead(@Nullable ToolContext toolContext) {
-        AtomicLong sequence = atomicLong(toolContext, OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY);
-        AtomicLong lastRead = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_INDEX_READ_SEQUENCE_KEY);
-        if (sequence != null && lastRead != null) {
-            lastRead.set(sequence.incrementAndGet());
-        }
-    }
-
-    static void markDelegation(@Nullable ToolContext toolContext) {
-        AtomicLong sequence = atomicLong(toolContext, OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY);
-        AtomicLong lastDelegation = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_DELEGATION_SEQUENCE_KEY);
-        if (sequence != null && lastDelegation != null) {
-            lastDelegation.set(sequence.incrementAndGet());
-        }
-    }
-
-    static boolean hasFreshVerificationRead(@Nullable ToolContext toolContext) {
-        AtomicLong lastRead = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_INDEX_READ_SEQUENCE_KEY);
-        AtomicLong lastDelegation = atomicLong(toolContext, OrchestratorToolContextKeys.LAST_DELEGATION_SEQUENCE_KEY);
-        return lastRead != null && lastDelegation != null && lastRead.get() > lastDelegation.get();
-    }
-
-    @Nullable
-    private static AtomicLong atomicLong(@Nullable ToolContext toolContext, String key) {
-        if (toolContext == null || toolContext.getContext() == null) {
-            return null;
-        }
-        Object value = toolContext.getContext().get(key);
-        return value instanceof AtomicLong holder ? holder : null;
-    }
-
-    @Nullable
-    private static AtomicBoolean atomicBoolean(@Nullable ToolContext toolContext, String key) {
-        if (toolContext == null || toolContext.getContext() == null) {
-            return null;
-        }
-        Object value = toolContext.getContext().get(key);
-        return value instanceof AtomicBoolean holder ? holder : null;
     }
 
     /**
@@ -274,6 +127,95 @@ public final class OrchestratorToolHelpers {
     static boolean tryReserveWriteSlot(@Nullable ToolContext toolContext) {
         OrchestratorToolContextKeys.AppliedActionsBuffer buffer = appliedActionsBufferFromContext(toolContext);
         return buffer == null || buffer.tryReserveSlot(OrchestratorToolContextKeys.MAX_WRITE_CALLS);
+    }
+
+    /** Atomically reserves one nested worker round against the request-scoped delegation cap. */
+    static boolean tryReserveDelegationSlot(@Nullable ToolContext toolContext) {
+        Object value = contextValue(toolContext, OrchestratorToolContextKeys.DELEGATION_COUNT_KEY);
+        if (!(value instanceof AtomicInteger counter)) {
+            return false;
+        }
+        while (true) {
+            int current = counter.get();
+            if (current >= OrchestratorToolContextKeys.MAX_DELEGATION_CALLS) {
+                return false;
+            }
+            if (counter.compareAndSet(current, current + 1)) {
+                return true;
+            }
+        }
+    }
+
+    /** Records one successful course-scoped read when invoked inside a worker request. */
+    static void markWorkerRead(@Nullable ToolContext toolContext) {
+        Object value = contextValue(toolContext, OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY);
+        if (value instanceof AtomicInteger readCount) {
+            readCount.incrementAndGet();
+        }
+    }
+
+    /** Records a completed mutation outcome without treating it as a successful write. */
+    private static void markWorkerMutationOutcome(@Nullable ToolContext toolContext) {
+        Object value = contextValue(toolContext, OrchestratorToolContextKeys.WORKER_MUTATION_OUTCOME_COUNT_KEY);
+        if (value instanceof AtomicInteger count) {
+            count.incrementAndGet();
+        }
+    }
+
+    /** Serialises an explicit idempotent no-op and records it as worker completion evidence. */
+    static String mutationNoOpJson(JsonMapper objectMapper, String message, @Nullable ToolContext toolContext) {
+        markWorkerMutationOutcome(toolContext);
+        return toJson(objectMapper, Map.of("status", "noop", "message", message));
+    }
+
+    /** Records that a worker mutation tool returned an error outcome. */
+    static void markWorkerMutationError(@Nullable ToolContext toolContext) {
+        Object value = contextValue(toolContext, OrchestratorToolContextKeys.WORKER_MUTATION_ERROR_KEY);
+        if (value instanceof AtomicBoolean mutationError) {
+            mutationError.set(true);
+        }
+    }
+
+    /** Returns whether any mutation tool in the current worker returned an error outcome. */
+    static boolean hasWorkerMutationError(@Nullable ToolContext toolContext) {
+        Object value = contextValue(toolContext, OrchestratorToolContextKeys.WORKER_MUTATION_ERROR_KEY);
+        return value instanceof AtomicBoolean mutationError && mutationError.get();
+    }
+
+    /** Records one worker tool invocation and returns its sequence position. */
+    static long markWorkerToolActivity(@Nullable ToolContext toolContext) {
+        AtomicLong sequence = atomicLongFromContext(toolContext, OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY);
+        AtomicLong completion = atomicLongFromContext(toolContext, OrchestratorToolContextKeys.WORKER_COMPLETION_SEQUENCE_KEY);
+        return sequence == null || completion == null ? 0L : sequence.incrementAndGet();
+    }
+
+    /** Records the sequence position of the accepted worker terminal call. */
+    static void markWorkerCompletion(@Nullable ToolContext toolContext, long completionSequence) {
+        AtomicLong marker = atomicLongFromContext(toolContext, OrchestratorToolContextKeys.WORKER_COMPLETION_SEQUENCE_KEY);
+        if (marker != null) {
+            marker.set(completionSequence);
+        }
+    }
+
+    /** Returns whether the accepted worker completion was the final tool invocation in the round. */
+    static boolean isWorkerCompletionTerminal(@Nullable ToolContext toolContext) {
+        AtomicLong sequence = atomicLongFromContext(toolContext, OrchestratorToolContextKeys.TOOL_SEQUENCE_KEY);
+        AtomicLong completion = atomicLongFromContext(toolContext, OrchestratorToolContextKeys.WORKER_COMPLETION_SEQUENCE_KEY);
+        return sequence != null && completion != null && completion.get() > 0L && completion.get() == sequence.get();
+    }
+
+    @Nullable
+    private static Object contextValue(@Nullable ToolContext toolContext, String key) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return null;
+        }
+        return toolContext.getContext().get(key);
+    }
+
+    @Nullable
+    private static AtomicLong atomicLongFromContext(@Nullable ToolContext toolContext, String key) {
+        Object value = contextValue(toolContext, key);
+        return value instanceof AtomicLong marker ? marker : null;
     }
 
     /**
@@ -393,15 +335,16 @@ public final class OrchestratorToolHelpers {
      *
      * @param objectMapper  the mapper used to serialise the error payload
      * @param justification the justification supplied by the model
+     * @param toolContext   worker context in which mutation failures are recorded
      * @return a JSON error string, or {@code null} when valid
      */
     @Nullable
-    static String validateJustification(ObjectMapper objectMapper, @Nullable String justification) {
+    static String validateJustification(JsonMapper objectMapper, @Nullable String justification, @Nullable ToolContext toolContext) {
         if (isBlank(justification)) {
-            return errorJson(objectMapper, "justification is required.");
+            return mutationErrorJson(objectMapper, "justification is required.", toolContext);
         }
         if (justification.length() > MAX_JUSTIFICATION_LENGTH) {
-            return errorJson(objectMapper, "justification must be at most " + MAX_JUSTIFICATION_LENGTH + " characters.");
+            return mutationErrorJson(objectMapper, "justification must be at most " + MAX_JUSTIFICATION_LENGTH + " characters.", toolContext);
         }
         return null;
     }
@@ -410,10 +353,11 @@ public final class OrchestratorToolHelpers {
      * Pre-serialized error returned when the write-quota cap is reached.
      *
      * @param objectMapper the mapper used to serialise the payload
+     * @param toolContext  worker context in which the failure is recorded
      * @return the JSON error string
      */
-    static String writeQuotaError(ObjectMapper objectMapper) {
-        return errorJson(objectMapper, "Write tool call cap (" + OrchestratorToolContextKeys.MAX_WRITE_CALLS + ") reached for this run; finalize and return.");
+    static String writeQuotaError(JsonMapper objectMapper, @Nullable ToolContext toolContext) {
+        return mutationErrorJson(objectMapper, "Write tool call cap (" + OrchestratorToolContextKeys.MAX_WRITE_CALLS + ") reached for this run; finalize and return.", toolContext);
     }
 
     /**
@@ -422,8 +366,19 @@ public final class OrchestratorToolHelpers {
      * @param objectMapper the mapper used to serialise the payload
      * @return the JSON error string
      */
-    static String missingCourseContextError(ObjectMapper objectMapper) {
+    static String missingCourseContextError(JsonMapper objectMapper) {
         return errorJson(objectMapper, "No course context available for this tool call.");
+    }
+
+    /**
+     * Pre-serialized missing-context error for mutation tools.
+     *
+     * @param objectMapper the mapper used to serialise the payload
+     * @param toolContext  worker context in which the failure is recorded
+     * @return the JSON error string
+     */
+    static String missingCourseContextError(JsonMapper objectMapper, @Nullable ToolContext toolContext) {
+        return mutationErrorJson(objectMapper, "No course context available for this tool call.", toolContext);
     }
 
     /**
@@ -433,8 +388,22 @@ public final class OrchestratorToolHelpers {
      * @param message      the error message
      * @return the JSON error string
      */
-    static String errorJson(ObjectMapper objectMapper, String message) {
+    static String errorJson(JsonMapper objectMapper, String message) {
         return toJson(objectMapper, Map.of("error", message));
+    }
+
+    /**
+     * Record a mutation failure and serialise its error payload.
+     *
+     * @param objectMapper the mapper
+     * @param message      the error message
+     * @param toolContext  worker context in which the failure is recorded
+     * @return the JSON error string
+     */
+    static String mutationErrorJson(JsonMapper objectMapper, String message, @Nullable ToolContext toolContext) {
+        markWorkerMutationOutcome(toolContext);
+        markWorkerMutationError(toolContext);
+        return errorJson(objectMapper, message);
     }
 
     /**
@@ -444,11 +413,11 @@ public final class OrchestratorToolHelpers {
      * @param object       the object to serialise
      * @return the JSON string
      */
-    static String toJson(ObjectMapper objectMapper, Object object) {
+    static String toJson(JsonMapper objectMapper, Object object) {
         try {
             return objectMapper.writeValueAsString(object);
         }
-        catch (JsonProcessingException ex) {
+        catch (JacksonException ex) {
             return "{\"error\": \"Failed to serialize response\"}";
         }
     }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.tum.cit.aet.artemis.atlas.config.AtlasEnabled;
+import de.tum.cit.aet.artemis.atlas.config.AtlasLLMEnabled;
 import de.tum.cit.aet.artemis.atlas.config.AtlasOrchestratorProperties;
 import de.tum.cit.aet.artemis.atlas.dto.CompetencyOrchestrationResultDTO;
 import de.tum.cit.aet.artemis.atlas.dto.OrchestratorDefaultsDTO;
@@ -22,6 +22,7 @@ import de.tum.cit.aet.artemis.core.security.annotations.enforceRoleInExercise.En
 import de.tum.cit.aet.artemis.core.security.annotations.enforceRoleInLectureUnit.EnforceAtLeastInstructorInLectureUnit;
 import de.tum.cit.aet.artemis.core.service.feature.Feature;
 import de.tum.cit.aet.artemis.core.service.feature.FeatureToggle;
+import de.tum.cit.aet.artemis.core.service.featureusage.FeatureUsage;
 
 /**
  * REST controller for the autonomous competency management orchestrator.
@@ -30,8 +31,9 @@ import de.tum.cit.aet.artemis.core.service.feature.FeatureToggle;
  * {@link Feature#AtlasAgent} feature toggle — the same toggle that controls the Atlas Companion
  * chat agent. No separate orchestrator toggle exists.
  */
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 @Lazy
+@FeatureUsage("ai/competency-orchestration")
 @RestController
 @RequestMapping("api/atlas/orchestrator/")
 public class CompetencyOrchestrationResource {
@@ -79,7 +81,7 @@ public class CompetencyOrchestrationResource {
         return ResponseEntity.status(httpStatusFor(result)).body(result);
     }
 
-    /** Maps orchestration outcome to HTTP status so frontend error handling does not need to parse the response body. */
+    /** Maps orchestration outcomes to HTTP statuses so the web client does not need to parse the response body for error handling. */
     private static HttpStatus httpStatusFor(CompetencyOrchestrationResultDTO result) {
         return switch (result.status()) {
             case SUCCESS, NO_OP -> HttpStatus.OK;
@@ -87,7 +89,7 @@ public class CompetencyOrchestrationResource {
             case IN_PROGRESS -> HttpStatus.CONFLICT;
             case FAILED -> switch (result.failureReason()) {
                 case NO_CHAT_CLIENT -> HttpStatus.SERVICE_UNAVAILABLE;
-                case TOOL_CALL_LIMIT_EXCEEDED -> HttpStatus.UNPROCESSABLE_CONTENT;
+                case TOOL_CALL_LIMIT_EXCEEDED, INCOMPLETE_ORCHESTRATION -> HttpStatus.UNPROCESSABLE_CONTENT;
                 case LLM_ERROR -> HttpStatus.BAD_GATEWAY;
                 case INTERNAL_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
                 case UNSUPPORTED_EXERCISE, UNSUPPORTED_LEARNING_OBJECT -> HttpStatus.UNPROCESSABLE_CONTENT;

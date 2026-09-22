@@ -1,7 +1,6 @@
 package de.tum.cit.aet.artemis.atlas.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
@@ -28,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import de.tum.cit.aet.artemis.atlas.dto.AutoOrchestrationSummaryDTO;
 import de.tum.cit.aet.artemis.atlas.dto.CompetencyOrchestrationResultDTO;
 import de.tum.cit.aet.artemis.atlas.dto.CourseAutoOrchestrationConfigDTO;
-import de.tum.cit.aet.artemis.atlas.dto.LearningObjectOutcomeDTO;
 import de.tum.cit.aet.artemis.atlas.service.ContentChangeAccumulatorService.BatchClaim;
 import de.tum.cit.aet.artemis.communication.service.WebsocketMessagingService;
 import de.tum.cit.aet.artemis.core.service.feature.Feature;
@@ -85,6 +84,38 @@ class ContentChangeSchedulerTest {
     }
 
     @Test
+    void tick_twoCourses_keepDestinationsAndSummariesIsolated() {
+        when(featureToggleService.isFeatureEnabled(Feature.AtlasAgent)).thenReturn(true);
+        when(accumulator.listDueCourseIds()).thenReturn(Set.of(42L, 43L));
+        var config = new CourseAutoOrchestrationConfigDTO(true, null, null);
+        when(courseConfigurationRepository.findAutoOrchestrationConfigByCourseId(42L)).thenReturn(Optional.of(config));
+        when(courseConfigurationRepository.findAutoOrchestrationConfigByCourseId(43L)).thenReturn(Optional.of(config));
+        when(accumulator.resolveDebounceWindowSeconds(config)).thenReturn(RESOLVED_WINDOW_SECONDS);
+        when(accumulator.resolveDailyCap(config)).thenReturn(RESOLVED_DAILY_CAP);
+        when(accumulator.claimDueBatch(42L, RESOLVED_WINDOW_SECONDS, RESOLVED_DAILY_CAP)).thenReturn(Optional.of(new BatchClaim(Set.of(10L), Set.of())));
+        when(accumulator.claimDueBatch(43L, RESOLVED_WINDOW_SECONDS, RESOLVED_DAILY_CAP)).thenReturn(Optional.of(new BatchClaim(Set.of(20L, 21L), Set.of())));
+        when(orchestrationService.runBatch(42L, Set.of(10L), Set.of())).thenReturn(CompetencyOrchestrationResultDTO.success("A", List.of()));
+        when(orchestrationService.runBatch(43L, Set.of(20L, 21L), Set.of()))
+                .thenReturn(CompetencyOrchestrationResultDTO.failed("B", CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED));
+
+        scheduler.tick();
+
+        var courseA = ArgumentCaptor.forClass(AutoOrchestrationSummaryDTO.class);
+        var courseB = ArgumentCaptor.forClass(AutoOrchestrationSummaryDTO.class);
+        verify(websocketMessagingService).sendMessage(eq("/topic/atlas/orchestrator/42"), courseA.capture());
+        verify(websocketMessagingService).sendMessage(eq("/topic/atlas/orchestrator/43"), courseB.capture());
+        assertThat(courseA.getValue().courseId()).isEqualTo(42L);
+        assertThat(courseA.getValue().exerciseCount()).isEqualTo(1);
+        assertThat(courseA.getValue().successCount()).isEqualTo(1);
+        assertThat(courseA.getValue().failureCount()).isZero();
+        assertThat(courseB.getValue().courseId()).isEqualTo(43L);
+        assertThat(courseB.getValue().exerciseCount()).isEqualTo(2);
+        assertThat(courseB.getValue().successCount()).isZero();
+        assertThat(courseB.getValue().failureCount()).isEqualTo(2);
+        verifyNoMoreInteractions(websocketMessagingService);
+    }
+
+    @Test
     void tick_toolLimitExceeded_doesNotReplay() {
         Set<Long> exerciseIds = Set.of(10L, 11L);
         when(featureToggleService.isFeatureEnabled(Feature.AtlasAgent)).thenReturn(true);
@@ -96,7 +127,30 @@ class ContentChangeSchedulerTest {
         scheduler.tick();
         verify(accumulator, never()).requeueAfterFailedRun(anyLong(), any(), any());
         verify(accumulator, never()).requeueAfterConcurrentRun(anyLong(), any(), any());
-        verify(websocketMessagingService).sendMessage(eq("/topic/atlas/orchestrator/" + COURSE_ID), any(AutoOrchestrationSummaryDTO.class));
+        ArgumentCaptor<AutoOrchestrationSummaryDTO> payload = ArgumentCaptor.forClass(AutoOrchestrationSummaryDTO.class);
+        verify(websocketMessagingService).sendMessage(eq("/topic/atlas/orchestrator/" + COURSE_ID), payload.capture());
+        assertThat(payload.getValue().exerciseCount()).isEqualTo(2);
+        assertThat(payload.getValue().successCount()).isEqualTo(0);
+        assertThat(payload.getValue().failureCount()).isEqualTo(2);
+    }
+
+    @Test
+    void tick_incompleteCompletionExceeded_doesNotReplay() {
+        Set<Long> exerciseIds = Set.of(10L, 11L);
+        when(featureToggleService.isFeatureEnabled(Feature.AtlasAgent)).thenReturn(true);
+        when(accumulator.listDueCourseIds()).thenReturn(Set.of(COURSE_ID));
+        stubCourseEnabled(true);
+        when(accumulator.claimDueBatch(COURSE_ID, RESOLVED_WINDOW_SECONDS, RESOLVED_DAILY_CAP)).thenReturn(Optional.of(new BatchClaim(exerciseIds, Set.of())));
+        when(orchestrationService.runBatch(COURSE_ID, exerciseIds, Set.of()))
+                .thenReturn(CompetencyOrchestrationResultDTO.failed("Tool budget exhausted", CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION));
+        scheduler.tick();
+        verify(accumulator, never()).requeueAfterFailedRun(anyLong(), any(), any());
+        verify(accumulator, never()).requeueAfterConcurrentRun(anyLong(), any(), any());
+        ArgumentCaptor<AutoOrchestrationSummaryDTO> payload = ArgumentCaptor.forClass(AutoOrchestrationSummaryDTO.class);
+        verify(websocketMessagingService).sendMessage(eq("/topic/atlas/orchestrator/" + COURSE_ID), payload.capture());
+        assertThat(payload.getValue().exerciseCount()).isEqualTo(2);
+        assertThat(payload.getValue().successCount()).isEqualTo(0);
+        assertThat(payload.getValue().failureCount()).isEqualTo(2);
     }
 
     @Test
@@ -130,8 +184,6 @@ class ContentChangeSchedulerTest {
         assertThat(summary.exerciseCount()).isEqualTo(2);
         assertThat(summary.successCount()).isEqualTo(2);
         assertThat(summary.failureCount()).isEqualTo(0);
-        assertThat(summary.skippedCount()).isEqualTo(0);
-        assertThat(summary.objectOutcomes()).extracting(LearningObjectOutcomeDTO::objectId).containsExactly(10L, 11L);
     }
 
     @Test
@@ -155,7 +207,6 @@ class ContentChangeSchedulerTest {
         assertThat(summary.exerciseCount()).isEqualTo(3);
         assertThat(summary.successCount()).isEqualTo(3);
         assertThat(summary.failureCount()).isEqualTo(0);
-        assertThat(summary.skippedCount()).isEqualTo(0);
     }
 
     @Test
@@ -196,7 +247,6 @@ class ContentChangeSchedulerTest {
         assertThat(summary.exerciseCount()).isEqualTo(2);
         assertThat(summary.successCount()).isEqualTo(0);
         assertThat(summary.failureCount()).isEqualTo(2);
-        assertThat(summary.skippedCount()).isEqualTo(0);
     }
 
     @Test
@@ -236,36 +286,6 @@ class ContentChangeSchedulerTest {
         verify(accumulator, never()).requeueAfterFailedRun(anyLong(), any(), any());
         verify(accumulator, never()).requeueAfterConcurrentRun(anyLong(), any(), any());
         verify(websocketMessagingService, never()).sendMessage(eq("/topic/atlas/orchestrator/" + COURSE_ID), any(AutoOrchestrationSummaryDTO.class));
-    }
-
-    @Test
-    void tick_mixedPerObjectOutcomes_requeuesOnlyFailedObjectAndBroadcastsTruthfulCounts() {
-        Set<Long> exerciseIds = Set.of(10L, 11L);
-        Set<Long> lectureUnitIds = Set.of(30L);
-        when(featureToggleService.isFeatureEnabled(Feature.AtlasAgent)).thenReturn(true);
-        when(accumulator.listDueCourseIds()).thenReturn(Set.of(COURSE_ID));
-        stubCourseEnabled(true);
-        when(accumulator.claimDueBatch(COURSE_ID, RESOLVED_WINDOW_SECONDS, RESOLVED_DAILY_CAP)).thenReturn(Optional.of(new BatchClaim(exerciseIds, lectureUnitIds)));
-        List<LearningObjectOutcomeDTO> outcomes = List.of(
-                new LearningObjectOutcomeDTO(LearningObjectOutcomeDTO.ObjectType.EXERCISE, 10L, LearningObjectOutcomeDTO.Status.PROCESSED, false, "verified"),
-                new LearningObjectOutcomeDTO(LearningObjectOutcomeDTO.ObjectType.EXERCISE, 11L, LearningObjectOutcomeDTO.Status.FAILED, true, "extraction failed"),
-                new LearningObjectOutcomeDTO(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, 30L, LearningObjectOutcomeDTO.Status.SKIPPED, false, "blank"));
-        when(orchestrationService.runBatch(COURSE_ID, exerciseIds, lectureUnitIds)).thenReturn(CompetencyOrchestrationResultDTO.noOp("mixed result").withObjectOutcomes(outcomes));
-
-        scheduler.tick();
-
-        verify(accumulator).requeueAfterFailedRun(COURSE_ID, Set.of(11L), Set.of());
-        ArgumentCaptor<AutoOrchestrationSummaryDTO> payload = ArgumentCaptor.forClass(AutoOrchestrationSummaryDTO.class);
-        verify(websocketMessagingService).sendMessage(eq("/topic/atlas/orchestrator/" + COURSE_ID), payload.capture());
-        AutoOrchestrationSummaryDTO summary = payload.getValue();
-        assertThat(summary.status()).isEqualTo(CompetencyOrchestrationResultDTO.Status.NO_OP);
-        assertThat(summary.exerciseCount()).isEqualTo(3);
-        assertThat(summary.successCount()).isEqualTo(1);
-        assertThat(summary.failureCount()).isEqualTo(1);
-        assertThat(summary.skippedCount()).isEqualTo(1);
-        assertThat(summary.objectOutcomes()).extracting(LearningObjectOutcomeDTO::objectId, LearningObjectOutcomeDTO::status, LearningObjectOutcomeDTO::retryEligible)
-                .containsExactlyInAnyOrder(tuple(10L, LearningObjectOutcomeDTO.Status.PROCESSED, false), tuple(11L, LearningObjectOutcomeDTO.Status.FAILED, true),
-                        tuple(30L, LearningObjectOutcomeDTO.Status.SKIPPED, false));
     }
 
     @Test

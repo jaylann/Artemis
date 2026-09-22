@@ -7,6 +7,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.MapsId;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @MappedSuperclass
 public abstract class CompetencyLearningObjectLink implements Serializable {
 
@@ -17,17 +19,8 @@ public abstract class CompetencyLearningObjectLink implements Serializable {
     @Column(name = "link_weight")
     protected double weight;
 
-    /**
-     * Whether this link was persisted by the competency orchestrator rather than by an instructor.
-     * <p>
-     * The orchestrator writes links automatically, without the per-change approval the chat-based
-     * Atlas Agent requires, so provenance would otherwise be lost. The flag lets the UI attribute a
-     * link to an agent and lets the orchestrator leave instructor-authored links alone. It is
-     * written server-side only — never accepted from a client payload — so a caller cannot
-     * mislabel their own link as agent-authored.
-     */
     @Column(name = "generated_by_ai", nullable = false)
-    protected boolean generatedByAi = false;
+    protected boolean generatedByAi;
 
     public CompetencyLearningObjectLink(CourseCompetency competency, double weight) {
         this.competency = competency;
@@ -54,6 +47,7 @@ public abstract class CompetencyLearningObjectLink implements Serializable {
         this.weight = weight;
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public boolean isGeneratedByAi() {
         return generatedByAi;
     }

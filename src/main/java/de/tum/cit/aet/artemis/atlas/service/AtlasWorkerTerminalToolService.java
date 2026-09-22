@@ -1,11 +1,16 @@
 package de.tum.cit.aet.artemis.atlas.service;
 
 import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.errorJson;
+import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.isBlank;
+import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.markWorkerCompletion;
+import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.markWorkerToolActivity;
 import static de.tum.cit.aet.artemis.atlas.service.OrchestratorToolHelpers.toJson;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
@@ -13,82 +18,74 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
-import de.tum.cit.aet.artemis.atlas.config.AtlasEnabled;
+import de.tum.cit.aet.artemis.atlas.config.AtlasLLMEnabled;
 import de.tum.cit.aet.artemis.atlas.dto.WorkerCompletionDTO;
 
-/**
- * Terminal tool exposed only to Atlas worker calls.
- * <p>
- * A worker must explicitly call this tool after its role writes. The state is request-scoped in
- * Spring AI's tool context and is never persisted; the parent orchestration service converts it to
- * a {@link de.tum.cit.aet.artemis.atlas.dto.WorkerResultDTO} synchronously.
- */
+/** One-shot terminal tool shared by the stateless Creator, Assigner, and Editor workers. */
 @Lazy
 @Service
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 public class AtlasWorkerTerminalToolService {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
 
-    public AtlasWorkerTerminalToolService(ObjectMapper objectMapper) {
+    public AtlasWorkerTerminalToolService(JsonMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     /**
-     * Mark the worker call as terminal. Missing or blank messages are rejected so a worker cannot
-     * accidentally hide a failed semantic batch behind an empty completion.
+     * Completes a worker request after it has inspected course state or received a mutation outcome.
      *
-     * @param success     whether the requested role work completed
-     * @param message     concise result or failure explanation
-     * @param toolContext request-scoped worker context
-     * @return JSON acknowledgement or a structured error
+     * @param success     whether the assigned semantic batch was completed
+     * @param message     concise outcome or actionable failure reason
+     * @param toolContext request-scoped terminal holder and evidence counters
+     * @return acknowledgement JSON, or an error when the terminal contract is violated
      */
-    @Tool(description = "Required final step for every worker task. Report success=true only when the requested semantic batch is complete; otherwise report success=false with the reason.")
-    public String completeWorkerTask(@ToolParam(description = "true when the worker completed its requested task") boolean success,
-            @ToolParam(description = "concise completion or failure message") String message, ToolContext toolContext) {
-        if (toolContext == null || toolContext.getContext() == null) {
-            return errorJson(objectMapper, "Worker context is missing; completeWorkerTask cannot be recorded.");
+    @Tool(description = "Finish this worker task exactly once. Set success=false when any requested action could not be completed, and explain the blocker in message.")
+    public String completeWorkerTask(@ToolParam(description = "true only when the complete assigned batch succeeded") boolean success,
+            @ToolParam(description = "concise outcome or actionable failure reason") String message, ToolContext toolContext) {
+        long completionSequence = markWorkerToolActivity(toolContext);
+        if (isBlank(message)) {
+            return errorJson(objectMapper, "message is required.");
         }
-        long terminalSequence = OrchestratorToolHelpers.markWorkerTerminalActivity(toolContext);
-        if (terminalSequence < 0) {
-            return errorJson(objectMapper, "completeWorkerTask is invalid after an earlier terminal decision or later worker activity.");
+        AtomicReference<WorkerCompletionDTO> holder = completionHolder(toolContext);
+        if (holder == null) {
+            return errorJson(objectMapper, "No worker completion context available.");
         }
-        if (message == null || message.isBlank()) {
-            return errorJson(objectMapper, "message is required for completeWorkerTask.");
+        if (!hasWorkerEvidence(toolContext)) {
+            return errorJson(objectMapper, "Inspect course state or receive a mutation outcome before completing the worker task.");
         }
-        if (success && !hasWorkerEvidence(toolContext)) {
-            return errorJson(objectMapper, "success=true requires at least one course-scoped read or applied action.");
+        WorkerCompletionDTO completion = new WorkerCompletionDTO(success, message);
+        if (!holder.compareAndSet(null, completion)) {
+            return errorJson(objectMapper, "Worker task was already completed.");
         }
-        Object value = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY);
-        if (!(value instanceof AtomicReference<?> reference)) {
-            return errorJson(objectMapper, "Worker completion holder is missing.");
-        }
-        @SuppressWarnings("unchecked")
-        AtomicReference<WorkerCompletionDTO> holder = (AtomicReference<WorkerCompletionDTO>) reference;
-        if (!holder.compareAndSet(null, new WorkerCompletionDTO(success, message.strip()))) {
-            return errorJson(objectMapper, "completeWorkerTask was already called.");
-        }
-        if (!OrchestratorToolHelpers.acceptWorkerCompletion(toolContext, terminalSequence)) {
-            holder.set(null);
-            return errorJson(objectMapper, "completeWorkerTask could not be accepted because worker activity advanced concurrently.");
-        }
-        return toJson(objectMapper, java.util.Map.of("status", "ok", "success", success, "message", message.strip()));
+        markWorkerCompletion(toolContext, completionSequence);
+        return toJson(objectMapper, Map.of("completed", true, "success", success));
     }
 
-    private static boolean hasWorkerEvidence(ToolContext toolContext) {
-        Object readValue = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY);
-        if (readValue instanceof AtomicInteger reads && reads.get() > 0) {
-            return true;
-        }
-        Object startValue = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_ACTION_START_KEY);
-        OrchestratorToolContextKeys.AppliedActionsBuffer buffer = OrchestratorToolHelpers.appliedActionsBufferFromContext(toolContext);
-        if (!(startValue instanceof Number start) || buffer == null) {
+    private static boolean hasWorkerEvidence(@Nullable ToolContext toolContext) {
+        if (toolContext == null || toolContext.getContext() == null) {
             return false;
         }
-        synchronized (buffer.actions()) {
-            return buffer.actions().size() > start.intValue();
+        Object readValue = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_READ_COUNT_KEY);
+        boolean hasRead = readValue instanceof AtomicInteger readCount && readCount.get() > 0;
+        OrchestratorToolContextKeys.AppliedActionsBuffer buffer = OrchestratorToolHelpers.appliedActionsBufferFromContext(toolContext);
+        Object startValue = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_ACTION_START_KEY);
+        int start = startValue instanceof Number number ? number.intValue() : 0;
+        Object mutationValue = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_MUTATION_OUTCOME_COUNT_KEY);
+        boolean hasMutationOutcome = mutationValue instanceof AtomicInteger count && count.get() > 0;
+        return hasRead || hasMutationOutcome || buffer != null && buffer.actions().size() > start;
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    private static AtomicReference<WorkerCompletionDTO> completionHolder(@Nullable ToolContext toolContext) {
+        if (toolContext == null || toolContext.getContext() == null) {
+            return null;
         }
+        Object value = toolContext.getContext().get(OrchestratorToolContextKeys.WORKER_COMPLETION_KEY);
+        return value instanceof AtomicReference<?> ? (AtomicReference<WorkerCompletionDTO>) value : null;
     }
 }

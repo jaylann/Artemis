@@ -2,10 +2,13 @@ package de.tum.cit.aet.artemis.atlas.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,12 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.model.ToolContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import de.tum.cit.aet.artemis.atlas.domain.competency.Competency;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyExerciseLink;
-import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyLectureUnitLink;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyRelation;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyTaxonomy;
 import de.tum.cit.aet.artemis.atlas.domain.competency.CourseCompetency;
@@ -31,8 +34,6 @@ import de.tum.cit.aet.artemis.atlas.repository.CompetencyRelationRepository;
 import de.tum.cit.aet.artemis.atlas.repository.CourseCompetencyRepository;
 import de.tum.cit.aet.artemis.course.domain.Course;
 import de.tum.cit.aet.artemis.exercise.repository.ExerciseTestRepository;
-import de.tum.cit.aet.artemis.lecture.domain.Lecture;
-import de.tum.cit.aet.artemis.lecture.domain.TextUnit;
 import de.tum.cit.aet.artemis.programming.domain.ProgrammingExercise;
 
 /** Unit tests for {@link OrchestratorPlanningToolsService}; relocated from the former monolithic OrchestratorToolsServiceTest. */
@@ -54,7 +55,35 @@ class OrchestratorPlanningToolsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new OrchestratorPlanningToolsService(new ObjectMapper(), courseCompetencyRepository, exerciseRepository, competencyRelationRepository);
+        service = new OrchestratorPlanningToolsService(new JsonMapper(), courseCompetencyRepository, exerciseRepository, competencyRelationRepository);
+    }
+
+    @Test
+    void listCompetencyIndex_relationsAppearInRefreshAndInitialPromptWithStableDirection() {
+        Course course = courseWithId(COURSE_ID);
+        CourseCompetency first = newCompetency(5L, "Basics", "", CompetencyTaxonomy.UNDERSTAND, course);
+        CourseCompetency second = newCompetency(6L, "Advanced", "", CompetencyTaxonomy.APPLY, course);
+        CourseCompetency isolated = newCompetency(7L, "Independent", "", CompetencyTaxonomy.APPLY, course);
+        CompetencyRelation assumes = new CompetencyRelation();
+        assumes.setTailCompetency(second);
+        assumes.setHeadCompetency(first);
+        assumes.setType(RelationType.ASSUMES);
+        CompetencyRelation matches = new CompetencyRelation();
+        matches.setTailCompetency(first);
+        matches.setHeadCompetency(second);
+        matches.setType(RelationType.MATCHES);
+        when(courseCompetencyRepository.findAllForCourseWithExercisesAndLectureUnitsAndLecturesAndAttachments(COURSE_ID)).thenReturn(Set.of(second, isolated, first));
+        when(competencyRelationRepository.findAllWithHeadAndTailByCourseId(COURSE_ID)).thenReturn(new LinkedHashSet<>(List.of(assumes, matches)));
+        CompetencyIndexResponseDTO index = service.listCompetencyIndex(COURSE_ID);
+        var expected = List.of(new CompetencyIndexDTO.RelationRefDTO(5L, 6L, RelationType.MATCHES), new CompetencyIndexDTO.RelationRefDTO(6L, 5L, RelationType.ASSUMES));
+        assertThat(index.competencies().get(0).relations()).isEqualTo(expected);
+        assertThat(index.competencies().get(1).relations()).isEqualTo(expected);
+        assertThat(index.competencies().get(2).relations()).isEmpty();
+        verify(competencyRelationRepository).findAllWithHeadAndTailByCourseId(COURSE_ID);
+        String prompt = ReflectionTestUtils.invokeMethod(CompetencyOrchestrationService.class, "renderCompetencyIndex", index);
+        assertThat(prompt).contains("5 --MATCHES--> 6", "6 --ASSUMES--> 5");
+        String refreshed = service.listCompetencyIndex(new ToolContext(Map.of(OrchestratorToolContextKeys.COURSE_ID_KEY, COURSE_ID)));
+        assertThat(refreshed).contains("\"tailCompetencyId\":6", "\"headCompetencyId\":5", "\"relationType\":\"ASSUMES\"");
     }
 
     @Test
@@ -68,14 +97,7 @@ class OrchestratorPlanningToolsServiceTest {
         Set<CompetencyExerciseLink> links = new LinkedHashSet<>();
         links.add(new CompetencyExerciseLink(competency, standalone, 1.0));
         links.add(new CompetencyExerciseLink(competency, partial, 0.5));
-        links.iterator().next().setGeneratedByAi(true);
         competency.setExerciseLinks(links);
-        TextUnit instructorLecture = lectureUnitInCourse(30L, "Sorting lecture", course);
-        TextUnit generatedLecture = lectureUnitInCourse(31L, "Hash maps lecture", course);
-        CompetencyLectureUnitLink instructorLectureLink = new CompetencyLectureUnitLink(competency, instructorLecture, 1.0);
-        CompetencyLectureUnitLink generatedLectureLink = new CompetencyLectureUnitLink(competency, generatedLecture, 0.5);
-        generatedLectureLink.setGeneratedByAi(true);
-        competency.setLectureUnitLinks(new LinkedHashSet<>(Set.of(instructorLectureLink, generatedLectureLink)));
         when(courseCompetencyRepository.findAllForCourseWithExercisesAndLectureUnitsAndLecturesAndAttachments(COURSE_ID)).thenReturn(Set.of(competency));
         when(exerciseRepository.findAllExercisesByCourseId(COURSE_ID)).thenReturn(Set.of(partial, standalone));
 
@@ -84,12 +106,8 @@ class OrchestratorPlanningToolsServiceTest {
         assertThat(index.competencies()).singleElement().satisfies(entry -> {
             assertThat(entry.id()).isEqualTo(5L);
             assertThat(entry.exercises())
-                    .extracting(CompetencyIndexDTO.ExerciseLinkRefDTO::title, CompetencyIndexDTO.ExerciseLinkRefDTO::type, CompetencyIndexDTO.ExerciseLinkRefDTO::weight,
-                            CompetencyIndexDTO.ExerciseLinkRefDTO::generatedByAi)
-                    .containsExactly(tuple("Hash Maps in Practice", partial.getType(), 0.5, false), tuple("Sorting Fundamentals", standalone.getType(), 1.0, true));
-            assertThat(entry.lectureUnits())
-                    .extracting(CompetencyIndexDTO.LectureUnitRefDTO::name, CompetencyIndexDTO.LectureUnitRefDTO::type, CompetencyIndexDTO.LectureUnitRefDTO::generatedByAi)
-                    .containsExactly(tuple("Hash maps lecture", generatedLecture.getType(), true), tuple("Sorting lecture", instructorLecture.getType(), false));
+                    .extracting(CompetencyIndexDTO.ExerciseLinkRefDTO::title, CompetencyIndexDTO.ExerciseLinkRefDTO::type, CompetencyIndexDTO.ExerciseLinkRefDTO::weight)
+                    .containsExactly(tuple("Hash Maps in Practice", partial.getType(), 0.5), tuple("Sorting Fundamentals", standalone.getType(), 1.0));
         });
         assertThat(index.unassignedExercises()).isEmpty();
     }
@@ -113,26 +131,6 @@ class OrchestratorPlanningToolsServiceTest {
             assertThat(ref.title()).isEqualTo("Dynamic Programming");
             assertThat(ref.type()).isEqualTo(unlinked.getType());
         });
-    }
-
-    @Test
-    void listCompetencyIndex_includesStableCourseRelationReferences() {
-        Course course = courseWithId(COURSE_ID);
-        CourseCompetency prerequisite = newCompetency(5L, "Foundations", "Desc", CompetencyTaxonomy.UNDERSTAND, course);
-        CourseCompetency advanced = newCompetency(6L, "Advanced Algorithms", "Desc", CompetencyTaxonomy.APPLY, course);
-        CompetencyRelation relation = new CompetencyRelation();
-        relation.setTailCompetency(advanced);
-        relation.setHeadCompetency(prerequisite);
-        relation.setType(RelationType.ASSUMES);
-        when(courseCompetencyRepository.findAllForCourseWithExercisesAndLectureUnitsAndLecturesAndAttachments(COURSE_ID)).thenReturn(Set.of(advanced, prerequisite));
-        when(competencyRelationRepository.findAllWithHeadAndTailByCourseId(COURSE_ID)).thenReturn(Set.of(relation));
-        when(exerciseRepository.findAllExercisesByCourseId(COURSE_ID)).thenReturn(Set.of());
-
-        CompetencyIndexResponseDTO index = service.listCompetencyIndex(COURSE_ID);
-
-        assertThat(index.competencies()).extracting(CompetencyIndexDTO::id).containsExactly(5L, 6L);
-        assertThat(index.competencies()).allSatisfy(entry -> assertThat(entry.relations()).singleElement()
-                .satisfies(ref -> assertThat(ref).isEqualTo(new CompetencyIndexDTO.RelationRefDTO(6L, 5L, RelationType.ASSUMES))));
     }
 
     @Test
@@ -168,6 +166,7 @@ class OrchestratorPlanningToolsServiceTest {
         String result = service.listCompetencyIndex(new ToolContext(Map.of()));
 
         assertThat(result).contains("No course context available for this tool call.");
+        verifyNoInteractions(competencyRelationRepository);
     }
 
     private static Course courseWithId(long id) {
@@ -189,15 +188,5 @@ class OrchestratorPlanningToolsServiceTest {
         exercise.setTitle(title);
         exercise.setCourse(course);
         return exercise;
-    }
-
-    private static TextUnit lectureUnitInCourse(long id, String name, Course course) {
-        Lecture lecture = new Lecture();
-        lecture.setCourse(course);
-        TextUnit unit = new TextUnit();
-        unit.setId(id);
-        unit.setName(name);
-        unit.setLecture(lecture);
-        return unit;
     }
 }

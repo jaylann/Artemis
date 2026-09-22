@@ -4,15 +4,9 @@ import static de.tum.cit.aet.artemis.core.config.Constants.PROFILE_SCHEDULING;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +16,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import de.tum.cit.aet.artemis.atlas.config.AtlasEnabled;
+import de.tum.cit.aet.artemis.atlas.config.AtlasLLMEnabled;
 import de.tum.cit.aet.artemis.atlas.dto.AutoOrchestrationSummaryDTO;
 import de.tum.cit.aet.artemis.atlas.dto.CompetencyOrchestrationResultDTO;
 import de.tum.cit.aet.artemis.atlas.dto.CourseAutoOrchestrationConfigDTO;
-import de.tum.cit.aet.artemis.atlas.dto.LearningObjectOutcomeDTO;
 import de.tum.cit.aet.artemis.atlas.service.ContentChangeAccumulatorService.BatchClaim;
 import de.tum.cit.aet.artemis.communication.service.WebsocketMessagingService;
 import de.tum.cit.aet.artemis.core.security.SecurityUtils;
@@ -45,7 +38,7 @@ import de.tum.cit.aet.artemis.course.repository.CourseConfigurationRepository;
  * orchestrator invocation, so the model reasons across all changed exercises at once rather than
  * one LLM call per exercise.
  */
-@Conditional(AtlasEnabled.class)
+@Conditional(AtlasLLMEnabled.class)
 @Profile(PROFILE_SCHEDULING)
 @Lazy
 @Component
@@ -86,6 +79,7 @@ public class ContentChangeScheduler {
      */
     @Scheduled(fixedRateString = "${artemis.atlas.orchestrator.scheduler-rate-ms:30000}", initialDelayString = "${artemis.atlas.orchestrator.scheduler-rate-ms:30000}")
     public void tick() {
+        // Entry point on a pooled scheduler thread: install the system principal rather than inherit a leftover.
         SecurityUtils.setSystemAuthorizationObject();
         if (!featureToggleService.isFeatureEnabled(Feature.AtlasAgent)) {
             return;
@@ -140,6 +134,8 @@ public class ContentChangeScheduler {
     private void processBatch(long courseId, String runId, BatchClaim claim) {
         Set<Long> exerciseIds = claim.exerciseIds();
         Set<Long> lectureUnitIds = claim.lectureUnitIds();
+        // The toast counts total changed learning objects (exercises + lecture units) in this batch.
+        int changeCount = exerciseIds.size() + lectureUnitIds.size();
         log.info("atlas.automatic course {} firing run {} with {} exercise(s) and {} lecture unit(s)", courseId, runId, exerciseIds.size(), lectureUnitIds.size());
 
         CompetencyOrchestrationResultDTO result;
@@ -152,129 +148,48 @@ public class ContentChangeScheduler {
             // cannot throw here — so the changes are safe to requeue rather than discard.
             log.warn("atlas.automatic batch run failed for course {} (run {}): {}", courseId, runId, ex.getMessage(), ex);
             accumulator.requeueAfterFailedRun(courseId, exerciseIds, lectureUnitIds);
-            List<LearningObjectOutcomeDTO> outcomes = syntheticOutcomes(exerciseIds, lectureUnitIds, LearningObjectOutcomeDTO.Status.FAILED, true,
-                    "Batch preparation failed before orchestration.");
-            broadcastSummary(courseId, runId, CompetencyOrchestrationResultDTO.Status.FAILED, outcomes);
+            broadcastSummary(courseId, runId, changeCount, false);
             return;
         }
 
-        CompetencyOrchestrationResultDTO.Status status = result == null ? CompetencyOrchestrationResultDTO.Status.FAILED : result.status();
-        List<LearningObjectOutcomeDTO> outcomes = normalizeOutcomes(exerciseIds, lectureUnitIds, status, result == null ? List.of() : result.objectOutcomes());
-        if (result != null && result.failureReason() == CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED) {
-            outcomes = outcomes.stream().map(outcome -> new LearningObjectOutcomeDTO(outcome.objectType(), outcome.objectId(), outcome.status(), false, result.summary())).toList();
-            broadcastSummary(courseId, runId, status, outcomes);
+        CompetencyOrchestrationResultDTO.Status status = result == null ? null : result.status();
+        if (result != null && (result.failureReason() == CompetencyOrchestrationResultDTO.FailureReason.TOOL_CALL_LIMIT_EXCEEDED
+                || result.failureReason() == CompetencyOrchestrationResultDTO.FailureReason.INCOMPLETE_ORCHESTRATION)) {
+            broadcastSummary(courseId, runId, changeCount, false);
             return;
         }
-        Set<Long> retryExerciseIds = retryEligibleIds(outcomes, LearningObjectOutcomeDTO.ObjectType.EXERCISE);
-        Set<Long> retryLectureUnitIds = retryEligibleIds(outcomes, LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT);
         switch (status) {
             case IN_PROGRESS -> {
-                // A concurrent course run never consumed retry-eligible objects. Requeue precisely those
-                // objects and refund the reservation; unsupported objects remain terminally skipped.
-                log.debug("atlas.automatic course {} run {} deferred {} exercise(s) and {} lecture unit(s); no summary broadcast", courseId, runId, retryExerciseIds.size(),
-                        retryLectureUnitIds.size());
-                requeueConcurrent(courseId, retryExerciseIds, retryLectureUnitIds);
+                // Concurrent course orchestration — requeue the whole batch and let the next tick pick
+                // it up instead of consuming the change events as a permanent failure. The requeue also
+                // refunds the daily-run reservation taken by claimDueBatch, so a long concurrent run
+                // does not let repeated retry ticks burn the per-course cap without an actual run. No
+                // completion to surface.
+                log.debug("atlas.automatic course {} run {} requeued all {} change(s); no summary broadcast", courseId, runId, changeCount);
+                accumulator.requeueAfterConcurrentRun(courseId, exerciseIds, lectureUnitIds);
             }
-            case NO_OP -> {
-                requeueFailed(courseId, retryExerciseIds, retryLectureUnitIds);
-                if (outcomes.stream().allMatch(outcome -> outcome.status() == LearningObjectOutcomeDTO.Status.SKIPPED)) {
-                    log.debug("atlas.automatic course {} run {} had no applicable changes; no summary broadcast", courseId, runId);
-                }
-                else {
-                    broadcastSummary(courseId, runId, status, outcomes);
-                }
-            }
+            case NO_OP ->
+                // Nothing was applicable (all claimed ids deleted / exam / wrong course) — nothing ran
+                // and nothing was discarded, so report no completion rather than a misleading success.
+                log.debug("atlas.automatic course {} run {} had no applicable changes; no summary broadcast", courseId, runId);
             case FAILED -> {
-                requeueFailed(courseId, retryExerciseIds, retryLectureUnitIds);
-                broadcastSummary(courseId, runId, status, outcomes);
+                // The run failed before committing any mutation — requeue so the changes are retried on
+                // a later tick. The daily-run reservation is kept (not refunded), so the per-course cap
+                // bounds how many failed retries a day can burn.
+                log.debug("atlas.automatic course {} run {} failed; requeueing {} change(s) for retry", courseId, runId, changeCount);
+                accumulator.requeueAfterFailedRun(courseId, exerciseIds, lectureUnitIds);
+                broadcastSummary(courseId, runId, changeCount, false);
             }
-            case PARTIAL, SUCCESS -> {
-                // PARTIAL objects themselves are not retry eligible because mutations may already have
-                // committed. Independent pre-mutation extraction failures remain safe to requeue.
-                requeueFailed(courseId, retryExerciseIds, retryLectureUnitIds);
-                broadcastSummary(courseId, runId, status, outcomes);
-            }
+            case SUCCESS -> broadcastSummary(courseId, runId, changeCount, true);
+            // PARTIAL: some mutations were already committed — must NOT requeue (would re-apply). null:
+            // unknown state, do not requeue. Both surface as a failure toast.
+            case null, default -> broadcastSummary(courseId, runId, changeCount, false);
         }
     }
 
-    private void requeueConcurrent(long courseId, Set<Long> exerciseIds, Set<Long> lectureUnitIds) {
-        if (!exerciseIds.isEmpty() || !lectureUnitIds.isEmpty()) {
-            accumulator.requeueAfterConcurrentRun(courseId, exerciseIds, lectureUnitIds);
-        }
-    }
-
-    private void requeueFailed(long courseId, Set<Long> exerciseIds, Set<Long> lectureUnitIds) {
-        if (!exerciseIds.isEmpty() || !lectureUnitIds.isEmpty()) {
-            accumulator.requeueAfterFailedRun(courseId, exerciseIds, lectureUnitIds);
-        }
-    }
-
-    private void broadcastSummary(long courseId, String runId, CompetencyOrchestrationResultDTO.Status status, List<LearningObjectOutcomeDTO> outcomes) {
-        int successCount = (int) outcomes.stream().filter(outcome -> outcome.status() == LearningObjectOutcomeDTO.Status.PROCESSED).count();
-        int skippedCount = (int) outcomes.stream().filter(outcome -> outcome.status() == LearningObjectOutcomeDTO.Status.SKIPPED).count();
-        int failureCount = outcomes.size() - successCount - skippedCount;
-        AutoOrchestrationSummaryDTO summary = new AutoOrchestrationSummaryDTO(courseId, runId, status, outcomes.size(), successCount, failureCount, skippedCount, outcomes,
+    private void broadcastSummary(long courseId, String runId, int changeCount, boolean success) {
+        AutoOrchestrationSummaryDTO summary = new AutoOrchestrationSummaryDTO(courseId, runId, changeCount, success ? changeCount : 0, success ? 0 : changeCount,
                 Instant.now(clock));
         websocketMessagingService.sendMessage(TOPIC_TEMPLATE.formatted(courseId), summary);
-    }
-
-    private static List<LearningObjectOutcomeDTO> normalizeOutcomes(Set<Long> exerciseIds, Set<Long> lectureUnitIds, CompetencyOrchestrationResultDTO.Status batchStatus,
-            List<LearningObjectOutcomeDTO> reportedOutcomes) {
-        LearningObjectOutcomeDTO.Status fallbackStatus;
-        boolean fallbackRetryEligible;
-        switch (batchStatus) {
-            case SUCCESS -> {
-                fallbackStatus = LearningObjectOutcomeDTO.Status.PROCESSED;
-                fallbackRetryEligible = false;
-            }
-            case PARTIAL -> {
-                fallbackStatus = LearningObjectOutcomeDTO.Status.PARTIAL;
-                fallbackRetryEligible = false;
-            }
-            case FAILED -> {
-                fallbackStatus = LearningObjectOutcomeDTO.Status.FAILED;
-                fallbackRetryEligible = true;
-            }
-            case IN_PROGRESS -> {
-                fallbackStatus = LearningObjectOutcomeDTO.Status.DEFERRED;
-                fallbackRetryEligible = true;
-            }
-            case NO_OP -> {
-                fallbackStatus = LearningObjectOutcomeDTO.Status.SKIPPED;
-                fallbackRetryEligible = false;
-            }
-            default -> throw new IllegalStateException("Unsupported orchestration status: " + batchStatus);
-        }
-        Map<LearningObjectKey, LearningObjectOutcomeDTO> outcomes = new LinkedHashMap<>();
-        syntheticOutcomes(exerciseIds, lectureUnitIds, fallbackStatus, fallbackRetryEligible, "No finer-grained outcome was reported.")
-                .forEach(outcome -> outcomes.put(new LearningObjectKey(outcome.objectType(), outcome.objectId()), outcome));
-        for (LearningObjectOutcomeDTO outcome : reportedOutcomes) {
-            LearningObjectKey key = new LearningObjectKey(outcome.objectType(), outcome.objectId());
-            if (outcomes.containsKey(key)) {
-                outcomes.put(key, outcome);
-            }
-            else {
-                log.warn("atlas.automatic ignored outcome for unclaimed {} {}", outcome.objectType(), outcome.objectId());
-            }
-        }
-        return outcomes.values().stream().sorted(Comparator.comparing(LearningObjectOutcomeDTO::objectType).thenComparingLong(LearningObjectOutcomeDTO::objectId)).toList();
-    }
-
-    private static List<LearningObjectOutcomeDTO> syntheticOutcomes(Set<Long> exerciseIds, Set<Long> lectureUnitIds, LearningObjectOutcomeDTO.Status status, boolean retryEligible,
-            String detail) {
-        List<LearningObjectOutcomeDTO> outcomes = new ArrayList<>();
-        exerciseIds.stream().sorted().map(id -> new LearningObjectOutcomeDTO(LearningObjectOutcomeDTO.ObjectType.EXERCISE, id, status, retryEligible, detail))
-                .forEach(outcomes::add);
-        lectureUnitIds.stream().sorted().map(id -> new LearningObjectOutcomeDTO(LearningObjectOutcomeDTO.ObjectType.LECTURE_UNIT, id, status, retryEligible, detail))
-                .forEach(outcomes::add);
-        return List.copyOf(outcomes);
-    }
-
-    private static Set<Long> retryEligibleIds(List<LearningObjectOutcomeDTO> outcomes, LearningObjectOutcomeDTO.ObjectType objectType) {
-        return outcomes.stream().filter(LearningObjectOutcomeDTO::retryEligible).filter(outcome -> outcome.objectType() == objectType).map(LearningObjectOutcomeDTO::objectId)
-                .collect(Collectors.toSet());
-    }
-
-    private record LearningObjectKey(LearningObjectOutcomeDTO.ObjectType objectType, long objectId) {
     }
 }

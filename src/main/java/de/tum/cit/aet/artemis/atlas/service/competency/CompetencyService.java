@@ -148,7 +148,7 @@ public class CompetencyService extends CourseCompetencyService {
             var exercise = exerciseUnit.getExercise();
             List<CompetencyExerciseLink> competencyExerciseLinksForUnit = linksByExerciseId.getOrDefault(exercise.getId(), List.of());
             Set<CompetencyLectureUnitLink> competencyLectureUnitLinks = competencyExerciseLinksForUnit.stream().map(link -> {
-                var lectureUnitLink = new CompetencyLectureUnitLink(link.getCompetency(), exerciseUnit, link.getWeight());
+                CompetencyLectureUnitLink lectureUnitLink = new CompetencyLectureUnitLink(link.getCompetency(), exerciseUnit, link.getWeight());
                 lectureUnitLink.setGeneratedByAi(link.isGeneratedByAi());
                 return lectureUnitLink;
             }).collect(Collectors.toSet());

@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import de.tum.cit.aet.artemis.atlas.dto.AppliedActionDTO;
-import de.tum.cit.aet.artemis.atlas.dto.OrchestrationCompletionDTO;
 import de.tum.cit.aet.artemis.atlas.dto.WorkerCompletionDTO;
 
 /**
@@ -39,36 +38,32 @@ public final class OrchestratorToolContextKeys {
      */
     public static final String APPLIED_ACTIONS_KEY = "appliedActions";
 
-    /** Tool-context key carrying the main orchestration terminal state. */
-    public static final String ORCHESTRATION_COMPLETION_KEY = "orchestrationCompletion";
-
-    /** Tool-context key carrying the current worker terminal state. */
-    public static final String WORKER_COMPLETION_KEY = "workerCompletion";
-
-    /** Optional learning-object id used to attribute all nested model calls to one run. */
+    /** Tool-context key carrying the exercise that anchored the current orchestration request. */
     public static final String LEARNING_OBJECT_ID_KEY = "learningObjectId";
 
+    /** Worker-scoped one-shot holder populated by {@code completeWorkerTask}. */
+    public static final String WORKER_COMPLETION_KEY = "workerCompletion";
+
+    /** Sequence position at which the current worker accepted {@code completeWorkerTask}. */
+    public static final String WORKER_COMPLETION_SEQUENCE_KEY = "workerCompletionSequence";
+
+    /** Worker-local sequence used to detect calls after worker completion. */
     public static final String TOOL_SEQUENCE_KEY = "toolSequence";
 
-    public static final String LAST_INDEX_READ_SEQUENCE_KEY = "lastIndexReadSequence";
+    /** Worker-local marker set when any mutation tool returns an error outcome. */
+    public static final String WORKER_MUTATION_ERROR_KEY = "workerMutationError";
 
-    public static final String LAST_DELEGATION_SEQUENCE_KEY = "lastDelegationSequence";
+    /** Count of completed mutation outcomes, including errors and explicit no-ops. */
+    public static final String WORKER_MUTATION_OUTCOME_COUNT_KEY = "workerMutationOutcomeCount";
 
+    /** Request-scoped counter reserving one slot per nested worker model round. */
+    public static final String DELEGATION_COUNT_KEY = "delegationCount";
+
+    /** Count of successful course-scoped read calls made by the current worker. */
     public static final String WORKER_READ_COUNT_KEY = "workerReadCount";
 
+    /** Applied-action list offset captured immediately before the current worker starts. */
     public static final String WORKER_ACTION_START_KEY = "workerActionStart";
-
-    /** Monotonic sequence for every worker read, write, or terminal-tool invocation. */
-    public static final String WORKER_ACTIVITY_SEQUENCE_KEY = "workerActivitySequence";
-
-    /** Sequence at which the worker's terminal result was accepted. Zero means none was accepted. */
-    public static final String WORKER_TERMINAL_SEQUENCE_KEY = "workerTerminalSequence";
-
-    /** Set once a terminal result has been invalidated by any later worker activity. */
-    public static final String WORKER_TERMINAL_INVALIDATED_KEY = "workerTerminalInvalidated";
-
-    /** Shared lock coordinating worker activity and terminal acceptance under parallel tool calls. */
-    public static final String WORKER_STATE_LOCK_KEY = "workerStateLock";
 
     /**
      * Hard cap on the number of write tool calls per orchestrator run, shared across every write
@@ -79,7 +74,22 @@ public final class OrchestratorToolContextKeys {
      */
     public static final int MAX_WRITE_CALLS = AtlasToolCallBudget.LIMIT;
 
+    /** Hard cap on nested worker model rounds per orchestrator run. */
+    public static final int MAX_DELEGATION_CALLS = 16;
+
     private OrchestratorToolContextKeys() {
+    }
+
+    static AtomicReference<WorkerCompletionDTO> newWorkerCompletionHolder() {
+        return new AtomicReference<>();
+    }
+
+    static AtomicLong newSequenceMarker() {
+        return new AtomicLong();
+    }
+
+    static AtomicBoolean newWorkerMutationErrorMarker() {
+        return new AtomicBoolean();
     }
 
     /**
@@ -128,21 +138,5 @@ public final class OrchestratorToolContextKeys {
                 }
             }
         }
-    }
-
-    public static AtomicReference<WorkerCompletionDTO> newWorkerCompletionHolder() {
-        return new AtomicReference<>();
-    }
-
-    public static AtomicReference<OrchestrationCompletionDTO> newOrchestrationCompletionHolder() {
-        return new AtomicReference<>();
-    }
-
-    public static AtomicLong newSequenceHolder() {
-        return new AtomicLong();
-    }
-
-    public static AtomicBoolean newWorkerTerminalInvalidatedHolder() {
-        return new AtomicBoolean();
     }
 }

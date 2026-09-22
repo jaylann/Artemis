@@ -10,19 +10,18 @@ import de.tum.cit.aet.artemis.atlas.domain.competency.CompetencyTaxonomy;
 /**
  * Full competency view for the orchestrator's {@code getCompetencyDetails} tool. Lists all
  * linked exercises and lecture units by id/title/type so the LLM can decide whether to reuse,
- * edit, or complement the competency. Each learning-object ref includes link provenance, and
- * each exercise ref includes the current link weight so the orchestrator can reason honestly
- * about existing evidence strength before reweighting.
+ * edit, or complement the competency. Each exercise ref includes the current link weight so
+ * the orchestrator can reason honestly about existing evidence strength before reweighting.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record CompetencyDetailDTO(Long id, String title, String description, CompetencyTaxonomy taxonomy, String type, ZonedDateTime softDueDate, Integer masteryThreshold,
         Boolean optional, List<ExerciseRefDTO> exercises, List<LectureUnitRefDTO> lectureUnits) {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public record ExerciseRefDTO(Long id, String title, String type, Double weight, boolean generatedByAi) {
+    public record ExerciseRefDTO(Long id, String title, String type, Double weight) {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public record LectureUnitRefDTO(Long id, String name, String type, boolean generatedByAi) {
+    public record LectureUnitRefDTO(Long id, String name, String type) {
     }
 }
