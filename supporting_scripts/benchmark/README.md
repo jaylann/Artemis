@@ -2,7 +2,7 @@
 
 This workspace started as a copy of `atlas-demo` and now integrates current develop and the four refreshed Atlas PRs, with an external cost meter and the heterogeneous thesis fixture. Local application changes are confined to the demo’s Hazelcast isolation and one combined-PR test adaptation. The meter forwards the original Responses request and response bodies; it adds no application hooks or behavioral fixes. See [SOURCE-STATE.md](SOURCE-STATE.md) for the exact develop/PR/local composition.
 
-**State: source published; live smoke validation in progress.** Source commit `1bd8d1603e2ede31083cf9cbce3f244bbc250712` was published after Justin explicitly authorized the agent to commit and push. The initial smoke stopped before any provider request because the observer expected unsupported STOMP receipts; its cleanup readback also used the old flat response fields. Both are external harness issues. Preserve that attempt as incomplete with zero provider dispatches. Any source update requires affected verification and distinct campaign manifests.
+**State: refreshed on 25 September with the final pushed PR fixes (see [SOURCE-STATE.md](SOURCE-STATE.md#refresh-of-25-september)).** The 22 September source (`1bd8d1603e`, harness fix `a8d2d3e0f2`) and its smoke and formal campaigns stay preserved. They predate the detail-read flavor-stripping and prepared-content cache fixes, so they do not measure the final PR heads. Earlier, the first smoke stopped before any provider request because the observer expected unsupported STOMP receipts, and its cleanup readback used the old flat response fields. Keep that attempt as incomplete, with zero provider dispatches. Any source update requires the affected verification and new campaign manifests.
 
 ## Files
 
@@ -41,7 +41,7 @@ The simple broker does not acknowledge STOMP subscription receipts. Automatic ob
 
 ## Evidence and limits
 
-The private campaign directory holds the manifest, course identifiers, API write journal, completion outcomes, before/after state, provider attempts, and report. All scheduled rows remain visible: completed, failed/partial, invalid/unmeasured, and skipped. Automatic notifications group failed and partial outcomes together; the report preserves that limitation. Model-issued function names are recorded, but this meter does not claim to count actual Java callback executions. Phase labels are inferred from the frozen request shapes (reasoning effort and presence of function tools), so execution must stay isolated from other users and LLM features.
+The private campaign directory holds the manifest, course identifiers, API write journal, completion outcomes, before/after state, provider attempts, and report. All scheduled rows remain visible: completed, failed/partial, invalid/unmeasured, and skipped. The status label still groups failed and partial automatic outcomes. Each observation's retained `result` also holds the summary's native batch-level `outcome` (`SUCCESS`, `PARTIAL` or `FAILED`), which separates the two. Model-issued function names are recorded, but this meter does not claim to count actual Java callback executions. Phase labels are inferred from the frozen request shapes (reasoning effort and presence of function tools), so execution must stay isolated from other users and LLM features.
 
 Successful, supported usage replaces each attempt’s conservative maximum reservation. Missing usage, upstream errors and timeouts retain their reservation, even if the SDK later succeeds. Incomplete cost evidence cannot pass; any measured lower bound over EUR 15 fails. Output tokens include reasoning; reasoning is not billed a second time. Cache reads/writes and the long-context multipliers use the frozen `pricing.json` and dated ECB conversion. The reporter independently recomputes settled costs. Source, pricing, fixture, or built-WAR mismatches block execution; configuration mismatches block forwarding. This extra HTTP hop adds measurement overhead, so latency is not identical to the unmetered demo.
 
@@ -60,6 +60,17 @@ JAVA_HOME=/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home \
 
 Paid execution is intentionally not a test target. The local transport test uses a fake upstream and verifies exact request/response bytes. The complete application copy, integration changes, and harness are reviewable before source publication.
 
-Verification records for the refreshed source are under `.demo/refresh-20260922/`; earlier copy checks remain separately under `.demo/validation/`. The diff against the older fork flags existing whitespace in develop’s generated OpenAPI files; those files are intentionally preserved. These offline checks are not a live-campaign result.
+Verification records for the 25 September refresh are under `.demo/refresh-20260925/`, and those for the 22 September refresh under `.demo/refresh-20260922/`; earlier copy checks remain separately under `.demo/validation/`. The diff against the older fork flags existing whitespace in develop’s generated OpenAPI files; those files are intentionally preserved. These offline checks are not a live-campaign result.
 
 Refreshed-source verification on 22 September: the integrated server run executed 781 tests; two log-capture assertions failed during simultaneous Spring context startup. Both passed unchanged in the separate run, which also checked the shared and Atlas architecture rules (102 tests, zero failures, one intentional skip). Client verification passed 262 tests in 11 suites and TypeScript compilation. All 11 harness tests and all 144 fixture DTO/extraction cases passed. Checkstyle, Modernizer, the scoped Java formatting check, server dead-code scan and scoped ESLint passed; ESLint reported two existing deprecation warnings. GitHub CI for the exact PR heads was still queued/running at handoff and is not claimed green.
+
+Refreshed-source verification on 25 September:
+
+- Server tests: 1,303 tests in 138 classes covering Atlas, the Iris lecture-search API, Iris architecture, and the shared architecture rules. 2 failed and 1 was skipped.
+- The two failures are test-only architecture rules whose files are byte-identical to the #13605 head:
+  - `IrisLectureSearchApiTest` uses `UserRepository` instead of `UserTestRepository`.
+  - The new nested `AutoOrchestrationSummaryDTO.Outcome` raises the Atlas DTO-naming exceptions from 6 to 7.
+  - Neither affects runtime behavior.
+- Client: 458 Atlas tests in 41 files passed, and TypeScript compilation passed.
+- Checkstyle, the Java formatting check, all 12 harness tests, and all 144 fixture DTO/extraction cases passed.
+- No paid request was made during these checks.

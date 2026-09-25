@@ -49,12 +49,12 @@ class BenchmarkTests(unittest.TestCase):
         self.assertEqual(current['courseConfiguration']['maxDailyOrchestrationOverride'], 2)
 
     def test_decimal_categories_and_reasoning_included_once(self):
-        self.assertEqual(meter.cost(RESPONSE, PRICING), (D(80)*D('.2')+D(20)*D('.02')+D(50)*D('1.2'))/D(1000000)/D('1.149'))
+        self.assertEqual(meter.cost(RESPONSE, PRICING), (D(80)*D('.2')+D(20)*D('.02')+D(50)*D('1.2'))/D(1000000)/D(PRICING['usdPerEur']))
         for tokens, multiplier in [(272000, 1), (272001, 2)]:
             r = json.loads(json.dumps(RESPONSE))
             r['usage'].update(input_tokens=tokens, output_tokens=0, total_tokens=tokens,
                               input_tokens_details={'cached_tokens': 0, 'cache_write_tokens': tokens}, output_tokens_details={})
-            self.assertEqual(meter.cost(r, PRICING), D(tokens)*D('.25')*multiplier/D(1000000)/D('1.149'))
+            self.assertEqual(meter.cost(r, PRICING), D(tokens)*D('.25')*multiplier/D(1000000)/D(PRICING['usdPerEur']))
 
     def test_missing_and_unsupported_usage_never_zero(self):
         for update in [{'usage': None}, {'model': 'other'}, {'service_tier': 'priority'},

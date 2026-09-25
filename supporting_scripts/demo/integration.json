@@ -9,7 +9,7 @@
     {
       "number": 13605,
       "base": "e04fdb714d03a382473f5b6746838843d475d925",
-      "head": "a0f3623ab3273c7dc6339f20c26e6c43d14fc4e1"
+      "head": "b8d615d53b169a00aef8792ff1b28561e5a86aaa"
     },
     {
       "number": 13579,
@@ -19,7 +19,7 @@
     {
       "number": 13908,
       "base": "e04fdb714d03a382473f5b6746838843d475d925",
-      "head": "f1d23ed744e0f94feabe199c7aa2cbe894c131ed"
+      "head": "bd403f23f7edec464ef1e05b6187bfefe7ccb951"
     }
   ],
   "developCommitTime": "2026-09-22T11:16:00+02:00",
@@ -28,5 +28,11 @@
     "src/main/java/de/tum/cit/aet/artemis/core/config/HazelcastConfiguration.java": "Preserved demo cluster-name override and standalone port binding (7 added lines).",
     "src/test/java/de/tum/cit/aet/artemis/atlas/service/ContentChangeSchedulerTest.java": "Adapt one hardening regression to lecture-aware BatchClaim/runBatch (4 lines)."
   },
-  "composition": "Current develop plus PR deltas in dependency order: workers, lectures, provenance, hardening. All applied without conflicts. No merge/rebase/cherry-pick/commit performed."
+  "composition": "Current develop plus PR deltas in dependency order: workers, lectures, provenance, hardening. All applied without conflicts. No merge/rebase/cherry-pick/commit performed.",
+  "refreshes": [
+    {
+      "checkedAt": "2026-09-25T13:45:54.753744+00:00",
+      "description": "Applied the #13605 delta a0f3623..b8d615d and the #13908 delta f1d23ed..bd403f2 on top of the 22 September integration. Both applied without conflicts. #13600 and #13579 heads are unchanged."
+    }
+  ]
 }
