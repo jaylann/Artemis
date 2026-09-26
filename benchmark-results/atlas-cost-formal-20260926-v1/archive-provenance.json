@@ -1,0 +1,36 @@
+{
+  "campaignId": "atlas-cost-formal-20260926-v1",
+  "archivedAt": "2026-09-26",
+  "repository": "https://github.com/jaylann/Artemis",
+  "branch": "feat/atlas-benchmark-cap256-20260911",
+  "executionCommit": "ff77e0d92feaefd2c196bb42958a62de3415c116",
+  "sourceSha256": "de2eee2ac5c136c06e874cbb8daf3a533e7aebc57a4f70a936ff3ce9863cc1d5",
+  "runtime": {
+    "warSha256": "4042a4fb5ff444a13eebf1910638f9e406106c6619bc556d888fd4e56355ffea",
+    "sourceSha256": "de2eee2ac5c136c06e874cbb8daf3a533e7aebc57a4f70a936ff3ce9863cc1d5"
+  },
+  "composition": "develop b7d2a004 plus #13600 e04fdb7, #13605 b8d615d, #13579 3c18b33 and #13908 bd403f2; see supporting_scripts/benchmark/SOURCE-STATE.md and supporting_scripts/demo/integration.json at the execution commit",
+  "route": "Artemis Spring AI Responses client -> localhost request meter (supporting_scripts/benchmark/meter.py) -> https://api.openai.com/v1/responses",
+  "environment": "Fresh benchmark PostgreSQL volume and empty local VCS/repository state on 26 September 2026; 60 courses seeded through ordinary Artemis APIs before dispatch",
+  "smoke": {
+    "campaignId": "atlas-cost-smoke-20260925-v2",
+    "directory": "smoke/",
+    "note": "Required matching smoke on the same source, pricing and route; executed 25 September 2026 on the previous database state"
+  },
+  "execution": [
+    {
+      "label": "initial",
+      "startedAt": "2026-09-26T12:30:37Z",
+      "log": "operator/formal-run-20260926.log",
+      "result": "53 completed; stopped before the next observation because OpenAI returned HTTP 500 for one request of r06-bootstrap-s4 (req_a6d04ac600db407babfea7de6eba547c), whose conservative reservation the meter retained; the SDK retry succeeded and the observation completed; 37 observations skipped without dispatch"
+    },
+    {
+      "label": "resume-1",
+      "startedAt": "2026-09-26T15:08:23Z",
+      "log": "operator/formal-run-20260926-resume-1.log",
+      "tool": "operator/resume.py",
+      "result": "Carried the retained reservation as that observation's upper bound (resume-carried-reservations.json, snapshot outcomes-before-resume-1.json) and completed the 37 skipped observations; completed observations were never dispatched again"
+    }
+  ],
+  "excludedFromArchive": "Artemis server log and database dump remain local under the benchmark checkout's ignored .demo directory"
+}

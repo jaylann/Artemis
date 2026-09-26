@@ -1,0 +1,1870 @@
+{
+  "courses": {
+    "r01-mixed": {
+      "courseId": 70,
+      "course": {
+        "description": "Bounded Atlas Logos fixture.",
+        "semester": "WINTER",
+        "testCourse": true,
+        "onlineCourse": false,
+        "language": "ENGLISH",
+        "defaultProgrammingLanguage": "JAVA",
+        "maxComplaintTimeDays": 7,
+        "maxRequestMoreFeedbackTimeDays": 7,
+        "maxComplaintTextLimit": 500,
+        "maxComplaintResponseTextLimit": 500,
+        "enrollmentEnabled": false,
+        "unenrollmentEnabled": true,
+        "learningPathsEnabled": false,
+        "presentationScore": 0,
+        "maxPoints": 100,
+        "accuracyOfScores": 2,
+        "courseInformationSharingConfiguration": "DISABLED",
+        "gradeRelevant": true,
+        "maxDailyOrchestrationOverride": 100,
+        "title": "Atlas Logos r01-mixed",
+        "shortName": "a906163a6caedd0ddbba4",
+        "startDate": "2026-09-25T14:04:59.377860+00:00",
+        "endDate": "2026-10-25T14:04:59.377870+00:00",
+        "autoOrchestratorEnabled": false,
+        "debounceWindowSecondsOverride": 3600,
+        "id": 70
+      },
+      "competencyIds": [
+        874,
+        875,
+        876,
+        877,
+        878,
+        879
+      ],
+      "objects": {
+        "t01-programming": {
+          "courseId": 70,
+          "lectureId": 829,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4141
+        },
+        "t01-text": {
+          "courseId": 70,
+          "lectureId": 829,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4142
+        },
+        "t01-modeling": {
+          "courseId": 70,
+          "lectureId": 829,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4143
+        },
+        "t01-file-upload": {
+          "courseId": 70,
+          "lectureId": 829,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4144
+        },
+        "t01-quiz": {
+          "courseId": 70,
+          "lectureId": 829,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4145
+        },
+        "t01-lecture": {
+          "courseId": 70,
+          "lectureId": 829,
+          "kind": "lecture",
+          "type": "text",
+          "id": 829
+        },
+        "t02-programming": {
+          "courseId": 70,
+          "lectureId": 830,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4146
+        },
+        "t02-text": {
+          "courseId": 70,
+          "lectureId": 830,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4147
+        },
+        "t02-modeling": {
+          "courseId": 70,
+          "lectureId": 830,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4148
+        },
+        "t02-file-upload": {
+          "courseId": 70,
+          "lectureId": 830,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4149
+        },
+        "t02-quiz": {
+          "courseId": 70,
+          "lectureId": 830,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4150
+        },
+        "t02-lecture": {
+          "courseId": 70,
+          "lectureId": 830,
+          "kind": "lecture",
+          "type": "online",
+          "id": 830
+        },
+        "t03-programming": {
+          "courseId": 70,
+          "lectureId": 831,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4151
+        },
+        "t03-text": {
+          "courseId": 70,
+          "lectureId": 831,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4152
+        },
+        "t03-modeling": {
+          "courseId": 70,
+          "lectureId": 831,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4153
+        },
+        "t03-file-upload": {
+          "courseId": 70,
+          "lectureId": 831,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4154
+        },
+        "t03-quiz": {
+          "courseId": 70,
+          "lectureId": 831,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4155
+        },
+        "t03-lecture": {
+          "courseId": 70,
+          "lectureId": 831,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 831
+        },
+        "t04-programming": {
+          "courseId": 70,
+          "lectureId": 832,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4156
+        },
+        "t04-text": {
+          "courseId": 70,
+          "lectureId": 832,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4157
+        },
+        "t04-modeling": {
+          "courseId": 70,
+          "lectureId": 832,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4158
+        },
+        "t04-file-upload": {
+          "courseId": 70,
+          "lectureId": 832,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4159
+        },
+        "t04-quiz": {
+          "courseId": 70,
+          "lectureId": 832,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4160
+        },
+        "t04-lecture": {
+          "courseId": 70,
+          "lectureId": 832,
+          "kind": "lecture",
+          "type": "text",
+          "id": 832
+        },
+        "t05-programming": {
+          "courseId": 70,
+          "lectureId": 833,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4161
+        },
+        "t05-text": {
+          "courseId": 70,
+          "lectureId": 833,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4162
+        },
+        "t05-modeling": {
+          "courseId": 70,
+          "lectureId": 833,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4163
+        },
+        "t05-file-upload": {
+          "courseId": 70,
+          "lectureId": 833,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4164
+        },
+        "t05-quiz": {
+          "courseId": 70,
+          "lectureId": 833,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4165
+        },
+        "t05-lecture": {
+          "courseId": 70,
+          "lectureId": 833,
+          "kind": "lecture",
+          "type": "online",
+          "id": 833
+        },
+        "t06-programming": {
+          "courseId": 70,
+          "lectureId": 834,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4166
+        },
+        "t06-text": {
+          "courseId": 70,
+          "lectureId": 834,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4167
+        },
+        "t06-modeling": {
+          "courseId": 70,
+          "lectureId": 834,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4168
+        },
+        "t06-file-upload": {
+          "courseId": 70,
+          "lectureId": 834,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4169
+        },
+        "t06-quiz": {
+          "courseId": 70,
+          "lectureId": 834,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4170
+        },
+        "t06-lecture": {
+          "courseId": 70,
+          "lectureId": 834,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 834
+        },
+        "t07-programming": {
+          "courseId": 70,
+          "lectureId": 835,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4171
+        },
+        "t07-text": {
+          "courseId": 70,
+          "lectureId": 835,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4172
+        },
+        "t07-modeling": {
+          "courseId": 70,
+          "lectureId": 835,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4173
+        },
+        "t07-file-upload": {
+          "courseId": 70,
+          "lectureId": 835,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4174
+        },
+        "t07-quiz": {
+          "courseId": 70,
+          "lectureId": 835,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4175
+        },
+        "t07-lecture": {
+          "courseId": 70,
+          "lectureId": 835,
+          "kind": "lecture",
+          "type": "text",
+          "id": 835
+        },
+        "t08-programming": {
+          "courseId": 70,
+          "lectureId": 836,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4176
+        },
+        "t08-text": {
+          "courseId": 70,
+          "lectureId": 836,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4177
+        },
+        "t08-modeling": {
+          "courseId": 70,
+          "lectureId": 836,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4178
+        },
+        "t08-file-upload": {
+          "courseId": 70,
+          "lectureId": 836,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4179
+        },
+        "t08-quiz": {
+          "courseId": 70,
+          "lectureId": 836,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4180
+        },
+        "t08-lecture": {
+          "courseId": 70,
+          "lectureId": 836,
+          "kind": "lecture",
+          "type": "online",
+          "id": 836
+        },
+        "t09-programming": {
+          "courseId": 70,
+          "lectureId": 837,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4181
+        },
+        "t09-text": {
+          "courseId": 70,
+          "lectureId": 837,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4182
+        },
+        "t09-modeling": {
+          "courseId": 70,
+          "lectureId": 837,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4183
+        },
+        "t09-file-upload": {
+          "courseId": 70,
+          "lectureId": 837,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4184
+        },
+        "t09-quiz": {
+          "courseId": 70,
+          "lectureId": 837,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4185
+        },
+        "t09-lecture": {
+          "courseId": 70,
+          "lectureId": 837,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 837
+        },
+        "t10-programming": {
+          "courseId": 70,
+          "lectureId": 838,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4186
+        },
+        "t10-text": {
+          "courseId": 70,
+          "lectureId": 838,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4187
+        },
+        "t10-modeling": {
+          "courseId": 70,
+          "lectureId": 838,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4188
+        },
+        "t10-file-upload": {
+          "courseId": 70,
+          "lectureId": 838,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4189
+        },
+        "t10-quiz": {
+          "courseId": 70,
+          "lectureId": 838,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4190
+        },
+        "t10-lecture": {
+          "courseId": 70,
+          "lectureId": 838,
+          "kind": "lecture",
+          "type": "text",
+          "id": 838
+        },
+        "t11-programming": {
+          "courseId": 70,
+          "lectureId": 839,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4191
+        },
+        "t11-text": {
+          "courseId": 70,
+          "lectureId": 839,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4192
+        },
+        "t11-modeling": {
+          "courseId": 70,
+          "lectureId": 839,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4193
+        },
+        "t11-file-upload": {
+          "courseId": 70,
+          "lectureId": 839,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4194
+        },
+        "t11-quiz": {
+          "courseId": 70,
+          "lectureId": 839,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4195
+        },
+        "t11-lecture": {
+          "courseId": 70,
+          "lectureId": 839,
+          "kind": "lecture",
+          "type": "online",
+          "id": 839
+        },
+        "t12-programming": {
+          "courseId": 70,
+          "lectureId": 840,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4196
+        },
+        "t12-text": {
+          "courseId": 70,
+          "lectureId": 840,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4197
+        },
+        "t12-modeling": {
+          "courseId": 70,
+          "lectureId": 840,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4198
+        },
+        "t12-file-upload": {
+          "courseId": 70,
+          "lectureId": 840,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4199
+        },
+        "t12-quiz": {
+          "courseId": 70,
+          "lectureId": 840,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4200
+        },
+        "t12-lecture": {
+          "courseId": 70,
+          "lectureId": 840,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 840
+        }
+      },
+      "automationEnabled": false,
+      "exerciseIds": [
+        4141,
+        4142,
+        4143,
+        4144,
+        4145,
+        4146,
+        4147,
+        4148,
+        4149,
+        4150,
+        4151,
+        4152,
+        4153,
+        4154,
+        4155,
+        4156,
+        4157,
+        4158,
+        4159,
+        4160,
+        4161,
+        4162,
+        4163,
+        4164,
+        4165,
+        4166,
+        4167,
+        4168,
+        4169,
+        4170,
+        4171,
+        4172,
+        4173,
+        4174,
+        4175,
+        4176,
+        4177,
+        4178,
+        4179,
+        4180,
+        4181,
+        4182,
+        4183,
+        4184,
+        4185,
+        4186,
+        4187,
+        4188,
+        4189,
+        4190,
+        4191,
+        4192,
+        4193,
+        4194,
+        4195,
+        4196,
+        4197,
+        4198,
+        4199,
+        4200
+      ],
+      "initialState": {
+        "courseId": 70,
+        "exerciseCount": 60,
+        "lectureUnitCount": 12,
+        "competencyCount": 6,
+        "exerciseLinkCount": 25,
+        "lectureLinkCount": 5,
+        "mappingSha256": "5e89cbafaa570ea2548539645090a1d852a5b16dd930952ceaadf2198d4282e5",
+        "contentSha256": "5c65a87f0053ca7501cfc6a2cf9d14acfa567b19142c22d301047634fcd27371"
+      }
+    },
+    "r01-single-exercise": {
+      "courseId": 71,
+      "course": {
+        "description": "Bounded Atlas Logos fixture.",
+        "semester": "WINTER",
+        "testCourse": true,
+        "onlineCourse": false,
+        "language": "ENGLISH",
+        "defaultProgrammingLanguage": "JAVA",
+        "maxComplaintTimeDays": 7,
+        "maxRequestMoreFeedbackTimeDays": 7,
+        "maxComplaintTextLimit": 500,
+        "maxComplaintResponseTextLimit": 500,
+        "enrollmentEnabled": false,
+        "unenrollmentEnabled": true,
+        "learningPathsEnabled": false,
+        "presentationScore": 0,
+        "maxPoints": 100,
+        "accuracyOfScores": 2,
+        "courseInformationSharingConfiguration": "DISABLED",
+        "gradeRelevant": true,
+        "maxDailyOrchestrationOverride": 100,
+        "title": "Atlas Logos r01-single-exercise",
+        "shortName": "a1f1a38328a32308d0fef",
+        "startDate": "2026-09-25T14:05:08.529121+00:00",
+        "endDate": "2026-10-25T14:05:08.529132+00:00",
+        "autoOrchestratorEnabled": false,
+        "debounceWindowSecondsOverride": 3600,
+        "id": 71
+      },
+      "competencyIds": [
+        880,
+        881,
+        882,
+        883,
+        884,
+        885,
+        886,
+        887,
+        888,
+        889,
+        890,
+        891
+      ],
+      "objects": {
+        "t01-programming": {
+          "courseId": 71,
+          "lectureId": 841,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4201
+        },
+        "t01-text": {
+          "courseId": 71,
+          "lectureId": 841,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4202
+        },
+        "t01-modeling": {
+          "courseId": 71,
+          "lectureId": 841,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4203
+        },
+        "t01-file-upload": {
+          "courseId": 71,
+          "lectureId": 841,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4204
+        },
+        "t01-quiz": {
+          "courseId": 71,
+          "lectureId": 841,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4205
+        },
+        "t01-lecture": {
+          "courseId": 71,
+          "lectureId": 841,
+          "kind": "lecture",
+          "type": "text",
+          "id": 841
+        },
+        "t02-programming": {
+          "courseId": 71,
+          "lectureId": 842,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4206
+        },
+        "t02-text": {
+          "courseId": 71,
+          "lectureId": 842,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4207
+        },
+        "t02-modeling": {
+          "courseId": 71,
+          "lectureId": 842,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4208
+        },
+        "t02-file-upload": {
+          "courseId": 71,
+          "lectureId": 842,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4209
+        },
+        "t02-quiz": {
+          "courseId": 71,
+          "lectureId": 842,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4210
+        },
+        "t02-lecture": {
+          "courseId": 71,
+          "lectureId": 842,
+          "kind": "lecture",
+          "type": "online",
+          "id": 842
+        },
+        "t03-programming": {
+          "courseId": 71,
+          "lectureId": 843,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4211
+        },
+        "t03-text": {
+          "courseId": 71,
+          "lectureId": 843,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4212
+        },
+        "t03-modeling": {
+          "courseId": 71,
+          "lectureId": 843,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4213
+        },
+        "t03-file-upload": {
+          "courseId": 71,
+          "lectureId": 843,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4214
+        },
+        "t03-quiz": {
+          "courseId": 71,
+          "lectureId": 843,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4215
+        },
+        "t03-lecture": {
+          "courseId": 71,
+          "lectureId": 843,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 843
+        },
+        "t04-programming": {
+          "courseId": 71,
+          "lectureId": 844,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4216
+        },
+        "t04-text": {
+          "courseId": 71,
+          "lectureId": 844,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4217
+        },
+        "t04-modeling": {
+          "courseId": 71,
+          "lectureId": 844,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4218
+        },
+        "t04-file-upload": {
+          "courseId": 71,
+          "lectureId": 844,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4219
+        },
+        "t04-quiz": {
+          "courseId": 71,
+          "lectureId": 844,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4220
+        },
+        "t04-lecture": {
+          "courseId": 71,
+          "lectureId": 844,
+          "kind": "lecture",
+          "type": "text",
+          "id": 844
+        },
+        "t05-programming": {
+          "courseId": 71,
+          "lectureId": 845,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4221
+        },
+        "t05-text": {
+          "courseId": 71,
+          "lectureId": 845,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4222
+        },
+        "t05-modeling": {
+          "courseId": 71,
+          "lectureId": 845,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4223
+        },
+        "t05-file-upload": {
+          "courseId": 71,
+          "lectureId": 845,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4224
+        },
+        "t05-quiz": {
+          "courseId": 71,
+          "lectureId": 845,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4225
+        },
+        "t05-lecture": {
+          "courseId": 71,
+          "lectureId": 845,
+          "kind": "lecture",
+          "type": "online",
+          "id": 845
+        },
+        "t06-programming": {
+          "courseId": 71,
+          "lectureId": 846,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4226
+        },
+        "t06-text": {
+          "courseId": 71,
+          "lectureId": 846,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4227
+        },
+        "t06-modeling": {
+          "courseId": 71,
+          "lectureId": 846,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4228
+        },
+        "t06-file-upload": {
+          "courseId": 71,
+          "lectureId": 846,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4229
+        },
+        "t06-quiz": {
+          "courseId": 71,
+          "lectureId": 846,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4230
+        },
+        "t06-lecture": {
+          "courseId": 71,
+          "lectureId": 846,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 846
+        },
+        "t07-programming": {
+          "courseId": 71,
+          "lectureId": 847,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4231
+        },
+        "t07-text": {
+          "courseId": 71,
+          "lectureId": 847,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4232
+        },
+        "t07-modeling": {
+          "courseId": 71,
+          "lectureId": 847,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4233
+        },
+        "t07-file-upload": {
+          "courseId": 71,
+          "lectureId": 847,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4234
+        },
+        "t07-quiz": {
+          "courseId": 71,
+          "lectureId": 847,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4235
+        },
+        "t07-lecture": {
+          "courseId": 71,
+          "lectureId": 847,
+          "kind": "lecture",
+          "type": "text",
+          "id": 847
+        },
+        "t08-programming": {
+          "courseId": 71,
+          "lectureId": 848,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4236
+        },
+        "t08-text": {
+          "courseId": 71,
+          "lectureId": 848,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4237
+        },
+        "t08-modeling": {
+          "courseId": 71,
+          "lectureId": 848,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4238
+        },
+        "t08-file-upload": {
+          "courseId": 71,
+          "lectureId": 848,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4239
+        },
+        "t08-quiz": {
+          "courseId": 71,
+          "lectureId": 848,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4240
+        },
+        "t08-lecture": {
+          "courseId": 71,
+          "lectureId": 848,
+          "kind": "lecture",
+          "type": "online",
+          "id": 848
+        },
+        "t09-programming": {
+          "courseId": 71,
+          "lectureId": 849,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4241
+        },
+        "t09-text": {
+          "courseId": 71,
+          "lectureId": 849,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4242
+        },
+        "t09-modeling": {
+          "courseId": 71,
+          "lectureId": 849,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4243
+        },
+        "t09-file-upload": {
+          "courseId": 71,
+          "lectureId": 849,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4244
+        },
+        "t09-quiz": {
+          "courseId": 71,
+          "lectureId": 849,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4245
+        },
+        "t09-lecture": {
+          "courseId": 71,
+          "lectureId": 849,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 849
+        },
+        "t10-programming": {
+          "courseId": 71,
+          "lectureId": 850,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4246
+        },
+        "t10-text": {
+          "courseId": 71,
+          "lectureId": 850,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4247
+        },
+        "t10-modeling": {
+          "courseId": 71,
+          "lectureId": 850,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4248
+        },
+        "t10-file-upload": {
+          "courseId": 71,
+          "lectureId": 850,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4249
+        },
+        "t10-quiz": {
+          "courseId": 71,
+          "lectureId": 850,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4250
+        },
+        "t10-lecture": {
+          "courseId": 71,
+          "lectureId": 850,
+          "kind": "lecture",
+          "type": "text",
+          "id": 850
+        },
+        "t11-programming": {
+          "courseId": 71,
+          "lectureId": 851,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4251
+        },
+        "t11-text": {
+          "courseId": 71,
+          "lectureId": 851,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4252
+        },
+        "t11-modeling": {
+          "courseId": 71,
+          "lectureId": 851,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4253
+        },
+        "t11-file-upload": {
+          "courseId": 71,
+          "lectureId": 851,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4254
+        },
+        "t11-quiz": {
+          "courseId": 71,
+          "lectureId": 851,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4255
+        },
+        "t11-lecture": {
+          "courseId": 71,
+          "lectureId": 851,
+          "kind": "lecture",
+          "type": "online",
+          "id": 851
+        },
+        "t12-programming": {
+          "courseId": 71,
+          "lectureId": 852,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4256
+        },
+        "t12-text": {
+          "courseId": 71,
+          "lectureId": 852,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4257
+        },
+        "t12-modeling": {
+          "courseId": 71,
+          "lectureId": 852,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4258
+        },
+        "t12-file-upload": {
+          "courseId": 71,
+          "lectureId": 852,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4259
+        },
+        "t12-quiz": {
+          "courseId": 71,
+          "lectureId": 852,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4260
+        },
+        "t12-lecture": {
+          "courseId": 71,
+          "lectureId": 852,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 852
+        }
+      },
+      "automationEnabled": false,
+      "exerciseIds": [
+        4201,
+        4202,
+        4203,
+        4204,
+        4205,
+        4206,
+        4207,
+        4208,
+        4209,
+        4210,
+        4211,
+        4212,
+        4213,
+        4214,
+        4215,
+        4216,
+        4217,
+        4218,
+        4219,
+        4220,
+        4221,
+        4222,
+        4223,
+        4224,
+        4225,
+        4226,
+        4227,
+        4228,
+        4229,
+        4230,
+        4231,
+        4232,
+        4233,
+        4234,
+        4235,
+        4236,
+        4237,
+        4238,
+        4239,
+        4240,
+        4241,
+        4242,
+        4243,
+        4244,
+        4245,
+        4246,
+        4247,
+        4248,
+        4249,
+        4250,
+        4251,
+        4252,
+        4253,
+        4254,
+        4255,
+        4256,
+        4257,
+        4258,
+        4259,
+        4260
+      ],
+      "initialState": {
+        "courseId": 71,
+        "exerciseCount": 60,
+        "lectureUnitCount": 12,
+        "competencyCount": 12,
+        "exerciseLinkCount": 60,
+        "lectureLinkCount": 12,
+        "mappingSha256": "e3567ff3a9fabb9594e20179499ed6b5a7eae1f941993cc1b3d0620df238c771",
+        "contentSha256": "a1bb10523f80fb442a43983a9e4637beacff6ee6265a223536cfe0fd346da420"
+      }
+    },
+    "r01-lecture-maintenance": {
+      "courseId": 72,
+      "course": {
+        "description": "Bounded Atlas Logos fixture.",
+        "semester": "WINTER",
+        "testCourse": true,
+        "onlineCourse": false,
+        "language": "ENGLISH",
+        "defaultProgrammingLanguage": "JAVA",
+        "maxComplaintTimeDays": 7,
+        "maxRequestMoreFeedbackTimeDays": 7,
+        "maxComplaintTextLimit": 500,
+        "maxComplaintResponseTextLimit": 500,
+        "enrollmentEnabled": false,
+        "unenrollmentEnabled": true,
+        "learningPathsEnabled": false,
+        "presentationScore": 0,
+        "maxPoints": 100,
+        "accuracyOfScores": 2,
+        "courseInformationSharingConfiguration": "DISABLED",
+        "gradeRelevant": true,
+        "maxDailyOrchestrationOverride": 100,
+        "title": "Atlas Logos r01-lecture-maintenance",
+        "shortName": "ad2b45577f069c516cd1a",
+        "startDate": "2026-09-25T14:05:16.595061+00:00",
+        "endDate": "2026-10-25T14:05:16.595073+00:00",
+        "autoOrchestratorEnabled": false,
+        "debounceWindowSecondsOverride": 3600,
+        "id": 72
+      },
+      "competencyIds": [
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        901,
+        902,
+        903
+      ],
+      "objects": {
+        "t01-programming": {
+          "courseId": 72,
+          "lectureId": 853,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4261
+        },
+        "t01-text": {
+          "courseId": 72,
+          "lectureId": 853,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4262
+        },
+        "t01-modeling": {
+          "courseId": 72,
+          "lectureId": 853,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4263
+        },
+        "t01-file-upload": {
+          "courseId": 72,
+          "lectureId": 853,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4264
+        },
+        "t01-quiz": {
+          "courseId": 72,
+          "lectureId": 853,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4265
+        },
+        "t01-lecture": {
+          "courseId": 72,
+          "lectureId": 853,
+          "kind": "lecture",
+          "type": "text",
+          "id": 853
+        },
+        "t02-programming": {
+          "courseId": 72,
+          "lectureId": 854,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4266
+        },
+        "t02-text": {
+          "courseId": 72,
+          "lectureId": 854,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4267
+        },
+        "t02-modeling": {
+          "courseId": 72,
+          "lectureId": 854,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4268
+        },
+        "t02-file-upload": {
+          "courseId": 72,
+          "lectureId": 854,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4269
+        },
+        "t02-quiz": {
+          "courseId": 72,
+          "lectureId": 854,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4270
+        },
+        "t02-lecture": {
+          "courseId": 72,
+          "lectureId": 854,
+          "kind": "lecture",
+          "type": "online",
+          "id": 854
+        },
+        "t03-programming": {
+          "courseId": 72,
+          "lectureId": 855,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4271
+        },
+        "t03-text": {
+          "courseId": 72,
+          "lectureId": 855,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4272
+        },
+        "t03-modeling": {
+          "courseId": 72,
+          "lectureId": 855,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4273
+        },
+        "t03-file-upload": {
+          "courseId": 72,
+          "lectureId": 855,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4274
+        },
+        "t03-quiz": {
+          "courseId": 72,
+          "lectureId": 855,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4275
+        },
+        "t03-lecture": {
+          "courseId": 72,
+          "lectureId": 855,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 855
+        },
+        "t04-programming": {
+          "courseId": 72,
+          "lectureId": 856,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4276
+        },
+        "t04-text": {
+          "courseId": 72,
+          "lectureId": 856,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4277
+        },
+        "t04-modeling": {
+          "courseId": 72,
+          "lectureId": 856,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4278
+        },
+        "t04-file-upload": {
+          "courseId": 72,
+          "lectureId": 856,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4279
+        },
+        "t04-quiz": {
+          "courseId": 72,
+          "lectureId": 856,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4280
+        },
+        "t04-lecture": {
+          "courseId": 72,
+          "lectureId": 856,
+          "kind": "lecture",
+          "type": "text",
+          "id": 856
+        },
+        "t05-programming": {
+          "courseId": 72,
+          "lectureId": 857,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4281
+        },
+        "t05-text": {
+          "courseId": 72,
+          "lectureId": 857,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4282
+        },
+        "t05-modeling": {
+          "courseId": 72,
+          "lectureId": 857,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4283
+        },
+        "t05-file-upload": {
+          "courseId": 72,
+          "lectureId": 857,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4284
+        },
+        "t05-quiz": {
+          "courseId": 72,
+          "lectureId": 857,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4285
+        },
+        "t05-lecture": {
+          "courseId": 72,
+          "lectureId": 857,
+          "kind": "lecture",
+          "type": "online",
+          "id": 857
+        },
+        "t06-programming": {
+          "courseId": 72,
+          "lectureId": 858,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4286
+        },
+        "t06-text": {
+          "courseId": 72,
+          "lectureId": 858,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4287
+        },
+        "t06-modeling": {
+          "courseId": 72,
+          "lectureId": 858,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4288
+        },
+        "t06-file-upload": {
+          "courseId": 72,
+          "lectureId": 858,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4289
+        },
+        "t06-quiz": {
+          "courseId": 72,
+          "lectureId": 858,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4290
+        },
+        "t06-lecture": {
+          "courseId": 72,
+          "lectureId": 858,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 858
+        },
+        "t07-programming": {
+          "courseId": 72,
+          "lectureId": 859,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4291
+        },
+        "t07-text": {
+          "courseId": 72,
+          "lectureId": 859,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4292
+        },
+        "t07-modeling": {
+          "courseId": 72,
+          "lectureId": 859,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4293
+        },
+        "t07-file-upload": {
+          "courseId": 72,
+          "lectureId": 859,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4294
+        },
+        "t07-quiz": {
+          "courseId": 72,
+          "lectureId": 859,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4295
+        },
+        "t07-lecture": {
+          "courseId": 72,
+          "lectureId": 859,
+          "kind": "lecture",
+          "type": "text",
+          "id": 859
+        },
+        "t08-programming": {
+          "courseId": 72,
+          "lectureId": 860,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4296
+        },
+        "t08-text": {
+          "courseId": 72,
+          "lectureId": 860,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4297
+        },
+        "t08-modeling": {
+          "courseId": 72,
+          "lectureId": 860,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4298
+        },
+        "t08-file-upload": {
+          "courseId": 72,
+          "lectureId": 860,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4299
+        },
+        "t08-quiz": {
+          "courseId": 72,
+          "lectureId": 860,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4300
+        },
+        "t08-lecture": {
+          "courseId": 72,
+          "lectureId": 860,
+          "kind": "lecture",
+          "type": "online",
+          "id": 860
+        },
+        "t09-programming": {
+          "courseId": 72,
+          "lectureId": 861,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4301
+        },
+        "t09-text": {
+          "courseId": 72,
+          "lectureId": 861,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4302
+        },
+        "t09-modeling": {
+          "courseId": 72,
+          "lectureId": 861,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4303
+        },
+        "t09-file-upload": {
+          "courseId": 72,
+          "lectureId": 861,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4304
+        },
+        "t09-quiz": {
+          "courseId": 72,
+          "lectureId": 861,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4305
+        },
+        "t09-lecture": {
+          "courseId": 72,
+          "lectureId": 861,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 861
+        },
+        "t10-programming": {
+          "courseId": 72,
+          "lectureId": 862,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4306
+        },
+        "t10-text": {
+          "courseId": 72,
+          "lectureId": 862,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4307
+        },
+        "t10-modeling": {
+          "courseId": 72,
+          "lectureId": 862,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4308
+        },
+        "t10-file-upload": {
+          "courseId": 72,
+          "lectureId": 862,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4309
+        },
+        "t10-quiz": {
+          "courseId": 72,
+          "lectureId": 862,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4310
+        },
+        "t10-lecture": {
+          "courseId": 72,
+          "lectureId": 862,
+          "kind": "lecture",
+          "type": "text",
+          "id": 862
+        },
+        "t11-programming": {
+          "courseId": 72,
+          "lectureId": 863,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4311
+        },
+        "t11-text": {
+          "courseId": 72,
+          "lectureId": 863,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4312
+        },
+        "t11-modeling": {
+          "courseId": 72,
+          "lectureId": 863,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4313
+        },
+        "t11-file-upload": {
+          "courseId": 72,
+          "lectureId": 863,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4314
+        },
+        "t11-quiz": {
+          "courseId": 72,
+          "lectureId": 863,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4315
+        },
+        "t11-lecture": {
+          "courseId": 72,
+          "lectureId": 863,
+          "kind": "lecture",
+          "type": "online",
+          "id": 863
+        },
+        "t12-programming": {
+          "courseId": 72,
+          "lectureId": 864,
+          "kind": "exercise",
+          "type": "programming",
+          "id": 4316
+        },
+        "t12-text": {
+          "courseId": 72,
+          "lectureId": 864,
+          "kind": "exercise",
+          "type": "text",
+          "id": 4317
+        },
+        "t12-modeling": {
+          "courseId": 72,
+          "lectureId": 864,
+          "kind": "exercise",
+          "type": "modeling",
+          "id": 4318
+        },
+        "t12-file-upload": {
+          "courseId": 72,
+          "lectureId": 864,
+          "kind": "exercise",
+          "type": "file-upload",
+          "id": 4319
+        },
+        "t12-quiz": {
+          "courseId": 72,
+          "lectureId": 864,
+          "kind": "exercise",
+          "type": "quiz",
+          "id": 4320
+        },
+        "t12-lecture": {
+          "courseId": 72,
+          "lectureId": 864,
+          "kind": "lecture",
+          "type": "attachment-video",
+          "id": 864
+        }
+      },
+      "automationEnabled": false,
+      "exerciseIds": [
+        4261,
+        4262,
+        4263,
+        4264,
+        4265,
+        4266,
+        4267,
+        4268,
+        4269,
+        4270,
+        4271,
+        4272,
+        4273,
+        4274,
+        4275,
+        4276,
+        4277,
+        4278,
+        4279,
+        4280,
+        4281,
+        4282,
+        4283,
+        4284,
+        4285,
+        4286,
+        4287,
+        4288,
+        4289,
+        4290,
+        4291,
+        4292,
+        4293,
+        4294,
+        4295,
+        4296,
+        4297,
+        4298,
+        4299,
+        4300,
+        4301,
+        4302,
+        4303,
+        4304,
+        4305,
+        4306,
+        4307,
+        4308,
+        4309,
+        4310,
+        4311,
+        4312,
+        4313,
+        4314,
+        4315,
+        4316,
+        4317,
+        4318,
+        4319,
+        4320
+      ],
+      "initialState": {
+        "courseId": 72,
+        "exerciseCount": 60,
+        "lectureUnitCount": 12,
+        "competencyCount": 12,
+        "exerciseLinkCount": 60,
+        "lectureLinkCount": 12,
+        "mappingSha256": "78841ec81c4cca6a99dc528a788b46cc239830d5d42ca5a0471a5a3576497aa2",
+        "contentSha256": "924707ecae593990e21cb80f35d59e1656cbba722686fb6d2d7ded7c66845527"
+      }
+    }
+  }
+}

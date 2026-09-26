@@ -1,0 +1,11 @@
+{
+  "180e6b7e956649a68a68d0e139de9b36": {
+    "observationId": "r06-bootstrap-s4",
+    "reservationEur": "0.6645552916336764317761942465",
+    "httpStatus": 500,
+    "providerRequestId": "req_a6d04ac600db407babfea7de6eba547c",
+    "superseded": false,
+    "carriedAt": "2026-09-26T15:08:28.712196+00:00",
+    "carriedBy": "resume-1"
+  }
+}

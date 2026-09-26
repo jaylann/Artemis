@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-09-25T13:47:24.917368+00:00",
+  "modelSource": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+  "cacheSource": "https://developers.openai.com/api/docs/guides/prompt-caching",
+  "exchangeRateSource": "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?startPeriod=2026-09-24&endPeriod=2026-09-24&format=csvdata",
+  "exchangeRateDate": "2026-09-24",
+  "usdPerEur": "1.1367",
+  "ecbResponseSha256": "b0c0fe5e97d78e4ffec1b75e65748c9042ea584fddc6a6ca1a93a7bb0685e758",
+  "pricingSha256": "de960b4b5cd224f91e066fbc3cca82ac3326157f105ad3169702a7c54d6b495f",
+  "verifiedUsdPerMillion": {
+    "input": "0.20",
+    "cachedInput": "0.02",
+    "cacheWriteInput": "0.25",
+    "output": "1.20"
+  },
+  "longContext": {
+    "thresholdTokens": 272000,
+    "inputMultiplier": 2,
+    "outputMultiplier": 1.5
+  },
+  "status": "official sources rechecked on 2026-09-25: USD rates, long-context multipliers and cache-write factor unchanged; ECB reference rate updated from 2026-09-21 (1.149) to 2026-09-24 (1.1367); paid smoke pending",
+  "ecbResponseRange": "2026-09-21 to 2026-09-25 (latest published 2026-09-24)",
+  "modelPageSha256": "34efd5e4af184aaab39454b6c38466a1ec0d39d177acde70f844cc416ad8f5b4"
+}
