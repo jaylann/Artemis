@@ -1,0 +1,35 @@
+{
+  "campaignId": "atlas-cost-formal-20260927-v2",
+  "archivedAt": "2026-09-27",
+  "repository": "https://github.com/jaylann/Artemis",
+  "branch": "feat/atlas-benchmark-cap256-20260911",
+  "executionCommit": "ff77e0d92feaefd2c196bb42958a62de3415c116",
+  "manifestSourceCommit": "b4e573ed9fa9c49282dc3f69bd7590c9196a7e0f",
+  "sourceSha256": "de2eee2ac5c136c06e874cbb8daf3a533e7aebc57a4f70a936ff3ce9863cc1d5",
+  "runtime": {
+    "sourceSha256": "de2eee2ac5c136c06e874cbb8daf3a533e7aebc57a4f70a936ff3ce9863cc1d5",
+    "warSha256": "4042a4fb5ff444a13eebf1910638f9e406106c6619bc556d888fd4e56355ffea"
+  },
+  "composition": "develop b7d2a004 plus #13600 e04fdb7, #13605 b8d615d, #13579 3c18b33 and #13908 bd403f2; source fingerprint identical to the execution commit (b4e573e only adds benchmark-results/, which the fingerprint excludes)",
+  "route": "Artemis Spring AI Responses client -> localhost request meter (supporting_scripts/benchmark/meter.py) -> https://api.openai.com/v1/responses",
+  "environment": "Fresh benchmark PostgreSQL volume and empty local VCS/repository state on 27 September 2026; 60 courses seeded through ordinary Artemis APIs before dispatch. Meter launched with SSL_CERT_FILE=/etc/ssl/cert.pem (TLS trust store only).",
+  "smoke": {
+    "campaignId": "atlas-cost-smoke-20260925-v2",
+    "directory": "smoke/",
+    "note": "Same matching smoke as the 26 September campaign (byte-identical copy); same source, pricing and route"
+  },
+  "execution": [
+    {
+      "label": "initial",
+      "startedAt": "2026-09-27T10:28:35Z",
+      "log": "operator/formal-run-20260927-v2.log",
+      "result": "90 completed in one pass; 2475 provider attempts, all settled; no provider error, no resume"
+    }
+  ],
+  "precedingAbort": {
+    "campaignId": "atlas-cost-formal-20260927-v1",
+    "directory": "operator/aborted-v1/",
+    "result": "Aborted before any provider contact: the meter's Python had no CA bundle, so all 22 attempts failed TLS verification locally (httpStatus 0, no provider request id). Nothing billed; not replayed; database reset before v2."
+  },
+  "excludedFromArchive": "Artemis server log and database dump remain local under the benchmark checkout's ignored .demo directory"
+}

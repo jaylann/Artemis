@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "atlas-cost-smoke-20260925-v2",
+  "mode": "smoke",
+  "createdAt": "2026-09-25T14:04:55.434612+00:00",
+  "baseUrl": "http://127.0.0.1:8083",
+  "upstreamUrl": "https://api.openai.com/v1",
+  "meterPort": 18091,
+  "seed": 20260910,
+  "debounceSeconds": 10,
+  "criterionEur": "15.00",
+  "budgetEur": "1.00",
+  "sourceSha256": "de2eee2ac5c136c06e874cbb8daf3a533e7aebc57a4f70a936ff3ce9863cc1d5",
+  "sourceCommit": "ff77e0d92feaefd2c196bb42958a62de3415c116",
+  "pricingSha256": "de960b4b5cd224f91e066fbc3cca82ac3326157f105ad3169702a7c54d6b495f",
+  "fixtureSha256": "07e8687be084dbb10cef66aee0e3eae152f9eec4759229bf7358022aededdd9f",
+  "phaseConfiguration": {
+    "orchestration": {
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "xhigh",
+      "apiRoute": "/v1/responses"
+    },
+    "worker": {
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "high",
+      "apiRoute": "/v1/responses"
+    },
+    "flavor-strip": {
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "high",
+      "apiRoute": "/v1/responses"
+    }
+  },
+  "observations": [
+    {
+      "scheduleIndex": 0,
+      "observationId": "r01-mixed-s1",
+      "condition": "mixed",
+      "repetition": 1,
+      "stage": 1,
+      "courseKey": "r01-mixed",
+      "invocationId": "invocation-001",
+      "trigger": "automatic",
+      "changedObjectKeys": [
+        "t01-programming",
+        "t02-text",
+        "t03-modeling",
+        "t04-file-upload",
+        "t05-quiz",
+        "t06-lecture",
+        "t07-lecture",
+        "t08-lecture",
+        "t09-programming",
+        "t10-text",
+        "t11-modeling",
+        "t12-quiz"
+      ],
+      "changedObjectTypes": [
+        "exercise:programming",
+        "exercise:text",
+        "exercise:modeling",
+        "exercise:file-upload",
+        "exercise:quiz",
+        "lecture:attachment-video",
+        "lecture:text",
+        "lecture:online",
+        "exercise:programming",
+        "exercise:text",
+        "exercise:modeling",
+        "exercise:quiz"
+      ],
+      "requiresObservationId": null
+    },
+    {
+      "scheduleIndex": 1,
+      "observationId": "r01-single-exercise-s1",
+      "condition": "single-exercise",
+      "repetition": 1,
+      "stage": 1,
+      "courseKey": "r01-single-exercise",
+      "invocationId": "invocation-002",
+      "trigger": "manual",
+      "changedObjectKeys": [
+        "t01-programming"
+      ],
+      "changedObjectTypes": [
+        "exercise:programming"
+      ],
+      "requiresObservationId": null
+    },
+    {
+      "scheduleIndex": 2,
+      "observationId": "r01-lecture-maintenance-s1",
+      "condition": "lecture-maintenance",
+      "repetition": 1,
+      "stage": 1,
+      "courseKey": "r01-lecture-maintenance",
+      "invocationId": "invocation-003",
+      "trigger": "automatic",
+      "changedObjectKeys": [
+        "t01-lecture"
+      ],
+      "changedObjectTypes": [
+        "lecture:text"
+      ],
+      "requiresObservationId": null
+    }
+  ]
+}

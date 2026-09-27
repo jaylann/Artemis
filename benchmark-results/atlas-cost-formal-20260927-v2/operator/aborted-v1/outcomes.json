@@ -1,0 +1,394 @@
+{
+  "r01-assignment-only-s1": {
+    "status": "failed-or-partial",
+    "startedAt": "2026-09-27T10:17:31.288311+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:18:24.954920+00:00",
+    "durationSeconds": 51.18881504201272,
+    "result": {
+      "courseId": 1,
+      "runId": "20c1f6f1-39d4-4a7d-9084-2f6e302c0b19",
+      "exerciseCount": 12,
+      "successCount": 0,
+      "failureCount": 12,
+      "outcome": "FAILED",
+      "completedAt": "2026-09-27T10:18:23.880201Z"
+    },
+    "beforeState": {
+      "courseId": 1,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "1f2b74deeec2e64375f269abe8f5feef9e07fa45a44b24c70a0fdf3b95365148",
+      "contentSha256": "5beddda5d9e6f6726d5a10d06da6d31182bbd21593987febf6070c3075d2cbcc"
+    },
+    "afterState": {
+      "courseId": 1,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "1f2b74deeec2e64375f269abe8f5feef9e07fa45a44b24c70a0fdf3b95365148",
+      "contentSha256": "8e2a92eb0ea3b60208d446038e4e15ef83738ad07ef37a1917d9eff6f0067add"
+    }
+  },
+  "r01-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r01-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r02-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r03-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r04-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r05-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r06-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r07-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r08-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r09-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-assignment-only-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-maintained-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-lecture-maintenance-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-bootstrap-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-bootstrap-s2": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-bootstrap-s3": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-bootstrap-s4": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-single-exercise-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  },
+  "r10-mixed-s1": {
+    "status": "skipped",
+    "reason": "Provider accounting unresolved or budget/configuration block"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "r01-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-25T14:05:37.842504+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-25T14:09:12.368756+00:00",
+    "durationSeconds": 212.22288362499967,
+    "result": {
+      "courseId": 70,
+      "runId": "09d65941-547a-42c0-9352-11d02144551f",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-25T14:09:11.306778Z"
+    },
+    "beforeState": {
+      "courseId": 70,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "5e89cbafaa570ea2548539645090a1d852a5b16dd930952ceaadf2198d4282e5",
+      "contentSha256": "5c65a87f0053ca7501cfc6a2cf9d14acfa567b19142c22d301047634fcd27371"
+    },
+    "afterState": {
+      "courseId": 70,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "14787ccce8d2d7928ad4d94f56a03f276330ab8d4dca8ede70ca88ae981c2af9",
+      "contentSha256": "cffcd965ad9b71dea7fe75ae371936e3bb6fc26fddbf685fdadea03958d680b9"
+    }
+  },
+  "r01-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-25T14:09:16.111231+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-25T14:09:51.122196+00:00",
+    "durationSeconds": 34.0160688750002,
+    "result": {
+      "status": "SUCCESS",
+      "summary": "Verified the updated Parcel charge calculator mapping. Preserved its strong Variables and control flow link at 1.0 and added a partial Functions and modularity link at 0.5 for the pure static API and calculation interface. No competencies or unrelated mappings were changed.",
+      "appliedActions": [
+        {
+          "type": "ASSIGN",
+          "competencyId": 881,
+          "competencyTitle": "Functions and modularity",
+          "exerciseId": 4201,
+          "weight": 0.5,
+          "detail": "Linked exercise Parcel charge calculator to competency Functions and modularity (weight 0.50).",
+          "justification": "Evidence test outcome: weight 0.5 (partial) because the required public static pure calculation method demonstrates a clear input/output interface and side-effect-free computation, but the exercise does not require broader modular decomposition."
+        }
+      ]
+    },
+    "beforeState": {
+      "courseId": 71,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "e3567ff3a9fabb9594e20179499ed6b5a7eae1f941993cc1b3d0620df238c771",
+      "contentSha256": "a1bb10523f80fb442a43983a9e4637beacff6ee6265a223536cfe0fd346da420"
+    },
+    "afterState": {
+      "courseId": 71,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 12,
+      "mappingSha256": "fd73a43750c2ddbf5a361e096732889da29079b4fc0de278bd5c3d29f2a22601",
+      "contentSha256": "cc5a2a710857044b4398d30e872f2a156701312b73afe2ac2534c04fdda1561d"
+    }
+  },
+  "r01-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-25T14:09:54.201538+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-25T14:10:36.399729+00:00",
+    "durationSeconds": 40.252309625000635,
+    "result": {
+      "courseId": 72,
+      "runId": "45f797d1-75aa-4363-ab79-920cba087834",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-25T16:10:08.099+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m98644\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 72 firing run 45f797d1-75aa-4363-ab79-920cba087834 with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-25T16:10:34.904+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m98644\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 72 run 45f797d1-75aa-4363-ab79-920cba087834 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 72,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "78841ec81c4cca6a99dc528a788b46cc239830d5d42ca5a0471a5a3576497aa2",
+      "contentSha256": "924707ecae593990e21cb80f35d59e1656cbba722686fb6d2d7ded7c66845527"
+    },
+    "afterState": {
+      "courseId": 72,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "78841ec81c4cca6a99dc528a788b46cc239830d5d42ca5a0471a5a3576497aa2",
+      "contentSha256": "0755f7a0bb3f62929cfdb709d7b5c34cf479de3c5fbfab4b5eda2085cce007c2"
+    }
+  }
+}

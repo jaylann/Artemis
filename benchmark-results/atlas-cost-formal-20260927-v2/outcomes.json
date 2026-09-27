@@ -1,0 +1,3273 @@
+{
+  "r01-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:28:42.239375+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:30:42.876568+00:00",
+    "durationSeconds": 118.61606470801053,
+    "result": {
+      "courseId": 1,
+      "runId": "ff815fd1-b830-489d-8172-6f2341ed38df",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:30:41.721240Z"
+    },
+    "beforeState": {
+      "courseId": 1,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "1f2b74deeec2e64375f269abe8f5feef9e07fa45a44b24c70a0fdf3b95365148",
+      "contentSha256": "5beddda5d9e6f6726d5a10d06da6d31182bbd21593987febf6070c3075d2cbcc"
+    },
+    "afterState": {
+      "courseId": 1,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "2fdab99b29f2e518a359b02c2c97f9908adbbefe2f83dc9eee9fa15bde53e99c",
+      "contentSha256": "8e2a92eb0ea3b60208d446038e4e15ef83738ad07ef37a1917d9eff6f0067add"
+    }
+  },
+  "r01-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:30:46.440642+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:33:32.283615+00:00",
+    "durationSeconds": 163.4120155420096,
+    "result": {
+      "courseId": 2,
+      "runId": "8ed99532-0479-457c-96f5-7a7981608b97",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:33:31.214185Z"
+    },
+    "beforeState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "0ca9c0dae30c866d3ed2948991be43f4ce8a9e51270b18b9b3f1ba72ac4e15b3"
+    },
+    "afterState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "565682a6954d684d7b77f6617a24e59e79c62938bd97af2fb2ceed260559dec0",
+      "contentSha256": "01e042dbc81fa35f94419ccf9934f4107541baa3f697a2c99c7c65aa729e005d"
+    }
+  },
+  "r01-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:33:35.238287+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:37:59.043215+00:00",
+    "durationSeconds": 262.1850321670063,
+    "result": {
+      "courseId": 2,
+      "runId": "651e97ed-ea32-40df-b78e-6a9b7dacaace",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:37:57.688129Z"
+    },
+    "beforeState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "565682a6954d684d7b77f6617a24e59e79c62938bd97af2fb2ceed260559dec0",
+      "contentSha256": "01e042dbc81fa35f94419ccf9934f4107541baa3f697a2c99c7c65aa729e005d"
+    },
+    "afterState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 14,
+      "exerciseLinkCount": 31,
+      "lectureLinkCount": 7,
+      "mappingSha256": "5b6f859c35858de73b93c0e14ffcfd776bbfeeb4bf2c1101ecc3e50c1201165c",
+      "contentSha256": "52b080bd154d1d9a8fa6e73d6a7d6f89795a598040b416719be1fb7843298b52"
+    }
+  },
+  "r01-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:38:02.954193+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:41:35.916657+00:00",
+    "durationSeconds": 210.8560251660092,
+    "result": {
+      "courseId": 2,
+      "runId": "763654f1-f8cb-4214-bb7d-50ecf007fdc6",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:41:34.841266Z"
+    },
+    "beforeState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 14,
+      "exerciseLinkCount": 31,
+      "lectureLinkCount": 7,
+      "mappingSha256": "5b6f859c35858de73b93c0e14ffcfd776bbfeeb4bf2c1101ecc3e50c1201165c",
+      "contentSha256": "52b080bd154d1d9a8fa6e73d6a7d6f89795a598040b416719be1fb7843298b52"
+    },
+    "afterState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 55,
+      "lectureLinkCount": 10,
+      "mappingSha256": "1b57b843ec71d8020481a03c433a53a19182848c6c82fd14bda8df29ce717773",
+      "contentSha256": "d19051fe53d21a1ec794bdd418445eaab15a4c82d528d7749a0fccc221674229"
+    }
+  },
+  "r01-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:41:39.275463+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:44:22.754192+00:00",
+    "durationSeconds": 161.7109813749994,
+    "result": {
+      "courseId": 2,
+      "runId": "dcb0339d-0585-49f7-a112-c559995800f3",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:44:21.655577Z"
+    },
+    "beforeState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 55,
+      "lectureLinkCount": 10,
+      "mappingSha256": "1b57b843ec71d8020481a03c433a53a19182848c6c82fd14bda8df29ce717773",
+      "contentSha256": "d19051fe53d21a1ec794bdd418445eaab15a4c82d528d7749a0fccc221674229"
+    },
+    "afterState": {
+      "courseId": 2,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 65,
+      "lectureLinkCount": 15,
+      "mappingSha256": "dcf50f73b9a67eafa3097ba540fea7e6d8c6c95c9a2cae392d923967f75320c6",
+      "contentSha256": "b5399dcf895403164a0aea7af222c7ef30b7b31bdb322181a67c1c0f854093a3"
+    }
+  },
+  "r01-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:44:26.047372+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:44:54.056164+00:00",
+    "durationSeconds": 26.30942070900346,
+    "result": {
+      "courseId": 3,
+      "runId": "52480c1d-ed0f-44b6-a093-52e48dcce559",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T12:44:43.609+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 3 firing run 52480c1d-ed0f-44b6-a093-52e48dcce559 with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-27T12:44:52.338+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 3 run 52480c1d-ed0f-44b6-a093-52e48dcce559 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 3,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "16e9ac50390f3ffa2899cf23945dee330a41fc61faeb319b8ef33f062e1d77ff",
+      "contentSha256": "b865a3fa91ab5ae30aadbfbe662f705ef1cc428b782349aa13e09463cf4904b5"
+    },
+    "afterState": {
+      "courseId": 3,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "16e9ac50390f3ffa2899cf23945dee330a41fc61faeb319b8ef33f062e1d77ff",
+      "contentSha256": "6d6ab1ad4bc575c118d40ec8c7eb74280c886db60387a5c0381266c88ddeb70c"
+    }
+  },
+  "r01-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:44:56.996521+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:46:41.928396+00:00",
+    "durationSeconds": 103.19603254199319,
+    "result": {
+      "courseId": 4,
+      "runId": "cfc691c4-9010-463b-9ecb-9d6a8b249bfe",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:46:40.837952Z"
+    },
+    "beforeState": {
+      "courseId": 4,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "97013b89f23cb9ef8624bbfda989b3ed45523459c8f52c253b7d1f8773cdd84d",
+      "contentSha256": "3a213a195ea7d4bfec90870074efa8762be0b6537d34bf882358a664d392681a"
+    },
+    "afterState": {
+      "courseId": 4,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 33,
+      "lectureLinkCount": 8,
+      "mappingSha256": "36938c06d84a4ccee1a1e3e40531efb4c6d842c9e112a27c56856fd0e00c7e48",
+      "contentSha256": "e2a4bdfa8ed62d00c54b36f70ac837ec7fef61beed36a15cc463d92bf57e7d4d"
+    }
+  },
+  "r01-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:46:45.037748+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:48:54.644257+00:00",
+    "durationSeconds": 127.75156887499907,
+    "result": {
+      "courseId": 5,
+      "runId": "35316cde-2bb4-488b-a172-e24683e8731f",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:48:53.590292Z"
+    },
+    "beforeState": {
+      "courseId": 5,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "0f7139397b8050887f8f1d4282443321f62d23b2d3eeb25604a9aa26a0e8bece",
+      "contentSha256": "277f8ae5ba492653f8c1f81c045a01f8f7ae65f4c0a1be63f820fa673cd99231"
+    },
+    "afterState": {
+      "courseId": 5,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 15,
+      "mappingSha256": "acbd2f501e5b45ee95541135df3d2c0f15fb9ab2aeb37de7f689cee62173de8b",
+      "contentSha256": "6361548282f64dfeeb9a67a779903a6a1cdce62536db5130eb9b6b596cbb0483"
+    }
+  },
+  "r01-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:48:57.583790+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:49:10.834219+00:00",
+    "durationSeconds": 12.142677625000942,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated Parcel charge calculator: its existing 1.0 link to Variables and control flow (43) remains a strong fit for validation, thresholds, and conditional pricing. No competency creation, edit, deletion, or remapping was warranted; all other mappings were preserved."
+    },
+    "beforeState": {
+      "courseId": 6,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "58582327219f684b36111c3f6c28b7a83a5b938ddf7dc23a615de1e1b8bb1ad5",
+      "contentSha256": "3de2947e405d0f4b0383132a1234e008cb1d71bec6966ab7e259fb98805a7eb5"
+    },
+    "afterState": {
+      "courseId": 6,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "58582327219f684b36111c3f6c28b7a83a5b938ddf7dc23a615de1e1b8bb1ad5",
+      "contentSha256": "0d61a9e00b05845020f87f93b57f4f56151a168b2b99f35c0055b5c9bc7ec6e4"
+    }
+  },
+  "r02-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:49:14.307366+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:50:55.170021+00:00",
+    "durationSeconds": 98.81554145801056,
+    "result": {
+      "courseId": 7,
+      "runId": "ed287af2-e1b3-4919-a2ca-5912cc0aa07e",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:50:54.099713Z"
+    },
+    "beforeState": {
+      "courseId": 7,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "6fa04ed9514e7b5b16d7b6bcd848e4bff32e0b1da32027aacf2850279a81080c",
+      "contentSha256": "3dd5aa28b13781971acdaa33f1899c938dc43f39fd3a20684fb1721758e8dd17"
+    },
+    "afterState": {
+      "courseId": 7,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "e59643ea6ab12beaed20c7963797c95339565b23fc8295d82b6ba039fe4955f8",
+      "contentSha256": "595872254d7382e1724c6946f973dcb23014e6af07e70a2cc2efd9314e30e654"
+    }
+  },
+  "r02-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:50:58.539390+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:51:22.899930+00:00",
+    "durationSeconds": 23.58403020800324,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated exercise 422 remains correctly mapped to Variables and control flow (competency 67) at weight 1.0. The revised content is strong stand-alone evidence for tracing variables, conditionals, loops, and boundary comparisons, so no competency or link changes were needed; no unrelated mappings were altered."
+    },
+    "beforeState": {
+      "courseId": 8,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c5d875764a18442338cf90c4c984c14b2b9ef673bd0304c63770141ad743c67a",
+      "contentSha256": "b527a8e3b895e505ea7d491f1b00f933ec962d2444ba50f26f768f52f122300a"
+    },
+    "afterState": {
+      "courseId": 8,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c5d875764a18442338cf90c4c984c14b2b9ef673bd0304c63770141ad743c67a",
+      "contentSha256": "d34de8346350b714b69334d2484bf0a0ad037ddd79bc2de4fb0016bfddf09b75"
+    }
+  },
+  "r02-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:51:25.929905+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:53:22.246224+00:00",
+    "durationSeconds": 114.56033295800444,
+    "result": {
+      "courseId": 9,
+      "runId": "5845509c-0812-4ae0-a439-f1b7fdf4a605",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:53:21.169387Z"
+    },
+    "beforeState": {
+      "courseId": 9,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "08f9dff6b9b654af7aa256ad769b35673bf6e5105c517fe516c1861eafbc1d39",
+      "contentSha256": "a173062a108eb800c927abd71d8e553a0708f009bdf24f894326f1b2f38dd2a4"
+    },
+    "afterState": {
+      "courseId": 9,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "4e9c8bab252b46ecd2dfd5c3a7e39350403a695b3eb42032a1e8d1e7a127641f",
+      "contentSha256": "c27b58a004c4cacbd663e09b21b15367cad94f3ab58e7b66f0b07d57f69ce09d"
+    }
+  },
+  "r02-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:53:25.468776+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:54:37.872436+00:00",
+    "durationSeconds": 70.71660416699888,
+    "result": {
+      "courseId": 10,
+      "runId": "c338dd7d-a37b-4a3f-a6fd-69f0ed9db757",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T12:53:43.600+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-0] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 10 firing run c338dd7d-a37b-4a3f-a6fd-69f0ed9db757 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T12:54:36.514+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-0] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 10 run c338dd7d-a37b-4a3f-a6fd-69f0ed9db757 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 10,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "6783ca49a376fa0fddca5b2b47f65c73ca642e2bc61096dcd1d972e033828271",
+      "contentSha256": "2736f6d4a1e5757bce09618e0b451b706ea5286cb9b5b3dc7e2a8eb08f404529"
+    },
+    "afterState": {
+      "courseId": 10,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "6783ca49a376fa0fddca5b2b47f65c73ca642e2bc61096dcd1d972e033828271",
+      "contentSha256": "7b77f0dcde9e5c4bd33e3c6803d8fd4565db68305497cf59930b95e37edc66eb"
+    }
+  },
+  "r02-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:54:41.455476+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:55:42.865366+00:00",
+    "durationSeconds": 59.622683417008375,
+    "result": {
+      "courseId": 11,
+      "runId": "bc6f79d5-1e0e-45de-a050-96e48ec2596c",
+      "exerciseCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:55:41.808732Z"
+    },
+    "beforeState": {
+      "courseId": 11,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "78c6c0b8be8bf48392efe5f105ea3f2bee264bd84be260bd43bf9934eebea6c8",
+      "contentSha256": "b9e1afee87e00f3c5461ef16297c913a579255a1ff266ce1bde1e03580d5984b"
+    },
+    "afterState": {
+      "courseId": 11,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 13,
+      "mappingSha256": "e1479f9dede9d9f1963411b4f405c87bb3157d3e2e55b93950e0dd5dc0fab273",
+      "contentSha256": "acd4ca17c3a052bf2af2937b4d270a4e12bddad2f04cfe4e13f4723b3f5ef1c2"
+    }
+  },
+  "r02-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:55:45.720670+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T10:58:47.419468+00:00",
+    "durationSeconds": 179.98960787500255,
+    "result": {
+      "courseId": 12,
+      "runId": "8af6055f-9c5d-4622-a2b6-8a1437a22208",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T10:58:46.296837Z"
+    },
+    "beforeState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "6e49f04b1ac89e5532aa71778b26897d4fa7b3c5d796807cc027c6a3077bf830"
+    },
+    "afterState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "871e4a433a5bbd303878e5d1cc58fcdb7f8fc1176e5c332052d245c1fdfdd66f",
+      "contentSha256": "b88430ddc29088ffecf5ca0b27f6b66156cb243f41560366db34d6e2b4476f02"
+    }
+  },
+  "r02-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T10:58:52.282798+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:02:56.253601+00:00",
+    "durationSeconds": 242.0586562499957,
+    "result": {
+      "courseId": 12,
+      "runId": "f52e7298-7710-4299-9daa-325554e21502",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:02:55.145466Z"
+    },
+    "beforeState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "871e4a433a5bbd303878e5d1cc58fcdb7f8fc1176e5c332052d245c1fdfdd66f",
+      "contentSha256": "b88430ddc29088ffecf5ca0b27f6b66156cb243f41560366db34d6e2b4476f02"
+    },
+    "afterState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 33,
+      "lectureLinkCount": 8,
+      "mappingSha256": "787b56b8506418ea2a3095d149188ce444b41fdf2a7783c0988fe1b599e529b8",
+      "contentSha256": "676ad15deb283ea3fec65869401eb54982a44708ff6dcd408df5b39f7a666e07"
+    }
+  },
+  "r02-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:02:59.634869+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:06:25.446958+00:00",
+    "durationSeconds": 204.0871041250066,
+    "result": {
+      "courseId": 12,
+      "runId": "2f3e6c88-7d39-4c49-9e0f-5011c2e70ad2",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:06:24.368846Z"
+    },
+    "beforeState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 33,
+      "lectureLinkCount": 8,
+      "mappingSha256": "787b56b8506418ea2a3095d149188ce444b41fdf2a7783c0988fe1b599e529b8",
+      "contentSha256": "676ad15deb283ea3fec65869401eb54982a44708ff6dcd408df5b39f7a666e07"
+    },
+    "afterState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 59,
+      "lectureLinkCount": 12,
+      "mappingSha256": "fc880325fb05b8d7af83636e06fee68fd40a2b8c8a624a6952fa4003bda91697",
+      "contentSha256": "2bed3a187db8f5b72e461b74374506b4be8eb5d29f3a9b51e56feeed1ab40d12"
+    }
+  },
+  "r02-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:06:28.856146+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:08:53.807341+00:00",
+    "durationSeconds": 143.09612033399753,
+    "result": {
+      "courseId": 12,
+      "runId": "742997f1-f9a6-492b-91ac-34def59de479",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:08:52.626831Z"
+    },
+    "beforeState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 59,
+      "lectureLinkCount": 12,
+      "mappingSha256": "fc880325fb05b8d7af83636e06fee68fd40a2b8c8a624a6952fa4003bda91697",
+      "contentSha256": "2bed3a187db8f5b72e461b74374506b4be8eb5d29f3a9b51e56feeed1ab40d12"
+    },
+    "afterState": {
+      "courseId": 12,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 17,
+      "exerciseLinkCount": 69,
+      "lectureLinkCount": 17,
+      "mappingSha256": "6138fecfe028c337b329b571ebe35e0b12fd82684807d919090b9d50e9dfa2ea",
+      "contentSha256": "4ae5867048648c713dc566bb9f7cfe712a8fcdab5fa738d6840355677f0801dd"
+    }
+  },
+  "r03-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:08:59.923149+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:09:23.256745+00:00",
+    "durationSeconds": 20.821492000002763,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated exercise content as strong stand-alone evidence for Variables and control flow. The Assigner confirmed exercise 723 remains linked only to competency 109 at weight 1.0; no mutation was needed. Final index refresh confirms the mapping and all unrelated competency mappings are unchanged."
+    },
+    "beforeState": {
+      "courseId": 13,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "3ebff7851a347172238fdd580a2ef052f78c9a4c4477cce544f85bfd3a716278",
+      "contentSha256": "cb44881767b1c00c1807393949e532abc7398a1f1fd6532c00c905e6456c95f7"
+    },
+    "afterState": {
+      "courseId": 13,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "3ebff7851a347172238fdd580a2ef052f78c9a4c4477cce544f85bfd3a716278",
+      "contentSha256": "4eeb8ace9754d5681d487b1e8dcf4cafa72f243f22d3ea3d2ebeccfc35923897"
+    }
+  },
+  "r03-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:09:28.354355+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:10:29.092724+00:00",
+    "durationSeconds": 57.3860680420039,
+    "result": {
+      "courseId": 14,
+      "runId": "39821d6b-0728-4161-b246-6119e8a6c597",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T13:09:43.657+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 14 firing run 39821d6b-0728-4161-b246-6119e8a6c597 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T13:10:27.775+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 14 run 39821d6b-0728-4161-b246-6119e8a6c597 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 14,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "a67ca44f349ca992c8ed5a065d91e7c94e29111dba17e9694e6599090defd564",
+      "contentSha256": "1d68f4f6d1e03ad2f215b843c76388e850a434aaa0ba90371c58024542a8f0f3"
+    },
+    "afterState": {
+      "courseId": 14,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "a67ca44f349ca992c8ed5a065d91e7c94e29111dba17e9694e6599090defd564",
+      "contentSha256": "8bafdd64bd7632d516b85fd50fc6f25349e88829a9d92c5008119ba097ca9515"
+    }
+  },
+  "r03-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:10:33.197852+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:11:22.580179+00:00",
+    "durationSeconds": 47.27425225000479,
+    "result": {
+      "courseId": 15,
+      "runId": "0eff2f95-77eb-4589-943f-1f370a9ffd7e",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T13:11:13.618+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 15 firing run 0eff2f95-77eb-4589-943f-1f370a9ffd7e with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-27T13:11:21.322+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 15 run 0eff2f95-77eb-4589-943f-1f370a9ffd7e had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 15,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "ef028b7ed5e4ef31f5b060afb2072739fe8417077228cc849ccb145b1b302cb7",
+      "contentSha256": "06a4138d6932e7b966e9c387555add159ecc7745f2d55c58790aedcbe2f338f1"
+    },
+    "afterState": {
+      "courseId": 15,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "ef028b7ed5e4ef31f5b060afb2072739fe8417077228cc849ccb145b1b302cb7",
+      "contentSha256": "c510e90c5a9787c6b5db134adc9e35672a1af687740b81d438d64247f3100c68"
+    }
+  },
+  "r03-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:11:27.525621+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:13:04.504032+00:00",
+    "durationSeconds": 94.6509035830095,
+    "result": {
+      "courseId": 16,
+      "runId": "01b300f4-70de-490b-aaea-6008eb1644df",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:13:03.391770Z"
+    },
+    "beforeState": {
+      "courseId": 16,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "4921a4783cbffebd89fd246f78e86a460e310d5f40b9f72c653e2ee936731164",
+      "contentSha256": "592ad6abb482ff6a7c900b88d9fa9d7bbbc6c91f975c9a3018f82f52843cf344"
+    },
+    "afterState": {
+      "courseId": 16,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "306335f83a362519ca98af98a4377e9dea0544be023606eff9717e1e1c8d7a9a",
+      "contentSha256": "586c7441f58f1774844eaddf3af1b5c622f4dcb0167448162a177a70f13757a7"
+    }
+  },
+  "r03-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:13:09.102242+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:16:06.233226+00:00",
+    "durationSeconds": 174.97562524999375,
+    "result": {
+      "courseId": 17,
+      "runId": "871bda3e-6322-4f4a-ab29-937b84f49bc1",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:16:04.960215Z"
+    },
+    "beforeState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "164bc803b9efcb17b94f9f8cf9f8c570fefb2eb7f000328e0f2fa936cf57250d"
+    },
+    "afterState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "060fe8a93ad361264cb800afec5572b27c6890084bf484fc0a0e133cb7ecb3d7",
+      "contentSha256": "acb81b9ac1499a7847eeb2bfa476469ea959628bfc6cb893bbd1cc78529eee44"
+    }
+  },
+  "r03-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:16:10.349672+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:19:28.101262+00:00",
+    "durationSeconds": 195.12580433298717,
+    "result": {
+      "courseId": 17,
+      "runId": "782a34c4-7d58-433c-b3bd-9bfd637c98b7",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:19:26.867312Z"
+    },
+    "beforeState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "060fe8a93ad361264cb800afec5572b27c6890084bf484fc0a0e133cb7ecb3d7",
+      "contentSha256": "acb81b9ac1499a7847eeb2bfa476469ea959628bfc6cb893bbd1cc78529eee44"
+    },
+    "afterState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 13,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 7,
+      "mappingSha256": "d5e395b8d091a8739270df56c5fbacd382d107e9e6b3969864537a2511bc744b",
+      "contentSha256": "29090f9c4a22cf26483dfd9ccd11adfe9aa11c2ee8b2f9d89d0ea80a97c1ba90"
+    }
+  },
+  "r03-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:19:34.367509+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:24:08.585113+00:00",
+    "durationSeconds": 270.93237929099996,
+    "result": {
+      "courseId": 17,
+      "runId": "101bc1d3-8a9e-492b-9fff-dd5750217ef4",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:24:07.096877Z"
+    },
+    "beforeState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 13,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 7,
+      "mappingSha256": "d5e395b8d091a8739270df56c5fbacd382d107e9e6b3969864537a2511bc744b",
+      "contentSha256": "29090f9c4a22cf26483dfd9ccd11adfe9aa11c2ee8b2f9d89d0ea80a97c1ba90"
+    },
+    "afterState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 55,
+      "lectureLinkCount": 10,
+      "mappingSha256": "e6ff1dad62bd97fc73f6f30d784578c41dec1666af03bc6d9ee96e1ee2143fa9",
+      "contentSha256": "17c5c28f97250aa65bb93df45ccbc9b5650cbc921737e0b1eefb5be6999f3ca6"
+    }
+  },
+  "r03-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:24:22.967775+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:26:58.465375+00:00",
+    "durationSeconds": 150.6677305829944,
+    "result": {
+      "courseId": 17,
+      "runId": "0cd19a6d-06bc-4097-b590-79b75dbb450e",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:26:56.655413Z"
+    },
+    "beforeState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 55,
+      "lectureLinkCount": 10,
+      "mappingSha256": "e6ff1dad62bd97fc73f6f30d784578c41dec1666af03bc6d9ee96e1ee2143fa9",
+      "contentSha256": "17c5c28f97250aa65bb93df45ccbc9b5650cbc921737e0b1eefb5be6999f3ca6"
+    },
+    "afterState": {
+      "courseId": 17,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 64,
+      "lectureLinkCount": 13,
+      "mappingSha256": "8cf0630ddccff6b308de9c251dca04d508394eaa5637b59d6adf540766a8a82e",
+      "contentSha256": "e8b86358ce40e3db1b097010ba4026186ca19a0e59870119374814c658688247"
+    }
+  },
+  "r03-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:27:52.571507+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:32:02.048909+00:00",
+    "durationSeconds": 182.3559738329932,
+    "result": {
+      "courseId": 18,
+      "runId": "9ce00b94-57d0-4e0a-b871-f25e81f204f6",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:32:00.675477Z"
+    },
+    "beforeState": {
+      "courseId": 18,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "84690cdba06b402abbf5f3d6637aa887e94d282edadd5744a5cc8ea71ecf7674",
+      "contentSha256": "f1d882846f6499836f7393049edd2651a074de452e84ce27ad0558f0bcc1d6d1"
+    },
+    "afterState": {
+      "courseId": 18,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 32,
+      "lectureLinkCount": 8,
+      "mappingSha256": "6bfb4349f0c1a3c278ad71fb7e2bfb2f6051e9aff2a4824ab4a963b5da084cb9",
+      "contentSha256": "6fa1a60181075b96b862a93e17770da17ef18485decdef4dda8c7e04c6ad7dbc"
+    }
+  },
+  "r04-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:32:14.799596+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:34:18.191111+00:00",
+    "durationSeconds": 114.17445550000411,
+    "result": {
+      "courseId": 19,
+      "runId": "7dc51aef-b87a-47b3-8219-8ebae258ef3f",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:34:16.872445Z"
+    },
+    "beforeState": {
+      "courseId": 19,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "af038df37f15304ff481f30e0f65c576acc67d123d031697d393eb00785ca86b",
+      "contentSha256": "c19982bd363cc45240b54e130bd5f7e930094c5d89b5572f1cd3acf57cd15782"
+    },
+    "afterState": {
+      "courseId": 19,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "5cfedd88b3f97b78509f9ae8aa2a2b8a56f9cf4e68eea49d5a43cde41609bd16",
+      "contentSha256": "88e4247fbcc754e8b2bda1c7577a04c5b20da811c10d658e7e038b92c2c07c04"
+    }
+  },
+  "r04-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:34:25.923767+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:35:07.861284+00:00",
+    "durationSeconds": 38.60419100000581,
+    "result": {
+      "courseId": 20,
+      "runId": "ce3ba040-83c6-4a5b-8dee-259a5701bb99",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T13:34:43.637+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 20 firing run ce3ba040-83c6-4a5b-8dee-259a5701bb99 with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-27T13:35:05.919+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 20 run ce3ba040-83c6-4a5b-8dee-259a5701bb99 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 20,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "5a5771a1d200e9849440d6a2c3a9afd7b99e727a9a0a32e4401b456636640758",
+      "contentSha256": "f977ab55983f7f0b7e4e77ac772f0da26b7ab901513cb9cc2aa97c98dc729bbc"
+    },
+    "afterState": {
+      "courseId": 20,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "5a5771a1d200e9849440d6a2c3a9afd7b99e727a9a0a32e4401b456636640758",
+      "contentSha256": "5a06f95836d45c4c3fa375fa609dd05def51750a310f577c52c0dcc4c4a7ab34"
+    }
+  },
+  "r04-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:35:16.385681+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:37:06.663620+00:00",
+    "durationSeconds": 106.32684579200577,
+    "result": {
+      "courseId": 21,
+      "runId": "6d496409-29a4-49c3-8cb3-59509574faa0",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T13:35:43.651+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 21 firing run 6d496409-29a4-49c3-8cb3-59509574faa0 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T13:37:04.839+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 21 run 6d496409-29a4-49c3-8cb3-59509574faa0 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 21,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c32389abe3507ece6ccd198f620c214f1f1c61766c82f4dbd86700c16b2c3514",
+      "contentSha256": "3520e535b88cfefee87f182537e1aedc6c17851b2f445819f9898aad82e75420"
+    },
+    "afterState": {
+      "courseId": 21,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c32389abe3507ece6ccd198f620c214f1f1c61766c82f4dbd86700c16b2c3514",
+      "contentSha256": "9129f2d458526d354a7715cfd673d2dc0cbce4bfd36567d35c847869121ad93b"
+    }
+  },
+  "r04-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:37:10.749241+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:37:23.990896+00:00",
+    "durationSeconds": 11.909249208008987,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated exercise content for \u201cBranching and boundary memo\u201d (file-upload): it remains strong stand-alone evidence for Variables and control flow, including branching order and inclusive boundaries. The refreshed index confirms its existing 1.0 link to competency 199 is accurate; no creation, edit, reassignment, or deletion was needed."
+    },
+    "beforeState": {
+      "courseId": 22,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "4404a74f7de0f09eaa8dfc901cb2cfa786db662a9c2de500754e66d5fd5a4f7f",
+      "contentSha256": "aedb382ad357373da68a318d6140a581410272b6541819babf78754ac6add5b2"
+    },
+    "afterState": {
+      "courseId": 22,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "4404a74f7de0f09eaa8dfc901cb2cfa786db662a9c2de500754e66d5fd5a4f7f",
+      "contentSha256": "f304f20f434537d3403bf9deb8bf8e3c214b314ee97852d434424c69d6b640fd"
+    }
+  },
+  "r04-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:37:27.052666+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:40:42.894516+00:00",
+    "durationSeconds": 193.72415829100646,
+    "result": {
+      "courseId": 23,
+      "runId": "0d069277-c24e-419b-be1d-d29279c803a2",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:40:41.732776Z"
+    },
+    "beforeState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "bf31041810e17bd56c1d029639d2b54038c2627a7a602c296964acd18e33ae80"
+    },
+    "afterState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "de5caf03d85cebad41f305b4b628e064858873081badee9403db3a159d3d0031",
+      "contentSha256": "7f2f980f847ffa7a152722bdc8d23448052fb968c9139133b92fb45058c28e43"
+    }
+  },
+  "r04-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:40:47.610925+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:44:22.681017+00:00",
+    "durationSeconds": 212.9503901249991,
+    "result": {
+      "courseId": 23,
+      "runId": "086e4c4e-6390-4455-94f1-35f2170c15ee",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:44:21.611323Z"
+    },
+    "beforeState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "de5caf03d85cebad41f305b4b628e064858873081badee9403db3a159d3d0031",
+      "contentSha256": "7f2f980f847ffa7a152722bdc8d23448052fb968c9139133b92fb45058c28e43"
+    },
+    "afterState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 20,
+      "exerciseLinkCount": 33,
+      "lectureLinkCount": 8,
+      "mappingSha256": "c8a8aac3dd1ded798e836759ae8ce28161405c4ce2c9e84491917d2411399b20",
+      "contentSha256": "7f4a3b587f01ed8b2770b6719e3e902d849850a5370a3e46819e36c92f611d3f"
+    }
+  },
+  "r04-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:44:26.006614+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:47:48.722432+00:00",
+    "durationSeconds": 200.8831272499956,
+    "result": {
+      "courseId": 23,
+      "runId": "d0f83b48-a7aa-4e04-bad9-05a2f6b489e0",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:47:46.954568Z"
+    },
+    "beforeState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 20,
+      "exerciseLinkCount": 33,
+      "lectureLinkCount": 8,
+      "mappingSha256": "c8a8aac3dd1ded798e836759ae8ce28161405c4ce2c9e84491917d2411399b20",
+      "contentSha256": "7f4a3b587f01ed8b2770b6719e3e902d849850a5370a3e46819e36c92f611d3f"
+    },
+    "afterState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 24,
+      "exerciseLinkCount": 58,
+      "lectureLinkCount": 11,
+      "mappingSha256": "a63baca9ecc78e99b0a8b22fcd31e731856ec4208569894ddc32b5172ed7a245",
+      "contentSha256": "2a6258ac2a064bd14fca355c9e70359f5808cce037abc5877285d906db09fcbb"
+    }
+  },
+  "r04-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:47:52.770341+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:50:03.651167+00:00",
+    "durationSeconds": 128.90211387499585,
+    "result": {
+      "courseId": 23,
+      "runId": "faebac48-62e9-4949-a20b-7f792b58cb8e",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:50:02.348467Z"
+    },
+    "beforeState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 24,
+      "exerciseLinkCount": 58,
+      "lectureLinkCount": 11,
+      "mappingSha256": "a63baca9ecc78e99b0a8b22fcd31e731856ec4208569894ddc32b5172ed7a245",
+      "contentSha256": "2a6258ac2a064bd14fca355c9e70359f5808cce037abc5877285d906db09fcbb"
+    },
+    "afterState": {
+      "courseId": 23,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 28,
+      "exerciseLinkCount": 74,
+      "lectureLinkCount": 17,
+      "mappingSha256": "c110882075afadae6c9a688bcb256e72d54a3e1a91cb8e9d8dbf155f604d35cc",
+      "contentSha256": "80e6fc42a0f4fa8270dc94202307d5f973ed147a024ec182a362d40721bb4375"
+    }
+  },
+  "r04-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:50:07.796673+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:52:39.856703+00:00",
+    "durationSeconds": 149.26166950000334,
+    "result": {
+      "courseId": 24,
+      "runId": "b7530945-cddc-4af4-a13b-37d538270252",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:52:38.771201Z"
+    },
+    "beforeState": {
+      "courseId": 24,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "d9997261a03cb91aa26d7f222ae2fb92f199ff7b1a5b2f3d2dd078a4038f7590",
+      "contentSha256": "3b3411d6ee2201bac4df88fd1eabb6725717818368c7371f4e540a35e2d18570"
+    },
+    "afterState": {
+      "courseId": 24,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "4d5e38d2723be1d8a4932e44addc93e4dfae2491310fd5e871e79ac07e94c3be",
+      "contentSha256": "493fcf751a68024db9fbeb1a75074465c7826228eec088fa17108f7b6151b56a"
+    }
+  },
+  "r05-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:52:44.522388+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:54:38.327011+00:00",
+    "durationSeconds": 111.79134662500292,
+    "result": {
+      "courseId": 25,
+      "runId": "107cac44-aa2f-4d9d-8550-60e9c8f62078",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:54:37.255197Z"
+    },
+    "beforeState": {
+      "courseId": 25,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "06003059d25ab20e4c7ebece30d7c5defde37ad0b55b3b1c1c96e2005ce9f38c",
+      "contentSha256": "604850ccbb83659b927ccfe398054f51d05a428f31209d43f7e1f2540065e5b5"
+    },
+    "afterState": {
+      "courseId": 25,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 65,
+      "lectureLinkCount": 14,
+      "mappingSha256": "ae736329c3295ba25006f744f181d386eef543efadcd9f2b46994c81ded0c97a",
+      "contentSha256": "cc59495f153dbcb476a0e4b52d6f2c882ff7ab4cf94e02de66aaf1d53ad49a2b"
+    }
+  },
+  "r05-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:54:43.238145+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:55:39.116882+00:00",
+    "durationSeconds": 53.589388082997175,
+    "result": {
+      "courseId": 26,
+      "runId": "69b4b870-c752-49be-b81e-b871b4e2a972",
+      "exerciseCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:55:38.046071Z"
+    },
+    "beforeState": {
+      "courseId": 26,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "15d8141c49c6b0f5a58178f9ff15c9741b5c3170dc032ce23ec9a294d9375634",
+      "contentSha256": "774ec082fe7595298cc173a37be86a5072db616076b6df990e2152e1a6bb73e0"
+    },
+    "afterState": {
+      "courseId": 26,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 13,
+      "mappingSha256": "d2c9a44cb0e41f7c37470096b833d54a3256b275bd7a3fa86c5a86d2b9448797",
+      "contentSha256": "fbde89a1edbdeab48b29eabbe245699c202c7a328c98436e73a6227b2f927d14"
+    }
+  },
+  "r05-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:55:43.920389+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:55:53.447004+00:00",
+    "durationSeconds": 8.4813528329978,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated quiz: its short-circuit control-flow content remains a strong, stand-alone fit for competency 241, Variables and control flow, at weight 1.0. The final index confirms the mapping is present and unchanged; no competency creation, edit, deletion, or reassignment was needed."
+    },
+    "beforeState": {
+      "courseId": 27,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "3d516cbd7ba90e08caafe90b19e13e2557a24f01c017742dee2bf94e628e17c4",
+      "contentSha256": "7022feb27917e118c91a9456d90d74f730a4ac0c65588cc67bdc691ce712fd94"
+    },
+    "afterState": {
+      "courseId": 27,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "3d516cbd7ba90e08caafe90b19e13e2557a24f01c017742dee2bf94e628e17c4",
+      "contentSha256": "20aff81debe0a207c2b226e8c45856f6a6889bb0828e2bb9271ddb3363a80673"
+    }
+  },
+  "r05-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:55:57.846947+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T11:58:11.167218+00:00",
+    "durationSeconds": 131.38155862499843,
+    "result": {
+      "courseId": 28,
+      "runId": "b8e2a595-55ed-4274-871b-f3e639d03ba5",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T11:58:10.085622Z"
+    },
+    "beforeState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "3115e78e5edd2289a055ad65295c472f58c4777190f2ac41cdb82189443e1599"
+    },
+    "afterState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "2b76d5efe6304f2530a33e3cfa068e33075fe7b7a3fcff400964e9b565b33557",
+      "contentSha256": "be7226ad07e7f2b4b8c47c16772748320cc5391750f2fbdeff6666ab35331410"
+    }
+  },
+  "r05-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T11:58:15.993670+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:03:58.602656+00:00",
+    "durationSeconds": 340.5604956669995,
+    "result": {
+      "courseId": 28,
+      "runId": "6500ef62-9638-4128-9e53-9e974dc6408d",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:03:57.505554Z"
+    },
+    "beforeState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "2b76d5efe6304f2530a33e3cfa068e33075fe7b7a3fcff400964e9b565b33557",
+      "contentSha256": "be7226ad07e7f2b4b8c47c16772748320cc5391750f2fbdeff6666ab35331410"
+    },
+    "afterState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 20,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 10,
+      "mappingSha256": "28e4bbf9102655ce9b583fd9e395a1866e558f914a87e7bf78b484897d6c8579",
+      "contentSha256": "88f759dc948d1ef9dd6da1d40d8de4ddcc2d9fcf7f38e1f9f47f314b914ecc53"
+    }
+  },
+  "r05-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:04:02.890127+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:08:57.512477+00:00",
+    "durationSeconds": 292.46340208400215,
+    "result": {
+      "courseId": 28,
+      "runId": "560e36d3-5a9c-48b3-bdf6-b2861b30f4cc",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:08:56.024662Z"
+    },
+    "beforeState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 20,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 10,
+      "mappingSha256": "28e4bbf9102655ce9b583fd9e395a1866e558f914a87e7bf78b484897d6c8579",
+      "contentSha256": "88f759dc948d1ef9dd6da1d40d8de4ddcc2d9fcf7f38e1f9f47f314b914ecc53"
+    },
+    "afterState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 23,
+      "exerciseLinkCount": 58,
+      "lectureLinkCount": 15,
+      "mappingSha256": "3e4ecdf89afc535d3ee762e2ae8976562f843371535e7a8186fc28f737ab292d",
+      "contentSha256": "3a9c47fe416fabfe659706cd67790e00c2dfaaf5ef291aaa230f14403b591db2"
+    }
+  },
+  "r05-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:09:04.839831+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:11:53.743945+00:00",
+    "durationSeconds": 165.56355283400626,
+    "result": {
+      "courseId": 28,
+      "runId": "ef60acc7-543e-4605-bbc3-5a8e76ad000c",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:11:52.589512Z"
+    },
+    "beforeState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 23,
+      "exerciseLinkCount": 58,
+      "lectureLinkCount": 15,
+      "mappingSha256": "3e4ecdf89afc535d3ee762e2ae8976562f843371535e7a8186fc28f737ab292d",
+      "contentSha256": "3a9c47fe416fabfe659706cd67790e00c2dfaaf5ef291aaa230f14403b591db2"
+    },
+    "afterState": {
+      "courseId": 28,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 24,
+      "exerciseLinkCount": 68,
+      "lectureLinkCount": 19,
+      "mappingSha256": "e11ac8b34cf61cc240eadaab7ce7fef834ac0a1c9cf66b71d7777c3ead84a60b",
+      "contentSha256": "741fc2db752383ac358ef85e698596d6872be98b6c8dc6c2846e0fc1bca6fd2b"
+    }
+  },
+  "r05-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:12:00.263574+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:14:26.264284+00:00",
+    "durationSeconds": 142.46252912499767,
+    "result": {
+      "courseId": 29,
+      "runId": "3869f634-4c46-4cd2-9f31-a27724dc525c",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:14:24.936340Z"
+    },
+    "beforeState": {
+      "courseId": 29,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "a34994f6fa33f1a9b553c8c3b8c6f3fb962910cde86784d249535bb655470e74",
+      "contentSha256": "0d841c3d57031daebca76d4f554d77d53664446eaa556055e02bd17ae0c1f975"
+    },
+    "afterState": {
+      "courseId": 29,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "54a271d4b514726a94694a7955e40195c4fd917972e46487d32a9df0f459624a",
+      "contentSha256": "e526456069f9738ad4f289c4b4d65c698562f503a2d4173d6ab4d1d33a4e7dd3"
+    }
+  },
+  "r05-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:14:32.266660+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:15:51.722737+00:00",
+    "durationSeconds": 76.39356725000835,
+    "result": {
+      "courseId": 30,
+      "runId": "8808b06c-4ab2-40c3-8b51-45f67c3bda55",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T14:15:13.642+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-0] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 30 firing run 8808b06c-4ab2-40c3-8b51-45f67c3bda55 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T14:15:50.399+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-0] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 30 run 8808b06c-4ab2-40c3-8b51-45f67c3bda55 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 30,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "570d1fa2543668b59844cc8c37aedde903279489857f66462a882df226c9a005",
+      "contentSha256": "58fadb31c0251f051f3230837c80372b01dbed4d354f4d083fce47c2292f4500"
+    },
+    "afterState": {
+      "courseId": 30,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "570d1fa2543668b59844cc8c37aedde903279489857f66462a882df226c9a005",
+      "contentSha256": "e3f9e7a0219ae3efc9359513e1f1f29ce015ff093eff19e4f31813d30218f911"
+    }
+  },
+  "r06-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:15:58.897844+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:17:29.347119+00:00",
+    "durationSeconds": 86.71210962500481,
+    "result": {
+      "courseId": 31,
+      "runId": "dba9b14f-d7f9-4bb1-b42d-aa54553a3e07",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T14:16:43.697+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 31 firing run dba9b14f-d7f9-4bb1-b42d-aa54553a3e07 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T14:17:27.483+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 31 run dba9b14f-d7f9-4bb1-b42d-aa54553a3e07 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 31,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c75375f58ec6f375a7d78eb9e1031c879951a04bce1bb9ba0d1b33a2fcff550d",
+      "contentSha256": "dc83b226ef0e7e469d9fb62a79e408d21d4033a2ab4ce8e4b3bbb50d4061ddd1"
+    },
+    "afterState": {
+      "courseId": 31,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c75375f58ec6f375a7d78eb9e1031c879951a04bce1bb9ba0d1b33a2fcff550d",
+      "contentSha256": "b66d748cc9e6ef8bc0aba57c241dd2977aa47214a3bbe3b4d92f7fe222a19b52"
+    }
+  },
+  "r06-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:17:35.289553+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:17:51.769837+00:00",
+    "durationSeconds": 14.509790832991712,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated Modular utility invoice exercise remains correctly linked to Functions and modularity at weight 1.0. Its revised rules still directly assess decomposition, helper contracts, composition, and single responsibilities; no competency creation, edit, deletion, or remapping was needed."
+    },
+    "beforeState": {
+      "courseId": 32,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "954b5250e6a88956a9c5dd589271df78cdcc1bceaf6feb5dbc6e8ed6c0b6e8ca",
+      "contentSha256": "ca71e0c10f7502461f50562651b543a3d088ccb3b24bc65b24619f7f2bc238ea"
+    },
+    "afterState": {
+      "courseId": 32,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "954b5250e6a88956a9c5dd589271df78cdcc1bceaf6feb5dbc6e8ed6c0b6e8ca",
+      "contentSha256": "94d6ea5c5b7d48e4d4e9e518fc9b5e2e4e5979381109ee76078231236bed6bf4"
+    }
+  },
+  "r06-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:17:57.937683+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:20:31.556019+00:00",
+    "durationSeconds": 150.03010691600502,
+    "result": {
+      "courseId": 33,
+      "runId": "f35be7bd-f02c-46f8-9402-2bb46c1c085c",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:20:30.302621Z"
+    },
+    "beforeState": {
+      "courseId": 33,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "8e45373bab48ec6518e41377385c67e44835941d7aaf33100a3ef64cb849006e",
+      "contentSha256": "499f677ffb85f75468b16f059e35cba61b5e7b7359f6b7a7596767e93438f0ba"
+    },
+    "afterState": {
+      "courseId": 33,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "bd130277dbe09c7fb8938c919fb2f220b8c993934b45d9260e00fb6f01af8a29",
+      "contentSha256": "9a0db72809df6fdb55b9ac985f5202c1173c10488287fd480f61622012b54905"
+    }
+  },
+  "r06-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:20:39.292136+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:21:25.014937+00:00",
+    "durationSeconds": 42.25414937500318,
+    "result": {
+      "courseId": 34,
+      "runId": "5a8fb20d-00ec-48e3-bc59-0ba6fbe30b33",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T14:21:13.657+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 34 firing run 5a8fb20d-00ec-48e3-bc59-0ba6fbe30b33 with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-27T14:21:22.612+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 34 run 5a8fb20d-00ec-48e3-bc59-0ba6fbe30b33 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 34,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "7b43f73610ffcf70f5983fcd938cfbbb881a22c5b68ab2c7b2d26f830819d985",
+      "contentSha256": "d8540f6b65f2a398a7bccdc75ffcc11f14ed0ea7e29b2f85965f65ba8f5fa9dd"
+    },
+    "afterState": {
+      "courseId": 34,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "7b43f73610ffcf70f5983fcd938cfbbb881a22c5b68ab2c7b2d26f830819d985",
+      "contentSha256": "4495626fe14ac24b8a051b083accb7f03c5a058aea6ac5ebf4b1bd5021b1eba2"
+    }
+  },
+  "r06-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:21:32.029508+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:25:14.231316+00:00",
+    "durationSeconds": 218.40870370800258,
+    "result": {
+      "courseId": 35,
+      "runId": "fa61e5ec-5a86-4f1b-871e-6178fcc1c929",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:25:10.916350Z"
+    },
+    "beforeState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "53648f273cf0d114358382022884d3a9bf30ea088719d7a7dc8062e3884dcffc"
+    },
+    "afterState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "a57ebea3afe4411ee06a4d444e9d013bd20736406ec0acaaaf7495eda9d8d2b6",
+      "contentSha256": "4afd05330aeb6de7958df89f44f877c8dd5c5a12c5bb0a147979c20c2eb49f7b"
+    }
+  },
+  "r06-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:25:33.325710+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:30:43.689914+00:00",
+    "durationSeconds": 294.09506141699967,
+    "result": {
+      "courseId": 35,
+      "runId": "8a855981-2a47-4e18-983d-bebe36f49276",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:30:42.313193Z"
+    },
+    "beforeState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "a57ebea3afe4411ee06a4d444e9d013bd20736406ec0acaaaf7495eda9d8d2b6",
+      "contentSha256": "4afd05330aeb6de7958df89f44f877c8dd5c5a12c5bb0a147979c20c2eb49f7b"
+    },
+    "afterState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "1bf0873c5c49240fab956defeb3189819809b6313484c04fb076c79d8a0b4c2f",
+      "contentSha256": "12f50ea46e1a760cbb3c107285ee0aff27bed2640ce6856d4ab9285cd33c98aa"
+    }
+  },
+  "r06-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:30:49.965869+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:35:09.724697+00:00",
+    "durationSeconds": 256.79720824999094,
+    "result": {
+      "courseId": 35,
+      "runId": "93a50af2-ebef-415a-a8e9-83515130162b",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:35:08.446501Z"
+    },
+    "beforeState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "1bf0873c5c49240fab956defeb3189819809b6313484c04fb076c79d8a0b4c2f",
+      "contentSha256": "12f50ea46e1a760cbb3c107285ee0aff27bed2640ce6856d4ab9285cd33c98aa"
+    },
+    "afterState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 56,
+      "lectureLinkCount": 10,
+      "mappingSha256": "a4a5ebe9b2c525ca81ad6d70c6883880cec4c1a387be93fed09f893ea888b83e",
+      "contentSha256": "49ca5667b110240ef9c5c0614ff1cfd95a230c01593270ed5b733aec2b9b8f79"
+    }
+  },
+  "r06-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:35:15.143230+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:37:53.169830+00:00",
+    "durationSeconds": 155.1760676249978,
+    "result": {
+      "courseId": 35,
+      "runId": "2d944c85-5630-4e03-b6de-bd40e635cb7b",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:37:51.977786Z"
+    },
+    "beforeState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 56,
+      "lectureLinkCount": 10,
+      "mappingSha256": "a4a5ebe9b2c525ca81ad6d70c6883880cec4c1a387be93fed09f893ea888b83e",
+      "contentSha256": "49ca5667b110240ef9c5c0614ff1cfd95a230c01593270ed5b733aec2b9b8f79"
+    },
+    "afterState": {
+      "courseId": 35,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 66,
+      "lectureLinkCount": 15,
+      "mappingSha256": "740b65cdaad02069c51ad986f48c9bfd4700f8addca83ddf115960a053c60eea",
+      "contentSha256": "8ef6c084f24f0190074ea6674fbcb730b697ec1bf5adb13fb3f11ebf5c369401"
+    }
+  },
+  "r06-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:37:58.024185+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:39:37.799136+00:00",
+    "durationSeconds": 97.34663333299977,
+    "result": {
+      "courseId": 36,
+      "runId": "9ed2d570-aaec-4541-bb49-1bed4d60222d",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:39:36.667764Z"
+    },
+    "beforeState": {
+      "courseId": 36,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "0b438988c78236acb9cef309944f5c9a114518557f0b98ec7537021d7e6464bc",
+      "contentSha256": "7501399936887f3e9ff8015f87b2a5ba45013664a7f2cecc9e495bbac3758e04"
+    },
+    "afterState": {
+      "courseId": 36,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "b5b302227f08d8fc15cd897eb5c484f3a1d690119a75e54a6fbebf98a1b12c4a",
+      "contentSha256": "33b9d0217dae3e14f5d883a5ffb64e92f9d51f5b02ff06e2ada36295a91c8eab"
+    }
+  },
+  "r07-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:39:42.520361+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:42:00.730543+00:00",
+    "durationSeconds": 136.19696558300348,
+    "result": {
+      "courseId": 37,
+      "runId": "cc99e6e5-fd7b-4ed3-bb37-77489e047459",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:41:59.591255Z"
+    },
+    "beforeState": {
+      "courseId": 37,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "91969ba82ab3a14072b4d658bdc4a4733c524f424bf6db2ab3fa1b648ef80495",
+      "contentSha256": "16608be4c7a3a9bbc1ddd7ce27a440c8e837b90e889b5db9b5d95ad636ab61f6"
+    },
+    "afterState": {
+      "courseId": 37,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 12,
+      "mappingSha256": "52700d08bed9e39172fcdc2015b454834aa25c66ba538d5017e1fb1dfa8e36e5",
+      "contentSha256": "99162ef288d50c57d46eb046b0da8cb2fb019b15386aea32ebe01bfc8a9ae504"
+    }
+  },
+  "r07-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:42:04.157743+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:43:14.024447+00:00",
+    "durationSeconds": 67.31778399999894,
+    "result": {
+      "courseId": 38,
+      "runId": "67e46bea-a39f-4ed4-b2df-9162f654e9ca",
+      "exerciseCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:43:12.906065Z"
+    },
+    "beforeState": {
+      "courseId": 38,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "ea052051e33ea3e5f1418040e35a48b9c419a9a2d1c2b411edd519d617f13acb",
+      "contentSha256": "6c35848f462c9cf70460dc218aa264891726f0ad6ce5bce69bf265f11135e5dd"
+    },
+    "afterState": {
+      "courseId": 38,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 13,
+      "mappingSha256": "bfa46be25afbddfa02a6629dce97a9c76a21047bdeceaa5bc9cd1de3d933dc05",
+      "contentSha256": "5d02016ab1365fc163ca72caf3006ee7e9d5d10e4d8b8c247618ae84dffd9c43"
+    }
+  },
+  "r07-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:43:18.094601+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:44:36.783141+00:00",
+    "durationSeconds": 75.90322591700533,
+    "result": {
+      "courseId": 39,
+      "runId": "664e61bf-0a94-4245-af3f-4cb79c5fb077",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T14:43:43.657+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 39 firing run 664e61bf-0a94-4245-af3f-4cb79c5fb077 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T14:44:34.991+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 39 run 664e61bf-0a94-4245-af3f-4cb79c5fb077 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 39,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "014f200e1855b0c7ef7da3889e7169f2c1ad47fe7385faca8cf39d59c82867d0",
+      "contentSha256": "c2fa752fa66463244403d9aa52baf2a7d7ebc6c15cbea3914ec171d220442acf"
+    },
+    "afterState": {
+      "courseId": 39,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "014f200e1855b0c7ef7da3889e7169f2c1ad47fe7385faca8cf39d59c82867d0",
+      "contentSha256": "96c9a25d5e45d72ee6ada767b43531c02730e40a466c378fee2f25bb4d74b8c4"
+    }
+  },
+  "r07-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:44:39.713354+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:47:08.180030+00:00",
+    "durationSeconds": 146.7227941660094,
+    "result": {
+      "courseId": 40,
+      "runId": "48af6e4f-2eb5-4d77-b76f-ca7c6808e248",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:47:07.021316Z"
+    },
+    "beforeState": {
+      "courseId": 40,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "d9e49f4b4601bf984a81e07e688150ae03da11bb47943237917c63a85b82cb73",
+      "contentSha256": "96e5d570be617ac71a070950e43469e610e1499128dd7c25a57949bcb394e507"
+    },
+    "afterState": {
+      "courseId": 40,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "38a8bf73c3a2c147e1880f78553b6d6ed99470c4b66e0497ac7ce1d62bd08ec6",
+      "contentSha256": "668772e5e7e8fa4edda06ac2f5dac23d8759b656eb5717d6b022e7e561711a21"
+    }
+  },
+  "r07-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:47:11.429984+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:47:33.966906+00:00",
+    "durationSeconds": 21.88289520800754,
+    "result": {
+      "status": "SUCCESS",
+      "summary": "Verified the final index. Exercise 2407 remains linked to Functions and modularity (368) at 1.0 and is now also linked to Testing and correctness (376) at 0.5, reflecting its focused tests and zero-task boundary case. No other mappings or competencies changed.",
+      "appliedActions": [
+        {
+          "type": "ASSIGN",
+          "competencyId": 376,
+          "competencyTitle": "Testing and correctness",
+          "exerciseId": 2407,
+          "weight": 0.5,
+          "detail": "Linked exercise Refactor a report generator to competency Testing and correctness (weight 0.50).",
+          "justification": "0.5 meaningful partial evidence: the exercise requires focused helper tests and a zero-task boundary case, but testing and correctness are secondary to its primary modular-design task."
+        }
+      ]
+    },
+    "beforeState": {
+      "courseId": 41,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "93ffcbc44d4296736b920f00b43bb1de56d042faa764934d60d5021e2bc149cd",
+      "contentSha256": "20ada2efa9462fe4bed2949db02b0ab054a7575abd8b7a5b511d64dd6bdfdda2"
+    },
+    "afterState": {
+      "courseId": 41,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 12,
+      "mappingSha256": "d2790ca5e6561735d500c1df0be3e6ede04e7bcfdd09898ad7c9de95ad2d484f",
+      "contentSha256": "a5ccdcce22754003f70a8b6988868994ae94f3fdf554948ed73d8dd07ef46868"
+    }
+  },
+  "r07-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:47:36.775448+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:50:54.289385+00:00",
+    "durationSeconds": 195.9055656660057,
+    "result": {
+      "courseId": 42,
+      "runId": "d16f0302-2476-4b6c-b3dc-53d7932d1b8e",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:50:53.170811Z"
+    },
+    "beforeState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "a8aab57a53f9d707063ded475efa6b5c531a2e4689fb538fb8fcbd2d70096a39"
+    },
+    "afterState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "871a66f1b1616281bb967275e11574a73a897b99e9c367fb86a815f951ce5317",
+      "contentSha256": "de7a96aefa4d4106f133b718e70be96c9049ca8eeeec1bb8bf9c172273346196"
+    }
+  },
+  "r07-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:50:57.420533+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:54:53.227794+00:00",
+    "durationSeconds": 234.08479608400376,
+    "result": {
+      "courseId": 42,
+      "runId": "c09c9152-bc15-4769-a959-4b0324ef82fe",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:54:52.110033Z"
+    },
+    "beforeState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "871a66f1b1616281bb967275e11574a73a897b99e9c367fb86a815f951ce5317",
+      "contentSha256": "de7a96aefa4d4106f133b718e70be96c9049ca8eeeec1bb8bf9c172273346196"
+    },
+    "afterState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 8,
+      "mappingSha256": "2917ea9acf569df675c0078ab39e28db2daacbb518b622f3b4dda1fdfd866149",
+      "contentSha256": "d0d764306ba551e95a35064307ea935310e9652c574ff2597ddf84ecc0a2b868"
+    }
+  },
+  "r07-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:54:56.475849+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T12:58:14.436942+00:00",
+    "durationSeconds": 195.50587491599435,
+    "result": {
+      "courseId": 42,
+      "runId": "144bb140-574e-4680-bb95-b5920d364a55",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T12:58:13.288176Z"
+    },
+    "beforeState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 8,
+      "mappingSha256": "2917ea9acf569df675c0078ab39e28db2daacbb518b622f3b4dda1fdfd866149",
+      "contentSha256": "d0d764306ba551e95a35064307ea935310e9652c574ff2597ddf84ecc0a2b868"
+    },
+    "afterState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 53,
+      "lectureLinkCount": 12,
+      "mappingSha256": "87022dcfe34bc1099812c6d6d7fe887966b72f85c2d7d56b9d3a84447c1f07f9",
+      "contentSha256": "3b0e4e3b59f1bc7e8d5888d012ed641501cfa6997cd4e8469b74e7d92640d62c"
+    }
+  },
+  "r07-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T12:58:18.493988+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:00:56.185962+00:00",
+    "durationSeconds": 155.534471166,
+    "result": {
+      "courseId": 42,
+      "runId": "fb20e3ad-41ac-4df2-9acf-b8f3878913cb",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:00:55.047562Z"
+    },
+    "beforeState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 53,
+      "lectureLinkCount": 12,
+      "mappingSha256": "87022dcfe34bc1099812c6d6d7fe887966b72f85c2d7d56b9d3a84447c1f07f9",
+      "contentSha256": "3b0e4e3b59f1bc7e8d5888d012ed641501cfa6997cd4e8469b74e7d92640d62c"
+    },
+    "afterState": {
+      "courseId": 42,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 64,
+      "lectureLinkCount": 17,
+      "mappingSha256": "0b13c385e004cbed5ca37c2d15aa2ed0bf630217d22a809e5b5de20d61ab121d",
+      "contentSha256": "cace1d270fb8425221b10d0a99d2fcb3cab1f1ace16089c0a186631fba9813e9"
+    }
+  },
+  "r08-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:00:59.935334+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:02:00.116315+00:00",
+    "durationSeconds": 57.86361504100205,
+    "result": {
+      "courseId": 43,
+      "runId": "ad8e932e-ac5f-4f1b-a0f5-913117502e1b",
+      "exerciseCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:01:59.021748Z"
+    },
+    "beforeState": {
+      "courseId": 43,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "a78ee2bc8a6332a467da1ce425d8e3337c48e5a2bddebed2350d1e1687ac54e8",
+      "contentSha256": "57efc3d77be20ef3b7cc13d0e9e8072e333e7374775839f4ffc8ad082387a6e1"
+    },
+    "afterState": {
+      "courseId": 43,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "b1e7adbe58717a60dd8384ff7fe33f1bfa2525eb8e0ae37251b35717dc1cb0d6",
+      "contentSha256": "1b270e7dcad58e68b095dd6b93f42e81ab468156cf3c6973f66815fa58b9c615"
+    }
+  },
+  "r08-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:02:03.854238+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:05:14.781390+00:00",
+    "durationSeconds": 188.6501422500005,
+    "result": {
+      "courseId": 44,
+      "runId": "a5b3f1ed-4dec-4ef0-9c5a-68512d39134b",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:05:13.435042Z"
+    },
+    "beforeState": {
+      "courseId": 44,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "0495711f8947f306dc426651599013ced885e0b820cedbb4df7ae6b113a853f8",
+      "contentSha256": "cfaa15cf71af1015da2bb7ce178507ac1163fc4b4230e523945da605545bc449"
+    },
+    "afterState": {
+      "courseId": 44,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 15,
+      "mappingSha256": "53236daa367adbd25ef51bffaf11d6bb274875f7a6d4cc67df37cd50962d2de9",
+      "contentSha256": "e1ca9754403dc11cd41e024cb6059bd4fa66de2c1547a5e53b9d890e3b2fbb9e"
+    }
+  },
+  "r08-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:05:18.691221+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:07:28.323137+00:00",
+    "durationSeconds": 127.77976641699206,
+    "result": {
+      "courseId": 45,
+      "runId": "d7b8ccf3-51d0-4c21-86d0-f7090b2dd4be",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:07:26.933158Z"
+    },
+    "beforeState": {
+      "courseId": 45,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "0e1ffdefc1a5f185e95cdcc77b2953b22587a89949a86b168dd663b96acba574",
+      "contentSha256": "862854c7090b7fde4c594a886157150c18ad762dbbb732ff9edb8551f7619947"
+    },
+    "afterState": {
+      "courseId": 45,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "50e5f81dd7e23dc273f11cf0983855e1dffd1fa5a98fd12ce88c0e92da4a30bd",
+      "contentSha256": "c9bd05a71e8bbb48f885fe2bc6e7ff6ffda4c298465dc1840077f94a66600960"
+    }
+  },
+  "r08-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:07:32.251508+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:10:37.458000+00:00",
+    "durationSeconds": 183.40912154199032,
+    "result": {
+      "courseId": 46,
+      "runId": "6a7abce7-492a-497e-add6-46bca8f77ea1",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:10:36.387095Z"
+    },
+    "beforeState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "d6708b4e90471c8d64412a4e3211897755bac7afcdf465251d554df595795f7a"
+    },
+    "afterState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "2a7039fa9479716da6a5fecbd95cb18a45a92490ca177172f99918e46222c1e5",
+      "contentSha256": "af15aa083a27f229ef3278452aa7395839247e95f1751fe40a0750053506d691"
+    }
+  },
+  "r08-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:10:40.525889+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:15:37.758615+00:00",
+    "durationSeconds": 295.4800447910093,
+    "result": {
+      "courseId": 46,
+      "runId": "78f1e541-8ace-4eaa-b05c-611b11a08626",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:15:36.667325Z"
+    },
+    "beforeState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "2a7039fa9479716da6a5fecbd95cb18a45a92490ca177172f99918e46222c1e5",
+      "contentSha256": "af15aa083a27f229ef3278452aa7395839247e95f1751fe40a0750053506d691"
+    },
+    "afterState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 29,
+      "lectureLinkCount": 7,
+      "mappingSha256": "2d548f9c3ca3e8e715bb1914e00ad04513adba080403014089a0afecb9d7562b",
+      "contentSha256": "d2d44adb8832c422199e83d47aad2550627b4954e068012b297a4c583e24ca58"
+    }
+  },
+  "r08-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:15:40.595054+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:20:30.613590+00:00",
+    "durationSeconds": 288.40629225000157,
+    "result": {
+      "courseId": 46,
+      "runId": "c819cfb9-775a-45c7-9a23-684e87e9223a",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:20:29.496006Z"
+    },
+    "beforeState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 29,
+      "lectureLinkCount": 7,
+      "mappingSha256": "2d548f9c3ca3e8e715bb1914e00ad04513adba080403014089a0afecb9d7562b",
+      "contentSha256": "d2d44adb8832c422199e83d47aad2550627b4954e068012b297a4c583e24ca58"
+    },
+    "afterState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 52,
+      "lectureLinkCount": 12,
+      "mappingSha256": "6dbde6fb172275d23994829de84dd5b0fd3c3964225cb3961ccfb63ff7b6dbfb",
+      "contentSha256": "65648cf55c2d8deddf66f951d80cbd6e4b3e761fe81941c16d000c7a8598d083"
+    }
+  },
+  "r08-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:20:33.927790+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:23:15.547737+00:00",
+    "durationSeconds": 159.83203704199695,
+    "result": {
+      "courseId": 46,
+      "runId": "a7140bd0-7820-4d61-b20e-c121ae965784",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:23:14.430832Z"
+    },
+    "beforeState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 52,
+      "lectureLinkCount": 12,
+      "mappingSha256": "6dbde6fb172275d23994829de84dd5b0fd3c3964225cb3961ccfb63ff7b6dbfb",
+      "contentSha256": "65648cf55c2d8deddf66f951d80cbd6e4b3e761fe81941c16d000c7a8598d083"
+    },
+    "afterState": {
+      "courseId": 46,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 63,
+      "lectureLinkCount": 16,
+      "mappingSha256": "3d8c657fbf2d4cf6a4a7cf9901687aff002e050d8a6b1e78f986366e641cc3c4",
+      "contentSha256": "7152eea2dec172f476f2797d188690e76777d4c62eca7f3ec47880af19bc6a10"
+    }
+  },
+  "r08-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:23:18.796502+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:24:27.247233+00:00",
+    "durationSeconds": 66.74029650000739,
+    "result": {
+      "courseId": 47,
+      "runId": "aad45817-95bb-414f-bed0-4fd25aa14bac",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T15:23:43.667+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 47 firing run aad45817-95bb-414f-bed0-4fd25aa14bac with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T15:24:25.469+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-2] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 47 run aad45817-95bb-414f-bed0-4fd25aa14bac had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 47,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c7966fa843d93216be3b98432ac84112ac4e49b523a98a0d731454dfe7ea405b",
+      "contentSha256": "0a10a5fdd0439a7788d940077ea8ce298a68c6fdfb769f959ae160d98dccfd55"
+    },
+    "afterState": {
+      "courseId": 47,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c7966fa843d93216be3b98432ac84112ac4e49b523a98a0d731454dfe7ea405b",
+      "contentSha256": "a04990034c1ea8747bd61d788372c5e29c1f57b3a54387be2befa0ec1a43c5fb"
+    }
+  },
+  "r08-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:24:30.346583+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:25:05.691351+00:00",
+    "durationSeconds": 34.723179417007486,
+    "result": {
+      "status": "SUCCESS",
+      "summary": "Verified final index. For updated exercise 2828, assigned primary evidence to Software design (431) at 1.0 and retained Functions and modularity (422) as meaningful partial evidence at 0.5. No competencies were created or deleted, and no unrelated mappings changed.",
+      "appliedActions": [
+        {
+          "type": "ASSIGN",
+          "competencyId": 431,
+          "competencyTitle": "Software design",
+          "exerciseId": 2828,
+          "weight": 1.0,
+          "detail": "Linked exercise Model a notification service to competency Software design (weight 1.00).",
+          "justification": "Evidence test: passing the class-diagram exercise directly demonstrates stable interfaces, dependency direction, compatibility, and delivery boundaries, so this is strong stand-alone evidence (1.0)."
+        },
+        {
+          "type": "ASSIGN",
+          "competencyId": 422,
+          "competencyTitle": "Functions and modularity",
+          "exerciseId": 2828,
+          "weight": 0.5,
+          "detail": "Updated weight to 0.50 for exercise Model a notification service on competency Functions and modularity.",
+          "justification": "Evidence test: the exercise meaningfully demonstrates responsibilities, a useful interface, and module boundaries, but does not cover the full functions-and-modularity competency, so this is meaningful partial evidence (0.5)."
+        }
+      ]
+    },
+    "beforeState": {
+      "courseId": 48,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c3682afa2f581d8b349364d5f891e3fd832e7372fc5bcfefb0fa032682c3cf8b",
+      "contentSha256": "4d1bb2c754107f3bcadaf8fa347fad8afb30611f0b03358430dbbbf4cfe59ed4"
+    },
+    "afterState": {
+      "courseId": 48,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 12,
+      "mappingSha256": "a25df49c8409c9420f9fdcfba3936b2bbaa9e01aad1af02c477665e66d4f58f3",
+      "contentSha256": "3ee104ad09db61418f00d05f585302ccb008d931368469fd9a63dfc90064bcb2"
+    }
+  },
+  "r09-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:25:08.660412+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:27:36.312448+00:00",
+    "durationSeconds": 145.9627555420011,
+    "result": {
+      "courseId": 49,
+      "runId": "7cf3c9ec-a2a0-4355-a3d9-eede2c73bec8",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:27:35.210206Z"
+    },
+    "beforeState": {
+      "courseId": 49,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "0ad8ede1b0b4433ea3d9b18f8d4253e83595d0f00f9213ae065793e2aa006b92",
+      "contentSha256": "4ef4733897dbecaf77d4eb07c9b02252d687109982888df756daf69e1d06ddad"
+    },
+    "afterState": {
+      "courseId": 49,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "d238c9cf1d83a131b52a43110fd93d9e87503d6aca031f984276b1d32b405118",
+      "contentSha256": "373a719555e94dffda110708c9cd375a1d9086e5f85b3bd5a28ef171c9922133"
+    }
+  },
+  "r09-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:27:39.463977+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:31:07.743414+00:00",
+    "durationSeconds": 206.45091220899485,
+    "result": {
+      "courseId": 50,
+      "runId": "3b34fa44-becc-4bd9-81b3-499c5b9eaa66",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:31:06.654278Z"
+    },
+    "beforeState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "ac8911bcb1c567fc261588d11879bf1c4100bcda6a9f8a5759e05c827cfbaf99"
+    },
+    "afterState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "16cbcdb4b5d2edd99d6fe4ad7d3da0756e4248a1307b6dea89650465f70a3074",
+      "contentSha256": "0c012c329852113b1dc136fa1c6348b634ecdf5076229f7c0354c1cf5e51f209"
+    }
+  },
+  "r09-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:31:10.431125+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:35:07.317960+00:00",
+    "durationSeconds": 235.36541766599112,
+    "result": {
+      "courseId": 50,
+      "runId": "f6c86e66-31d9-43f6-ba85-3b56870e49eb",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:35:06.213062Z"
+    },
+    "beforeState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "16cbcdb4b5d2edd99d6fe4ad7d3da0756e4248a1307b6dea89650465f70a3074",
+      "contentSha256": "0c012c329852113b1dc136fa1c6348b634ecdf5076229f7c0354c1cf5e51f209"
+    },
+    "afterState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 7,
+      "mappingSha256": "61dc6a3c9654cbcd86fd452b70ce27d99b7bdb80a92d6000248463d101c5de17",
+      "contentSha256": "5fe049af153e881050f183428f88dab8632d64935f671ee452b84ac9de556166"
+    }
+  },
+  "r09-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:35:10.102327+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:39:57.230605+00:00",
+    "durationSeconds": 285.5698296250048,
+    "result": {
+      "courseId": 50,
+      "runId": "267efc2f-9256-4fa0-ae97-0d436aa0fe8c",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:39:56.135066Z"
+    },
+    "beforeState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 15,
+      "exerciseLinkCount": 30,
+      "lectureLinkCount": 7,
+      "mappingSha256": "61dc6a3c9654cbcd86fd452b70ce27d99b7bdb80a92d6000248463d101c5de17",
+      "contentSha256": "5fe049af153e881050f183428f88dab8632d64935f671ee452b84ac9de556166"
+    },
+    "afterState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 55,
+      "lectureLinkCount": 11,
+      "mappingSha256": "f82bbe7bf53548628dbd4376e107b70b6c16d43904e624f358165a0a85bc8e13",
+      "contentSha256": "128e2ec4ee5b8295b1bddeda73b8e0a7528abe32ed43a724f3b9b69ef7ba8725"
+    }
+  },
+  "r09-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:39:59.902188+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:42:23.187058+00:00",
+    "durationSeconds": 141.71160374999454,
+    "result": {
+      "courseId": 50,
+      "runId": "4104c020-1c1a-4e3d-891d-0c99cc7a6872",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:42:22.109209Z"
+    },
+    "beforeState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 55,
+      "lectureLinkCount": 11,
+      "mappingSha256": "f82bbe7bf53548628dbd4376e107b70b6c16d43904e624f358165a0a85bc8e13",
+      "contentSha256": "128e2ec4ee5b8295b1bddeda73b8e0a7528abe32ed43a724f3b9b69ef7ba8725"
+    },
+    "afterState": {
+      "courseId": 50,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 17,
+      "exerciseLinkCount": 64,
+      "lectureLinkCount": 15,
+      "mappingSha256": "2070532a7bc1b5b57b07c48500871ebbbe9eea4196c2b04d0cd3e528f333795c",
+      "contentSha256": "ba8d52a3fea796f61aba6ce0c32d917a47108faafa8f5b5dc30bde349d4a1185"
+    }
+  },
+  "r09-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:42:25.713689+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:42:55.436622+00:00",
+    "durationSeconds": 28.21582395900623,
+    "result": {
+      "courseId": 51,
+      "runId": "dd261d25-7596-458f-94c5-8c038ecdff0b",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T15:42:43.665+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 51 firing run dd261d25-7596-458f-94c5-8c038ecdff0b with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-27T15:42:54.166+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-1] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 51 run dd261d25-7596-458f-94c5-8c038ecdff0b had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 51,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "da80abe0123afb99e5cf93705a1aec3370f8a9fe8965bbb62fbf757bfd03a880",
+      "contentSha256": "6feed9f4e443fd439f844837ef859257ea2dab4a0d2f8d94d096969531242e7c"
+    },
+    "afterState": {
+      "courseId": 51,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "da80abe0123afb99e5cf93705a1aec3370f8a9fe8965bbb62fbf757bfd03a880",
+      "contentSha256": "c26c818618010993659de338fdf37f09e7a2891365cb9767461c54fd946ba71e"
+    }
+  },
+  "r09-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:42:57.832875+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:43:32.200606+00:00",
+    "durationSeconds": 33.875217959008296,
+    "result": {
+      "status": "SUCCESS",
+      "summary": "Verified complete. Exercise 3069 remains linked to Functions and modularity at 1.0, and is now also linked to Software design at 1.0 and Testing and correctness at 0.3. No unrelated mappings or competencies were changed.",
+      "appliedActions": [
+        {
+          "type": "ASSIGN",
+          "competencyId": 461,
+          "competencyTitle": "Software design",
+          "exerciseId": 3069,
+          "weight": 1.0,
+          "detail": "Linked exercise Module boundary design note to competency Software design (weight 1.00).",
+          "justification": "1.0 strong stand-alone evidence: the design note requires public contracts, dependency direction, replaceable repository/receipt boundaries, and distributed responsibilities, directly demonstrating software design."
+        },
+        {
+          "type": "ASSIGN",
+          "competencyId": 460,
+          "competencyTitle": "Testing and correctness",
+          "exerciseId": 3069,
+          "weight": 0.3,
+          "detail": "Linked exercise Module boundary design note to competency Testing and correctness (weight 0.30).",
+          "justification": "0.3 incidental evidence: identifying isolated validator, conflict, and formatter test seams supports testing and correctness, but testing is secondary to the design task."
+        }
+      ]
+    },
+    "beforeState": {
+      "courseId": 52,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "5430d3536179e948b95ff82b8c0642c03161950d131a64bb944a5b45197dcacb",
+      "contentSha256": "9f7aae7817eac6abb37cb7385cf411875dda1e3b2f432fd2e1b9be029dff565e"
+    },
+    "afterState": {
+      "courseId": 52,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 62,
+      "lectureLinkCount": 12,
+      "mappingSha256": "2b46a778b980ffd0ff922918f9f0554202c1d5fbac41b664d254ffd511ebd406",
+      "contentSha256": "b35c4fdfd93d3e460f865e966d383a235e0ed90a7884dc7d3e6f88dd0303b1a9"
+    }
+  },
+  "r09-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:43:34.857180+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:45:29.147052+00:00",
+    "durationSeconds": 112.71641345899843,
+    "result": {
+      "courseId": 53,
+      "runId": "5553cf18-59d3-426e-9128-c50a26906a40",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T15:44:13.675+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-0] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 53 firing run 5553cf18-59d3-426e-9128-c50a26906a40 with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T15:45:27.292+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-0] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 53 run 5553cf18-59d3-426e-9128-c50a26906a40 had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 53,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "5b21f1568e48c4b4eaf3450b3239c61a0479be6065f2912957aa5c928fbb693a",
+      "contentSha256": "9dc8dec4c2aab40d82a59d35c0b4f74346f708b347a58dedc10c6bca1c6f559e"
+    },
+    "afterState": {
+      "courseId": 53,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "5b21f1568e48c4b4eaf3450b3239c61a0479be6065f2912957aa5c928fbb693a",
+      "contentSha256": "f978c469b71bdc16b493a7577c519ee062be7144430a005eb876d02e1c295a4e"
+    }
+  },
+  "r09-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:45:32.501273+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:48:16.444123+00:00",
+    "durationSeconds": 162.31500262500776,
+    "result": {
+      "courseId": 54,
+      "runId": "253ca7dd-1acb-4986-8832-a75080823fb3",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:48:15.319865Z"
+    },
+    "beforeState": {
+      "courseId": 54,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "1cc19d7684dbfa97096bb5f367233d4bb99c40c5a71b26d3feff758b1c799643",
+      "contentSha256": "4c27630939f04e3074a9a737d55ad048da528877e18081f4bc80a9b32470f857"
+    },
+    "afterState": {
+      "courseId": 54,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "539d3ee5b979c60856f8b142fcfdbbd6332e1b13c2f7e45d5d79e8303d89d7d0",
+      "contentSha256": "d3f04c725f583eee2f1c44d589d2d72ed8282cbc155f66c667e60b4a57cbd567"
+    }
+  },
+  "r10-assignment-only-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:48:19.530613+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:50:54.507804+00:00",
+    "durationSeconds": 153.1706711250008,
+    "result": {
+      "courseId": 55,
+      "runId": "14202e05-3215-46bc-8125-8a7bf3de2eb7",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:50:53.395527Z"
+    },
+    "beforeState": {
+      "courseId": 55,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 51,
+      "lectureLinkCount": 9,
+      "mappingSha256": "ddaeb531f3754453805f68dfd9873dc29024181dd9a0de0b7a9078debbb6fa71",
+      "contentSha256": "d64fa2917d460f2e957b61c38859b750fb8d61bf7f39dbdc484233e3b6e52a6e"
+    },
+    "afterState": {
+      "courseId": 55,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 61,
+      "lectureLinkCount": 12,
+      "mappingSha256": "61bde99b42ebb5f4c650c07ab47414259db4cc3023c7c41bb433687b259c7379",
+      "contentSha256": "e5e1af9654e22abe5fed6c85615ec797b2481b2951b7dae8be9141e18dbd98e9"
+    }
+  },
+  "r10-maintained-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:50:58.087678+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:52:27.556134+00:00",
+    "durationSeconds": 87.8097801249969,
+    "result": {
+      "courseId": 56,
+      "runId": "52ec7384-4acf-4e25-876c-a25286e9830b",
+      "exerciseCount": 12,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T15:51:13.662+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 56 firing run 52ec7384-4acf-4e25-876c-a25286e9830b with 9 exercise(s) and 3 lecture unit(s)",
+        "\u001b[2m2026-09-27T15:52:26.144+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 56 run 52ec7384-4acf-4e25-876c-a25286e9830b had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 56,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c881104fb679eaffd4a4714bcade16e6f53ec1f641bbb8c256cca038773b3765",
+      "contentSha256": "d91bc021f69c14385a51bc868c55294b8847a7989e4fd5b137b2d455e64721ec"
+    },
+    "afterState": {
+      "courseId": 56,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "c881104fb679eaffd4a4714bcade16e6f53ec1f641bbb8c256cca038773b3765",
+      "contentSha256": "b0f424aef7c0e4b627f9c680e3626f38d3bd356a1c4336aa807cda4cfd33ca15"
+    }
+  },
+  "r10-lecture-maintenance-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:52:30.754133+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:53:03.823647+00:00",
+    "durationSeconds": 31.274313249989063,
+    "result": {
+      "courseId": 57,
+      "runId": "4f0a7583-2dec-4f92-aa7e-abe869ae5b9e",
+      "exerciseCount": 1,
+      "status": "NO_OP",
+      "completionEvidence": "native-scheduler-log",
+      "nativeLogLines": [
+        "\u001b[2m2026-09-27T15:52:43.668+02:00\u001b[0;39m \u001b[32m INFO\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 57 firing run 4f0a7583-2dec-4f92-aa7e-abe869ae5b9e with 0 exercise(s) and 1 lecture unit(s)",
+        "\u001b[2m2026-09-27T15:53:02.287+02:00\u001b[0;39m \u001b[32mDEBUG\u001b[0;39m \u001b[35m87059\u001b[0;39m \u001b[2m--- [Artemis] [taskScheduler-3] \u001b[0;39m\u001b[36md.t.c.a.a.a.s.ContentChangeScheduler    \u001b[0;39m \u001b[2m:\u001b[0;39m atlas.automatic course 57 run 4f0a7583-2dec-4f92-aa7e-abe869ae5b9e had no applicable changes; no summary broadcast"
+      ]
+    },
+    "beforeState": {
+      "courseId": 57,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "86cdda735f482fafb7a60e93eff1fb684dc274f322b548020720f3f545af5505",
+      "contentSha256": "71523b6aa1548fcba08f840d625c91d6c8cb0a479be008b0144068cd0db4e3db"
+    },
+    "afterState": {
+      "courseId": 57,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "86cdda735f482fafb7a60e93eff1fb684dc274f322b548020720f3f545af5505",
+      "contentSha256": "e1fe664f4604e4a1b754be942269612590e0000fb11a73d87752ba5e7d3a7ddb"
+    }
+  },
+  "r10-bootstrap-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:53:07.007997+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T13:56:10.557840+00:00",
+    "durationSeconds": 181.99387804200524,
+    "result": {
+      "courseId": 58,
+      "runId": "53ffdfe9-c21b-4e18-992f-8bb2a5b139cf",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T13:56:09.441149Z"
+    },
+    "beforeState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 0,
+      "exerciseLinkCount": 0,
+      "lectureLinkCount": 0,
+      "mappingSha256": "24f99f9bbbfdbbad9306db4479f8c9e02e2b66252970115a4bdd076a1b4bbe99",
+      "contentSha256": "98ccfac9c77c38089114d54027715ef014b7fa6621c4130371a8b1ac778712ea"
+    },
+    "afterState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "d902be27657d2f1c7123e5c1ee12a99c58ff7d83866212ee3b2011db62d9f83d",
+      "contentSha256": "a1ab9d5e383b465f1e10d34af697dd1af424eadaa0a94b96f9a0df61d40da219"
+    }
+  },
+  "r10-bootstrap-s2": {
+    "status": "completed",
+    "startedAt": "2026-09-27T13:56:13.584603+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T14:00:33.911446+00:00",
+    "durationSeconds": 258.61895987499156,
+    "result": {
+      "courseId": 58,
+      "runId": "d1c3b55c-f3fb-4388-9f35-faa0d543a125",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T14:00:32.814301Z"
+    },
+    "beforeState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 9,
+      "lectureLinkCount": 3,
+      "mappingSha256": "d902be27657d2f1c7123e5c1ee12a99c58ff7d83866212ee3b2011db62d9f83d",
+      "contentSha256": "a1ab9d5e383b465f1e10d34af697dd1af424eadaa0a94b96f9a0df61d40da219"
+    },
+    "afterState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 32,
+      "lectureLinkCount": 8,
+      "mappingSha256": "2f09d15a7b61c30f4eedaa28e6b4f636a932b5ac0c0438de772a2ea51bf35a31",
+      "contentSha256": "30b999f27bd550741fdb9d85dd29ae26aaec6905e97a5bc5c230587446a6fae4"
+    }
+  },
+  "r10-bootstrap-s3": {
+    "status": "completed",
+    "startedAt": "2026-09-27T14:00:36.823016+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T14:05:34.828540+00:00",
+    "durationSeconds": 296.09377429200686,
+    "result": {
+      "courseId": 58,
+      "runId": "a31ede89-28c0-49df-9611-ff0e3bc2f65c",
+      "exerciseCount": 24,
+      "successCount": 24,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T14:05:33.729578Z"
+    },
+    "beforeState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 16,
+      "exerciseLinkCount": 32,
+      "lectureLinkCount": 8,
+      "mappingSha256": "2f09d15a7b61c30f4eedaa28e6b4f636a932b5ac0c0438de772a2ea51bf35a31",
+      "contentSha256": "30b999f27bd550741fdb9d85dd29ae26aaec6905e97a5bc5c230587446a6fae4"
+    },
+    "afterState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 17,
+      "exerciseLinkCount": 56,
+      "lectureLinkCount": 13,
+      "mappingSha256": "cba5ffbb66d990e80fe1d6eab58bc2d950a627e02f8879883f55facbb8771401",
+      "contentSha256": "4e54cfd6c164922005ea3b18b314fddbcf43f6a6860e60388691eada81b134a7"
+    }
+  },
+  "r10-bootstrap-s4": {
+    "status": "completed",
+    "startedAt": "2026-09-27T14:05:37.911519+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T14:09:35.156621+00:00",
+    "durationSeconds": 235.6692998750077,
+    "result": {
+      "courseId": 58,
+      "runId": "ba62299a-73a3-4242-98b0-f7a578fc212c",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T14:09:34.075369Z"
+    },
+    "beforeState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 17,
+      "exerciseLinkCount": 56,
+      "lectureLinkCount": 13,
+      "mappingSha256": "cba5ffbb66d990e80fe1d6eab58bc2d950a627e02f8879883f55facbb8771401",
+      "contentSha256": "4e54cfd6c164922005ea3b18b314fddbcf43f6a6860e60388691eada81b134a7"
+    },
+    "afterState": {
+      "courseId": 58,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 18,
+      "exerciseLinkCount": 66,
+      "lectureLinkCount": 17,
+      "mappingSha256": "c8bce9dce0a514ccb50ee9a37f676458dd408569694aad0c33535ba6609b6802",
+      "contentSha256": "a22da5eefb8198249fe577e42ae05b5653529c5c58bbdb915c5213893fa7a192"
+    }
+  },
+  "r10-single-exercise-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T14:09:37.739920+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T14:10:00.046971+00:00",
+    "durationSeconds": 21.70858712500194,
+    "result": {
+      "status": "NO_OP",
+      "summary": "Verified the updated exercise 3490 content. Its existing 1.0 link to competency 524, Functions and modularity, is strong stand-alone evidence for pure functions and was preserved; no competency creation, edit, deletion, or other mapping changes were needed. Final index confirms the mapping."
+    },
+    "beforeState": {
+      "courseId": 59,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "971aa23814861e12604dbb23ee5d23bca89f5785d94eb1ab8b1bf14728609e83",
+      "contentSha256": "5e528ca64eab6e888436bcea42ae35aac5ee6a56a17eb84ce82863a8c834b4ed"
+    },
+    "afterState": {
+      "courseId": 59,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 12,
+      "exerciseLinkCount": 60,
+      "lectureLinkCount": 12,
+      "mappingSha256": "971aa23814861e12604dbb23ee5d23bca89f5785d94eb1ab8b1bf14728609e83",
+      "contentSha256": "7db3ccdd1b63e946670a656baa39d470bd7956d313e4d2a68d631f8037383879"
+    }
+  },
+  "r10-mixed-s1": {
+    "status": "completed",
+    "startedAt": "2026-09-27T14:10:02.648150+00:00",
+    "evidenceComplete": true,
+    "finishedAt": "2026-09-27T14:12:25.836578+00:00",
+    "durationSeconds": 141.60003362499992,
+    "result": {
+      "courseId": 60,
+      "runId": "01ed8f22-02d5-4d4c-a3ab-0b537ac39c81",
+      "exerciseCount": 12,
+      "successCount": 12,
+      "failureCount": 0,
+      "outcome": "SUCCESS",
+      "completedAt": "2026-09-27T14:12:24.747703Z"
+    },
+    "beforeState": {
+      "courseId": 60,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 6,
+      "exerciseLinkCount": 25,
+      "lectureLinkCount": 5,
+      "mappingSha256": "b00595008511bc15cb11023b75d222d9013ad548bab4dd30500efe76b1663809",
+      "contentSha256": "fdc5cc7c6ca965e4c2cfbdd8c41fad7012beae1d7e3cc55105eb5016d7c79ac5"
+    },
+    "afterState": {
+      "courseId": 60,
+      "exerciseCount": 60,
+      "lectureUnitCount": 12,
+      "competencyCount": 11,
+      "exerciseLinkCount": 34,
+      "lectureLinkCount": 8,
+      "mappingSha256": "fddc3bddfd34d02da69840576701b7eaf172aa2af7dc8df71a8de9fd39a46ea2",
+      "contentSha256": "1111e936880bd84fdb0ba421ab105624c8ff785659c478eeebd2f7764e101f87"
+    }
+  }
+}
